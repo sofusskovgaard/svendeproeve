@@ -4,20 +4,35 @@ namespace App.Infrastructure.Utilities;
 
 public static class DiscoveryHelper
 {
-    public static Type[]? Discover<TInterface>(Assembly? assemblyToSearch)
+    public static Type[]? Discover<TInterface>(Assembly? assemblyToSearch = null)
     {
-        return Discover(assemblyToSearch, typeof(TInterface));
+        return Discover(typeof(TInterface), assemblyToSearch);
     }
     
-    public static Type[] Discover(Assembly? assemblyToSearch, Type type)
+    public static Type[] Discover(Type type, Assembly? assemblyToSearch = null)
     {
         if (assemblyToSearch == null)
         {
-            assemblyToSearch = Assembly.GetCallingAssembly();
+            assemblyToSearch = Assembly.GetExecutingAssembly();
         }
 
         return assemblyToSearch.GetTypes()
             .Where(x => !x.IsAbstract && x.GetInterface(type.Name) != null)
             .ToArray();
+    }
+    
+    public static Type[]? DiscoverWithBase<TInterface>(Assembly? assemblyToSearch = null)
+    {
+        return DiscoverWithBase(typeof(TInterface), assemblyToSearch);
+    }
+    
+    public static Type[] DiscoverWithBase(Type type, Assembly? assemblyToSearch = null)
+    {
+        if (assemblyToSearch == null)
+        {
+            assemblyToSearch = Assembly.GetExecutingAssembly();
+        }
+
+        return assemblyToSearch.GetTypes().Where(x => !x.IsAbstract && x.BaseType == type).ToArray();
     }
 }
