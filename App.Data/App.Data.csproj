@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
-      <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
+        <PackageReference Include="MongoDB.Bson" Version="2.19.0"/>
+        <PackageReference Include="MongoDB.Driver" Version="2.19.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

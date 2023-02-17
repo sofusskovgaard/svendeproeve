@@ -15,7 +15,7 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 
     public EntityIndexGenerator(IOptions<DatabaseOptions> options, IMongoClient client)
     {
-        _database = client.GetDatabase(options.Value.DatabaseName);
+        this._database = client.GetDatabase(options.Value.DatabaseName);
     }
 
     public Task Generate(Assembly? assemblyToSearch = null)
@@ -30,10 +30,7 @@ public class EntityIndexGenerator : IEntityIndexGenerator
         {
             var indexDefinitions = entityType.GetCustomAttributes<IndexDefinitionAttribute>();
 
-            if (!indexDefinitions.Any())
-            {
-                continue;
-            }
+            if (!indexDefinitions.Any()) continue;
 
             var collection = this._database.GetCollection(entityType);
 
@@ -44,12 +41,8 @@ public class EntityIndexGenerator : IEntityIndexGenerator
                 var foundIndex = false;
 
                 while (!foundIndex && await cursor.MoveNextAsync())
-                {
                     if (cursor.Current.Any(x => x.GetElement("name").Value.AsString.Equals(indexDefinition.Name)))
-                    {
                         foundIndex = true;
-                    }
-                }
 
                 if (!foundIndex)
                 {
@@ -76,6 +69,6 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 public interface IEntityIndexGenerator
 {
     Task Generate(Assembly? assemblyToSearch = null);
-    
+
     Task Generate(Type[] entityTypes);
 }

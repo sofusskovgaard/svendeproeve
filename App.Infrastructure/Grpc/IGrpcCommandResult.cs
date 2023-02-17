@@ -2,5 +2,5 @@ namespace App.Infrastructure.Grpc;
 
 public interface IGrpcCommandResult
 {
-    GrpcCommandResultMetadata Metadata { get; set; }   
+    GrpcCommandResultMetadata Metadata { get; set; }
 }

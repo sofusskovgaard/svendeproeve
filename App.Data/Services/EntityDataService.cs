@@ -12,7 +12,7 @@ public class EntityDataService : IEntityDataService
 
     public EntityDataService(IOptions<DatabaseOptions> options, IMongoClient client)
     {
-        _db = client.GetDatabase(options.Value.DatabaseName);
+        this._db = client.GetDatabase(options.Value.DatabaseName);
     }
 
     public async Task<T> GetEntity<T>(string id) where T : IEntity
@@ -41,7 +41,7 @@ public class EntityDataService : IEntityDataService
 
         return entities;
     }
-    
+
     public async Task<T> Update<T>(T entity) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();

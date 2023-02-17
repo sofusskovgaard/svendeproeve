@@ -11,8 +11,8 @@ public class IndexedPropertyAttribute : Attribute
 
     public IndexedPropertyAttribute(string indexName, Direction order = Direction.Ascending)
     {
-        IndexName = indexName;
-        Order = order;
+        this.IndexName = indexName;
+        this.Order = order;
     }
 
     public string IndexName { get; set; }

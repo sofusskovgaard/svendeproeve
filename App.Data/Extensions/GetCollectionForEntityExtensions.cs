@@ -20,7 +20,7 @@ public static class GetCollectionForEntityExtensions
         var attr = typeof(TEntity).GetCustomAttribute<CollectionDefinitionAttribute>();
         return database.GetCollection<TEntity>(attr.Name, settings);
     }
-    
+
     public static IMongoCollection<IEntity> GetCollection(this IMongoDatabase database,
         Type type, MongoCollectionSettings settings = null)
     {

@@ -5,8 +5,8 @@ public class IndexDefinitionAttribute : Attribute
 {
     public IndexDefinitionAttribute(string name, bool isUnique = false)
     {
-        Name = name;
-        IsUnique = isUnique;
+        this.Name = name;
+        this.IsUnique = isUnique;
     }
 
     public string Name { get; set; }

@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Sofus Alexander Skovgaard",
+    "classifications": [
+        "Console"
+    ],
+    "name": "Microservice",
+    "identity": "App.Templates.Microservice",
+    "groupIdentity": "App.Templates.Microservice",
+    "shortName": "microservice",
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    },
+    "sourceName": "Template.Services.ServiceName",
+    "preferNameDirectory": true
+}

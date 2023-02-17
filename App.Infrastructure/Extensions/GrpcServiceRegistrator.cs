@@ -13,9 +13,6 @@ public static class GrpcServiceRegistrator
             (ServiceAttribute)typeof(TGrpcService).GetCustomAttribute(
                 typeof(ServiceAttribute))!;
 
-        services.AddCodeFirstGrpcClient<TGrpcService>(options =>
-        {
-            options.Address = new Uri($"http://{attr.Name}");
-        });
+        services.AddCodeFirstGrpcClient<TGrpcService>(options => { options.Address = new Uri($"http://{attr.Name}"); });
     }
 }

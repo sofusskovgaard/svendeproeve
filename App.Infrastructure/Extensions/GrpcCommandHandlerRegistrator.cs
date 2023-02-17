@@ -16,9 +16,7 @@ public static class GrpcCommandHandlerRegistrator
 
             if (handlerInterface.GenericTypeArguments[0].GetInterface(nameof(IGrpcCommandMessage)) != null &&
                 handlerInterface.GenericTypeArguments[1].GetInterface(nameof(IGrpcCommandResult)) != null)
-            {
                 services.AddTransient(handlerType);
-            }
         }
     }
 }

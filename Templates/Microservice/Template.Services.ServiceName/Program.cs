@@ -1,9 +1,7 @@
-using System.Reflection;
 using App.Data.Extensions;
 using App.Infrastructure.Extensions;
-using App.Services;
 using ProtoBuf.Grpc.Server;
-using Template.Services.ServiceName.Services;
+using Template.Services.ServiceName.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,17 +10,14 @@ builder.Host.RegisterSerilog();
 builder.Services.RegisterOptions();
 
 builder.Services.AddMongoDb();
-
-builder.Services.AddScoped<IServiceNameGrpcService, ServiceNameGrpcService>();
-builder.Services.AddRabbitMq<ServiceNameService>();
+builder.Services.AddRabbitMq<ServiceNameGrpcService>();
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();
-builder.Services.AddGrpcCommandHandlers(Assembly.GetAssembly(typeof(TenantService)));
 
 var app = builder.Build();
 
-app.MapGrpcService<TenantService>();
+app.MapGrpcService<ServiceNameGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
 
 app.Run();

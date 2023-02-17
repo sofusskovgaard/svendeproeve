@@ -10,7 +10,8 @@ public static class PasswordHasher
         var saltByteArray = PasswordHasher._generateSalt();
         var hashByteArray = PasswordHasher._generateHash(password, saltByteArray);
 
-        return new PasswordHasherResponse {
+        return new PasswordHasherResponse
+        {
             Salt = Convert.ToBase64String(saltByteArray), Hash = Convert.ToBase64String(hashByteArray)
         };
     }
