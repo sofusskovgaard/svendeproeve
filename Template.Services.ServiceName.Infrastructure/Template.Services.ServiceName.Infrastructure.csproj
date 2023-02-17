@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\App.Services\App.Services.csproj" />
+      <ProjectReference Include="..\Template.Services.ServiceName.Infrastructure.Commands\Template.Services.ServiceName.Infrastructure.Commands.csproj" />
+      <ProjectReference Include="..\Template.Services.ServiceName.Infrastructure.Events\Template.Services.ServiceName.Infrastructure.Events.csproj" />
+      <ProjectReference Include="..\Template.Services.ServiceName.Infrastructure.Grpc\Template.Services.ServiceName.Infrastructure.Grpc.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CommandHandlers" />
+      <Folder Include="EventHandlers" />
+    </ItemGroup>
+
+</Project>
