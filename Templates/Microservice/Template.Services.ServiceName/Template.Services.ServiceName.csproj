@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.49.0"/>
-        <PackageReference Include="protobuf-net.Grpc.AspNetCore" Version="1.1.1"/>
-        <PackageReference Include="protobuf-net.Grpc.AspNetCore.Reflection" Version="1.1.1"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
+        <PackageReference Include="protobuf-net.Grpc.AspNetCore" Version="1.1.1" />
+        <PackageReference Include="protobuf-net.Grpc.AspNetCore.Reflection" Version="1.1.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,10 +20,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\App.Data\App.Data.csproj"/>
-        <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj"/>
-        <ProjectReference Include="..\App.Services\App.Services.csproj"/>
-        <ProjectReference Include="..\Template.Services.ServiceName.Infrastructure\Template.Services.ServiceName.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\..\App.Data\App.Data.csproj" />
+        <ProjectReference Include="..\..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Data\App.Data.csproj" />
+        <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Services\App.Services.csproj" />
+        <ProjectReference Include="..\Template.Services.ServiceName.Infrastructure\Template.Services.ServiceName.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

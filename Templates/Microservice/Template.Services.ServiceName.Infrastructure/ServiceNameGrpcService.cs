@@ -1,4 +1,5 @@
 using ProtoBuf.Grpc.Configuration;
+using Template.Services.ServiceName.Infrastructure.Grpc;
 using Template.Services.ServiceName.Infrastructure.Grpc.CommandMessages;
 using Template.Services.ServiceName.Infrastructure.Grpc.CommandResults;
 
@@ -10,10 +11,4 @@ public class ServiceNameGrpcService : IServiceNameGrpcService
     {
         throw new NotImplementedException();
     }
-}
-
-[Service]
-public interface IServiceNameGrpcService
-{
-    Task<TestGrpcCommandResult> Test(TestGrpcCommandMessage message);
 }

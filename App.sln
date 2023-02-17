@@ -10,6 +10,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Data", "App.Data\App.Da
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6176B991-F8E7-4919-8F4E-4FD43A86D84D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{6411FA01-0C52-438B-97C6-F2598D09429B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{6CB07186-750A-4480-9A26-5FB1F3CCAF1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservice", "Microservice", "{6820FB1D-5D47-432E-89DD-DC3E470D90AE}"
+	ProjectSection(SolutionItems) = preProject
+		Templates\Microservice\.template.config\template.json = Templates\Microservice\.template.config\template.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Services.ServiceName", "Templates\Microservice\Template.Services.ServiceName\Template.Services.ServiceName.csproj", "{39168E71-BAB9-4F6D-98E2-763652E1CE41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Services.ServiceName.Data", "Templates\Microservice\Template.Services.ServiceName.Data\Template.Services.ServiceName.Data.csproj", "{866B351A-C446-4B71-A958-957986F7CE50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Services.ServiceName.Infrastructure", "Templates\Microservice\Template.Services.ServiceName.Infrastructure\Template.Services.ServiceName.Infrastructure.csproj", "{2EE8BFB5-7083-410F-9E7C-7887B8B9F062}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Services.ServiceName.Infrastructure.Commands", "Templates\Microservice\Template.Services.ServiceName.Infrastructure.Commands\Template.Services.ServiceName.Infrastructure.Commands.csproj", "{8C7D5BE1-316E-425A-9935-6274921106C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Services.ServiceName.Infrastructure.Events", "Templates\Microservice\Template.Services.ServiceName.Infrastructure.Events\Template.Services.ServiceName.Infrastructure.Events.csproj", "{D22557AE-EEBF-43AB-958D-9BD03C70437A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Services.ServiceName.Infrastructure.Grpc", "Templates\Microservice\Template.Services.ServiceName.Infrastructure.Grpc\Template.Services.ServiceName.Infrastructure.Grpc.csproj", "{BE081459-26C3-43E9-A0C3-9615731FA33E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +40,14 @@ Global
 		{364B26B6-57F7-458A-8049-C7F8E5B2025A} = {8B2E603C-C69C-42AB-AD6B-5E0C2F2D1A17}
 		{3216A808-A5F9-46ED-891F-CC45B746ECC1} = {8B2E603C-C69C-42AB-AD6B-5E0C2F2D1A17}
 		{1A55FE4A-7856-424C-BF35-F562B8DA1CAF} = {8B2E603C-C69C-42AB-AD6B-5E0C2F2D1A17}
+		{6411FA01-0C52-438B-97C6-F2598D09429B} = {6176B991-F8E7-4919-8F4E-4FD43A86D84D}
+		{6820FB1D-5D47-432E-89DD-DC3E470D90AE} = {6CB07186-750A-4480-9A26-5FB1F3CCAF1C}
+		{39168E71-BAB9-4F6D-98E2-763652E1CE41} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
+		{866B351A-C446-4B71-A958-957986F7CE50} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
+		{2EE8BFB5-7083-410F-9E7C-7887B8B9F062} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
+		{8C7D5BE1-316E-425A-9935-6274921106C4} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
+		{D22557AE-EEBF-43AB-958D-9BD03C70437A} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
+		{BE081459-26C3-43E9-A0C3-9615731FA33E} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{364B26B6-57F7-458A-8049-C7F8E5B2025A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -33,5 +62,29 @@ Global
 		{1A55FE4A-7856-424C-BF35-F562B8DA1CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A55FE4A-7856-424C-BF35-F562B8DA1CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A55FE4A-7856-424C-BF35-F562B8DA1CAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39168E71-BAB9-4F6D-98E2-763652E1CE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39168E71-BAB9-4F6D-98E2-763652E1CE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39168E71-BAB9-4F6D-98E2-763652E1CE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39168E71-BAB9-4F6D-98E2-763652E1CE41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{866B351A-C446-4B71-A958-957986F7CE50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{866B351A-C446-4B71-A958-957986F7CE50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{866B351A-C446-4B71-A958-957986F7CE50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{866B351A-C446-4B71-A958-957986F7CE50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EE8BFB5-7083-410F-9E7C-7887B8B9F062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EE8BFB5-7083-410F-9E7C-7887B8B9F062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EE8BFB5-7083-410F-9E7C-7887B8B9F062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EE8BFB5-7083-410F-9E7C-7887B8B9F062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C7D5BE1-316E-425A-9935-6274921106C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C7D5BE1-316E-425A-9935-6274921106C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C7D5BE1-316E-425A-9935-6274921106C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C7D5BE1-316E-425A-9935-6274921106C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D22557AE-EEBF-43AB-958D-9BD03C70437A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D22557AE-EEBF-43AB-958D-9BD03C70437A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D22557AE-EEBF-43AB-958D-9BD03C70437A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D22557AE-EEBF-43AB-958D-9BD03C70437A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE081459-26C3-43E9-A0C3-9615731FA33E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE081459-26C3-43E9-A0C3-9615731FA33E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE081459-26C3-43E9-A0C3-9615731FA33E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE081459-26C3-43E9-A0C3-9615731FA33E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
