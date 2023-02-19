@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\App.Data\App.Data.csproj" />
+        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Services.Users.Data\App.Services.Users.Data.csproj" />
+        <ProjectReference Include="..\App.Services.Users.Infrastructure.Commands\App.Services.Users.Infrastructure.Commands.csproj" />
+        <ProjectReference Include="..\App.Services.Users.Infrastructure.Events\App.Services.Users.Infrastructure.Events.csproj" />
+        <ProjectReference Include="..\App.Services.Users.Infrastructure.Grpc\App.Services.Users.Infrastructure.Grpc.csproj" />
+    </ItemGroup>
+
+</Project>
