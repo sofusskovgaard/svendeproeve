@@ -8,5 +8,5 @@ namespace App.Services.Users.Infrastructure.Grpc;
 public interface IUsersGrpcService
 {
     [Operation]
-    ValueTask<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message);
+    Task<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message);
 }

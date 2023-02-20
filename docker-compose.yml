@@ -9,6 +9,12 @@ services:
     ports:
       - "27017:27017"
 
+  rabbitmq:
+    image: rabbitmq:3.11-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+
   app.services.gateway:
     image: ${DOCKER_REGISTRY-}appservicesgateway
     build:

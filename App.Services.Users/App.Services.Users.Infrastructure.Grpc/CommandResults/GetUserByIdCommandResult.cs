@@ -6,6 +6,6 @@ namespace App.Services.Users.Infrastructure.Grpc.CommandResults;
 [ProtoContract]
 public class GetUserByIdCommandResult : IGrpcCommandResult
 {
-    [ProtoMember(0)]
+    [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
 }
