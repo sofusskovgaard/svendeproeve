@@ -1,4 +1,5 @@
 using App.Data.Extensions;
+using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using ProtoBuf.Grpc.Server;
 using App.Services.Users.Infrastructure;
@@ -17,7 +18,10 @@ builder.Services.AddCodeFirstGrpc();
 
 var app = builder.Build();
 
+var entityIndexGenerator = app.Services.GetRequiredService<IEntityIndexGenerator>();
+await entityIndexGenerator.Generate();
+
 app.MapGrpcService<UsersGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
 
-app.Run();
+await app.RunAsync();
