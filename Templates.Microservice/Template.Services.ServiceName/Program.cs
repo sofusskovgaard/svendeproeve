@@ -1,4 +1,5 @@
 using App.Data.Extensions;
+using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using ProtoBuf.Grpc.Server;
 using Template.Services.ServiceName.Infrastructure;
@@ -16,6 +17,9 @@ builder.Services.AddRabbitMq<ServiceNameGrpcService>();
 builder.Services.AddCodeFirstGrpc();
 
 var app = builder.Build();
+
+var entityIndexGenerator = app.Services.GetRequiredService<IEntityIndexGenerator>();
+await entityIndexGenerator.Generate();
 
 app.MapGrpcService<ServiceNameGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
