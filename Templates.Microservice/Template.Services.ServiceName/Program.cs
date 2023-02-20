@@ -20,4 +20,4 @@ var app = builder.Build();
 app.MapGrpcService<ServiceNameGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
 
-app.Run();
+await app.RunAsync();
