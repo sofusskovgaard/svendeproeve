@@ -52,4 +52,25 @@ public static class RabbitMqRegistrator
             });
         });
     }
+    
+    public static void AddRabbitMq(this IServiceCollection services, Action<IBusRegistrationContext, IRabbitMqBusFactoryConfigurator>? config = null)
+    {
+        services.AddMassTransit(options =>
+        {
+            options.SetKebabCaseEndpointNameFormatter();
+
+            options.UsingRabbitMq((context, configure) =>
+            {
+                var settings = context.GetService<IOptions<RabbitMQOptions>>();
+
+                configure.Host(settings.Value.Host, configurator =>
+                {
+                    configurator.Username(settings.Value.Username);
+                    configurator.Password(settings.Value.Password);
+                });
+
+                config?.Invoke(context, configure);
+            });
+        });
+    }
 }
