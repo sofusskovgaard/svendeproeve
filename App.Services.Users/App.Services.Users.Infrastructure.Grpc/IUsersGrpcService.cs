@@ -4,7 +4,7 @@ using App.Services.Users.Infrastructure.Grpc.CommandResults;
 
 namespace App.Services.Users.Infrastructure.Grpc;
 
-[Service("users-service")]
+[Service("app.services.users")]
 public interface IUsersGrpcService
 {
     [Operation]

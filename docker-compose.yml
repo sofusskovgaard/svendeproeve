@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+    ports:
+      - "27017:27017"
+
+  app.services.gateway:
+    image: ${DOCKER_REGISTRY-}appservicesgateway
+    build:
+      context: .
+      dockerfile: App.Services.Gateway/Dockerfile
+
+  app.services.users:
+    image: ${DOCKER_REGISTRY-}appservicesusers
+    build:
+      context: .
+      dockerfile: App.Services.Users/App.Services.Users/Dockerfile
