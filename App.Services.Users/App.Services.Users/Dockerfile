@@ -5,14 +5,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["App.Services.Users/App.Services.Users.csproj", "App.Services.Users/"]
+COPY ["App.Services.Users/App.Services.Users/App.Services.Users.csproj", "App.Services.Users/"]
 RUN dotnet restore "App.Services.Users/App.Services.Users.csproj"
 COPY . .
 WORKDIR "/src/App.Services.Users"
-RUN dotnet build "App.Services.Users.csproj" -c Release -o /app/build
+RUN dotnet build "App.Services.Users/App.Services.Users.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "App.Services.Users.csproj" -c Release -o /app/publish
+RUN dotnet publish "App.Services.Users/App.Services.Users.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
