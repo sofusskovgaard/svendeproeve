@@ -2,7 +2,8 @@
     "$schema": "http://json.schemastore.org/template",
     "author": "Sofus Alexander Skovgaard",
     "classifications": [
-        "Console"
+      "Common",
+      "Service"
     ],
     "name": "Microservice",
     "identity": "App.Templates.Microservice",

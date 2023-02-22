@@ -7,5 +7,6 @@ namespace Template.Services.ServiceName.Infrastructure.Grpc;
 [Service]
 public interface IServiceNameGrpcService
 {
-    Task<TestGrpcCommandResult> Test(TestGrpcCommandMessage message);
+    [Operation]
+    Task<GetByIdGrpcCommandResult> GetById(GetByIdGrpcCommandMessage message);
 }

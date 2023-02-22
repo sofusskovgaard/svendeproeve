@@ -7,7 +7,7 @@ namespace Template.Services.ServiceName.Infrastructure;
 
 public class ServiceNameGrpcService : IServiceNameGrpcService
 {
-    public Task<TestGrpcCommandResult> Test(TestGrpcCommandMessage message)
+    public Task<GetByIdGrpcCommandResult> Test(GetByIdGrpcCommandMessage message)
     {
         throw new NotImplementedException();
     }
