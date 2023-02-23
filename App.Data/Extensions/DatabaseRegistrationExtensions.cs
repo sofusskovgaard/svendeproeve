@@ -1,4 +1,5 @@
-﻿using App.Data.Utilities;
+﻿using App.Data.Services;
+using App.Data.Utilities;
 using App.Infrastructure.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,6 +12,8 @@ public static class DatabaseRegistrationExtensions
     public static void AddMongoDb(this IServiceCollection services)
     {
         services.AddTransient<IEntityIndexGenerator, EntityIndexGenerator>();
+
+        services.AddTransient<IEntityDataService, EntityDataService>();
 
         services.AddSingleton<IMongoClient, MongoClient>(provider =>
         {
