@@ -51,6 +51,15 @@ namespace App.Services.Gateway.Controllers
         }
 
         [HttpGet]
+        [Route("managerteams")]
+        public async ValueTask<IActionResult> GetTeamsByManagerId(string managerId)
+        {
+            var res = await this._teamsGrpcService.GetTeamsByManagerId(new GetTeamsByManagerIdCommandMessage() { ManagerId = managerId });
+
+            return Ok(res);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public async ValueTask<IActionResult> GetTeamById(string id)
         {

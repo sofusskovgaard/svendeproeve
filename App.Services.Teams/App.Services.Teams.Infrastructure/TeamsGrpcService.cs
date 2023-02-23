@@ -67,6 +67,19 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
+    public async Task<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message)
+    {
+        return new GetTeamsByManagerIdCommandResult()
+        {
+            Metadata = new GrpcCommandResultMetadata()
+            {
+                Success = true,
+                Message = "Getting teams"
+            },
+            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.ManagerId == message.ManagerId)
+        };
+    }
+
     public async Task<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message)
     {
         return new GetTeamByIdCommandResult()
