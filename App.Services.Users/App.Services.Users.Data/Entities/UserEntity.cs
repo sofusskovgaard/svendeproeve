@@ -3,7 +3,8 @@ using App.Data.Attributes;
 
 namespace App.Services.Users.Data.Entities;
 
-[IndexDefinition("email_username", isUnique: true)]
+[IndexDefinition("email", isUnique: true)]
+[IndexDefinition("username", isUnique: true)]
 [CollectionDefinition(nameof(UserEntity))]
 public class UserEntity : BaseEntity
 {
@@ -11,10 +12,10 @@ public class UserEntity : BaseEntity
 
     public string Lastname { get; set; }
 
-    [IndexedProperty("email_username")]
+    [IndexedProperty("username")]
     public string Username { get; set; }
     
-    [IndexedProperty("email_username")]
+    [IndexedProperty("email")]
     public string Email { get; set; }
 
     public string PasswordHash { get; set; }
