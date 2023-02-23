@@ -20,7 +20,7 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 
     public Task Generate(Assembly? assemblyToSearch = null)
     {
-        var types = DiscoveryHelper.Discover<IEntity>();
+        var types = DiscoveryHelper.Discover<IEntity>(assemblyToSearch);
         return this.Generate(types);
     }
 

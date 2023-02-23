@@ -1,3 +1,5 @@
+using System.Reflection;
+using App.Infrastructure.Commands;
 using App.Infrastructure.Options;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,10 +15,11 @@ public static class RabbitMqRegistrator
     /// <param name="services">The target <see cref="IServiceCollection"/></param>
     /// <param name="config">An optional configuration</param>
     /// <typeparam name="TTypeAssemblyToSearchT">The type assembly to search</typeparam>
-    public static void AddRabbitMq<TTypeAssemblyToSearch>(this IServiceCollection services,
+    public static void AddRabbitMq(this IServiceCollection services, Assembly assemblyToScan,
         Action<IBusRegistrationContext, IRabbitMqBusFactoryConfigurator>? config = null)
     {
-        RabbitMqRegistrator.AddRabbitMq(services, typeof(TTypeAssemblyToSearch), config);
+        var typeInAssembly = assemblyToScan.GetTypes().FirstOrDefault(type => type.GetInterfaces().Any(iface => iface == typeof(ICommandHandler)));
+        AddRabbitMq(services, typeInAssembly, config);
     }
 
     /// <summary>
