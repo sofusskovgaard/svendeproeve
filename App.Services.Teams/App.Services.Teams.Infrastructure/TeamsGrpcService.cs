@@ -15,7 +15,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         _entityDataService = entityDataService;
     }
 
-    public async Task<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message)
+    public async ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message)
     {
         return new GetTeamsByOrganizationIdCommandResult()
         {
@@ -28,7 +28,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
-    public async Task<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message)
+    public async ValueTask<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message)
     {
         return new GetTeamsByMemberIdCommandResult()
         {
@@ -41,7 +41,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
-    public async Task<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message)
+    public async ValueTask<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message)
     {
         return new GetTeamsByNameCommandResult()
         {
@@ -54,7 +54,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
-    public async Task<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message)
+    public async ValueTask<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message)
     {
         return new GetTeamsByGameIdCommandResult()
         {
@@ -67,7 +67,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
-    public async Task<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message)
+    public async ValueTask<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message)
     {
         return new GetTeamsByManagerIdCommandResult()
         {
@@ -80,7 +80,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
-    public async Task<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message)
+    public async ValueTask<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message)
     {
         return new GetTeamByIdCommandResult()
         {
@@ -93,7 +93,7 @@ public class TeamsGrpcService : ITeamsGrpcService
         };
     }
 
-    public async Task<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message)
+    public async ValueTask<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message)
     {
         TeamEntity team = new TeamEntity()
         {
