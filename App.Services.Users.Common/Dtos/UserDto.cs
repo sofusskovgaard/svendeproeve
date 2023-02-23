@@ -33,8 +33,8 @@ public class UserDto
     [ProtoMember(9)]
     public string Bio { get; set; }
 
-    [ProtoMember(10)]
-    public object[] Games { get; set; }
+    //[ProtoMember(10)]
+    //public object[] Games { get; set; }
 
     [ProtoMember(11)]
     public bool IsInTeam { get; set; }

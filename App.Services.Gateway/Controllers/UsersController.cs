@@ -1,3 +1,4 @@
+using App.Services.Gateway.Infrastructure;
 using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -5,21 +6,41 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Services.Gateway.Controllers;
 
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController : ApiController
 {
     private readonly IUsersGrpcService _usersGrpcService;
 
     public UsersController(IUsersGrpcService usersGrpcService)
     {
-        this._usersGrpcService = usersGrpcService;
+        _usersGrpcService = usersGrpcService;
     }
 
     [HttpGet]
-    [Route("")]
-    public async ValueTask<IActionResult> Index()
+    [Route("{id}")]
+    public ValueTask<IActionResult> GetUserById(string id)
     {
-        var res = await this._usersGrpcService.GetUserById(new GetUserByIdCommandMessage() { Id = "lmao" });
+        return TryAsync(() =>
+            _usersGrpcService.GetUserById(new GetUserByIdCommandMessage { Id = id }));
+    }
 
-        return Ok(res);
+    [HttpPost]
+    [Route("")]
+    public ValueTask<IActionResult> CreateUser([FromBody] CreateUserModel model)
+    {
+        return TryAsync(() =>
+        {
+            var command = new CreateUserCommandMessage
+            {
+                Firstname = model.Firstname,
+                Lastname = model.Lastname,
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password
+            };
+
+            return _usersGrpcService.CreateUser(command);
+        });
     }
 }
+
+public record CreateUserModel(string Firstname, string Lastname, string Username, string Email, string Password);

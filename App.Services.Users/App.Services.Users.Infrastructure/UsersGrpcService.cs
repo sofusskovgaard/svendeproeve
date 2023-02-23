@@ -7,10 +7,11 @@ using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
+using MassTransit;
 
 namespace App.Services.Users.Infrastructure;
 
-public class UsersGrpcService : IUsersGrpcService
+public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 {
     private readonly IEntityDataService _entityDataService;
 
@@ -22,54 +23,40 @@ public class UsersGrpcService : IUsersGrpcService
         _mapper = mapper;
     }
 
-    public async Task<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message)
-    {
-        try
+    public Task<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message) =>
+        this.TryAsync(async () =>
         {
             var user = await this._entityDataService.GetEntity<UserEntity>(message.Id);
 
-            var dto = _mapper.Map<UserDto>(user);
-
             return new GetUserByIdCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
-                    Success = true,
-                    Message = "Oh my lord it worked"
+                    Success = true
                 },
-                User = dto
-            };
-        }
-        catch (Exception ex)
-        {
-            return new GetUserByIdCommandResult()
-            {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Oh my lord it worked"
-                }
-            };
-        }
-    }
-
-    public async Task<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message)
-    {
-        var user = new UserEntity
-        {
-            Firstname = message.Firstname,
-            Lastname = message.Lastname,
-            Email = message.Email
+                User = _mapper.Map<UserDto>(user)
         };
+        });
 
-        var passwordHash = PasswordHasher.Hash(message.Password);
-
-        user.PasswordHash = passwordHash.Hash;
-        user.PasswordSalt = passwordHash.Salt;
-
-        try
+    public Task<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message) =>
+        this.TryAsync(async () =>
         {
+            var user = new UserEntity
+            {
+                Firstname = message.Firstname,
+                Lastname = message.Lastname,
+                Email = message.Email,
+                Username = message.Username
+            };
+
+            var passwordHash = PasswordHasher.Hash(message.Password);
+
+            user.PasswordHash = passwordHash.Hash;
+            user.PasswordSalt = passwordHash.Salt;
+
             await _entityDataService.SaveEntity(user);
+
+            var dto = _mapper.Map<UserDetailedDto>(user);
 
             return new CreateUserCommandResult()
             {
@@ -77,59 +64,7 @@ public class UsersGrpcService : IUsersGrpcService
                 {
                     Success = true
                 },
-                User = _mapper.Map<UserDetailedDto>(user)
+                User = dto
             };
-        }
-        catch (Exception ex)
-        {
-            var response = new CreateUserCommandResult()
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = false,
-                    Message = ex.Message
-                }
-            };
-
-            if (ex is AggregateException aex)
-            {
-                response.Metadata.Errors = aex.InnerExceptions.Select(e => e.Message).ToArray();
-            }
-
-            return response;
-        }
-    }
-
-    private async Task<T> TryAsync<T>(Func<Task<T>> func) where T : IGrpcCommandResult
-    {
-        try
-        {
-            return await func.Invoke();
-        }
-        catch (AggregateException ex)
-        {
-            var response = Activator.CreateInstance<T>();
-
-            response.Metadata = new GrpcCommandResultMetadata()
-            {
-                Success = false,
-                Message = ex.Message,
-                Errors = ex.InnerExceptions.Select(e => e.Message).ToArray()
-            };
-
-            return response;
-        }
-        catch (Exception ex)
-        {
-            var response = Activator.CreateInstance<T>();
-
-            response.Metadata = new GrpcCommandResultMetadata()
-            {
-                Success = false,
-                Message = ex.Message
-            };
-
-            return response;
-        }
-    }
+        });
 }

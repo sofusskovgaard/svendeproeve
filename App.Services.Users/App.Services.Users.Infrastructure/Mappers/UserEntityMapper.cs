@@ -8,7 +8,7 @@ public class UserEntityMapper : Profile
 {
     public UserEntityMapper()
     {
-        this.CreateMap<UserEntity, UserDto>()
-            .Include<UserEntity, UserDetailedDto>();
+        this.CreateMap<UserEntity, UserDto>();
+        this.CreateMap<UserEntity, UserDetailedDto>();
     }
 }

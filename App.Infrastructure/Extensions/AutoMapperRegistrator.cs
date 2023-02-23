@@ -11,5 +11,5 @@ public static class AutoMapperRegistrator
     /// <param name="typeInAssemblyToScan">A type within the assembly to scan for mapper definitions</param>
     /// <returns></returns>
     public static IServiceCollection AddAutoMapper(this IServiceCollection serviceCollection, Type typeInAssemblyToScan) =>
-        serviceCollection.AddAutoMapper(expression => expression.AddMaps(typeInAssemblyToScan));
+        serviceCollection.AddAutoMapper(cfg => cfg.AddMaps(typeInAssemblyToScan.Assembly));
 }
