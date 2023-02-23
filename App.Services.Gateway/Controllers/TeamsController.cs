@@ -42,14 +42,21 @@ namespace App.Services.Gateway.Controllers
         }
 
         [HttpGet]
+        [Route("gameteams")]
+        public async ValueTask<IActionResult> GetTeamsByGameI(string gameId)
+        {
+            var res = await this._teamsGrpcService.GetTeamsByGameId(new GetTeamsByGameIdCommandMessage() { GameId = gameId });
+
+            return Ok(res);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public async ValueTask<IActionResult> GetTeamById(string id)
         {
             var res = await this._teamsGrpcService.GetTeamById(new GetTeamByIdCommandMessage() { Id = id });
 
             return Ok(res);
-
-            //return Ok(null);
         }
 
         [HttpPost]
@@ -69,8 +76,6 @@ namespace App.Services.Gateway.Controllers
             });
 
             return Ok(res);
-
-            //return Ok(null);
         }
     }
 }

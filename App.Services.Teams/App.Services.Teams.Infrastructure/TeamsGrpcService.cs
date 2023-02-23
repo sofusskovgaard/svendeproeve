@@ -35,7 +35,7 @@ public class TeamsGrpcService : ITeamsGrpcService
             Metadata = new GrpcCommandResultMetadata()
             {
                 Success = true,
-                Message = "Getting Teams"
+                Message = "Getting teams"
             },
             TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.MembersId.Contains(message.MemberId))
         };
@@ -48,9 +48,22 @@ public class TeamsGrpcService : ITeamsGrpcService
             Metadata = new GrpcCommandResultMetadata()
             {
                 Success = true,
-                Message = "Getting Teams"
+                Message = "Getting teams"
             },
             TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(t => t.Name.Contains(message.Name))
+        };
+    }
+
+    public async Task<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message)
+    {
+        return new GetTeamsByGameIdCommandResult()
+        {
+            Metadata = new GrpcCommandResultMetadata()
+            {
+                Success = true,
+                Message = "Getting teams"
+            },
+            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tg => tg.GameId == message.GameId)
         };
     }
 
