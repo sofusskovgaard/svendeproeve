@@ -45,7 +45,6 @@ public class TeamsGrpcService : ITeamsGrpcService
     {
         TeamEntity team = new TeamEntity()
         {
-            Id = message.Id,
             Name = message.Name,
             Bio = message.Bio,
             ProfilePicturePath = message.ProfilePicturePath,
@@ -55,6 +54,8 @@ public class TeamsGrpcService : ITeamsGrpcService
             MembersId = message.MembersId,
             ManagerId = message.ManagerId,
         };
+
+        await _entityDataService.Create<TeamEntity>(team);
 
         return new CreateTeamCommandResult()
         {
