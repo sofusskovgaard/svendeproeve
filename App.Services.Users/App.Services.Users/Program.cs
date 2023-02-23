@@ -10,6 +10,8 @@ builder.Host.RegisterSerilog();
 
 builder.Services.RegisterOptions();
 
+builder.Services.AddAutoMapper(typeof(UsersGrpcService));
+
 builder.Services.AddMongoDb();
 builder.Services.AddRabbitMq<UsersGrpcService>();
 

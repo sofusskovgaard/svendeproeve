@@ -33,6 +33,15 @@ public class EntityDataService : IEntityDataService
         return await collection.AsQueryable().ToListAsync();
     }
 
+    public async Task<T> SaveEntity<T>(T entity) where T : IEntity
+    {
+        var collection = this._db.GetCollection<T>();
+
+        await collection.InsertOneAsync(entity);
+
+        return entity;
+    }
+
     public async Task<IEnumerable<T>> SaveEntities<T>(IEnumerable<T> entities) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();

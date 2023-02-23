@@ -16,9 +16,9 @@ public class UserEntity : BaseEntity
     [IndexedProperty("email_username")]
     public string Email { get; set; }
 
-    public byte[] PasswordHash { get; set; }
+    public string PasswordHash { get; set; }
 
-    public byte[] PasswordSalt { get; set; }
+    public string PasswordSalt { get; set; }
 
     public DateTime DateOfBirth { get; set; }
     

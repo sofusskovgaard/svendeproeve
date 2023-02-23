@@ -9,6 +9,6 @@ public class TestEntityMapper : Profile
     public TestEntityMapper()
     {
         this.CreateMap<TestEntity, TestDto>()
-            .IncludeBase<TestEntity, TestDetailedDto>();
+            .Include<TestEntity, TestDetailedDto>();
     }
 }

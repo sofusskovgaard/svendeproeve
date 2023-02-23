@@ -9,4 +9,7 @@ public interface IUsersGrpcService
 {
     [Operation]
     Task<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message);
+
+    [Operation]
+    Task<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message);
 }
