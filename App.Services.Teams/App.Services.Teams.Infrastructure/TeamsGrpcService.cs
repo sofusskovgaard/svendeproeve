@@ -24,7 +24,20 @@ public class TeamsGrpcService : ITeamsGrpcService
                 Success = true,
                 Message = "Will this work?"
             },
-            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(x => x.OrganizationId == message.Id)
+            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(to => to.OrganizationId == message.Id)
+        };
+    }
+
+    public async Task<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message)
+    {
+        return new GetTeamsByNameCommandResult()
+        {
+            Metadata = new GrpcCommandResultMetadata()
+            {
+                Success = true,
+                Message = "Getting Teams"
+            },
+            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(t => t.Name.Contains(message.Name))
         };
     }
 

@@ -24,6 +24,15 @@ namespace App.Services.Gateway.Controllers
         }
 
         [HttpGet]
+        [Route("name")]
+        public async ValueTask<IActionResult> GetTeamsByName(string name)
+        {
+            var res = await this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameCommandMessage() { Name = name });
+
+            return Ok(res);
+        }
+
+        [HttpGet]
         [Route("{id}")]
         public async ValueTask<IActionResult> GetTeamById(string id)
         {
