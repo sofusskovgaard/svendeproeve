@@ -18,7 +18,7 @@ namespace App.Services.Gateway.Controllers
         [Route("Index")]
         public async ValueTask<IActionResult> Index(string id)
         {
-            var res = await this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdCommandMessage() { Id = id });
+            var res = await this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdCommandMessage() { OrganizationId = id });
 
             return Ok(res);
         }
@@ -28,6 +28,15 @@ namespace App.Services.Gateway.Controllers
         public async ValueTask<IActionResult> GetTeamsByName(string name)
         {
             var res = await this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameCommandMessage() { Name = name });
+
+            return Ok(res);
+        }
+
+        [HttpGet]
+        [Route("memberteams")]
+        public async ValueTask<IActionResult> GetTeamsByMemberId(string memberId)
+        {
+            var res = await this._teamsGrpcService.GetTeamsByMemberId(new GetTeamsByMemberIdCommandMessage() { MemberId = memberId });
 
             return Ok(res);
         }

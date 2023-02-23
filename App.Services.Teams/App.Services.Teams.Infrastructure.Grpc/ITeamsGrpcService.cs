@@ -14,6 +14,9 @@ namespace App.Services.Teams.Infrastructure.Grpc
         Task<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message);
 
         [Operation]
+        Task<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message);
+
+        [Operation]
         Task<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message);
 
         [Operation]
