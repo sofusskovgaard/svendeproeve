@@ -4,10 +4,16 @@ using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Organizations.Infrastructure.Grpc
 {
-    [Service]
+    [Service("app.services.organizations")]
     public interface IOrganizationsGrpcService
     {
-        Task<TestGrpcCommandResult> Test(TestGrpcCommandMessage message);
-        Task<GetOrganizationByIdCommandResult> GetOrganizationById(GetOrganizationByIdCommandMessage message);
+        [Operation]
+        ValueTask<GetOrganizationByIdCommandResult> GetOrganizationById(GetOrganizationByIdCommandMessage message);
+        [Operation]
+        ValueTask<GetOrganizationsByAddressCommandResult> GetOrganizationsByAddress(GetOrganizationsByAddressCommandMessage message);
+        [Operation]
+        ValueTask<GetOrganizationsByNameCommandResult> GetOrganizationsByName(GetOrganizationsByNameCommandMessage message);
+        [Operation]
+        ValueTask<CreateOrganizationCommandResult> CreateOrganization(CreateOrganizationCommandMessage message);
     }
 }

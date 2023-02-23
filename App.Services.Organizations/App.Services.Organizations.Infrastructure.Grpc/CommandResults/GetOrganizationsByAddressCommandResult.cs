@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class GetOrganizationByIdCommandResult : IGrpcCommandResult
+    public class GetOrganizationsByAddressCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
         [ProtoMember(2)]
-        public OrganizationEntity Organization { get; set; }
+        public IEnumerable<OrganizationEntity> Organizations { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using App.Infrastructure.Grpc;
-using App.Services.Organizations.Data.Entities;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
@@ -10,11 +9,11 @@ using System.Threading.Tasks;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class GetOrganizationByIdCommandResult : IGrpcCommandResult
+    public class CreateOrganizationCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
         [ProtoMember(2)]
-        public OrganizationEntity Organization { get; set; }
+        public string OrganizationId { get; set; }
     }
 }

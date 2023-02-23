@@ -23,7 +23,6 @@ var entityIndexGenerator = app.Services.GetRequiredService<IEntityIndexGenerator
 await entityIndexGenerator.Generate();
 
 app.MapGrpcService<UsersGrpcService>();
-app.MapGrpcService<OrganizationsGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
 
 await app.RunAsync();

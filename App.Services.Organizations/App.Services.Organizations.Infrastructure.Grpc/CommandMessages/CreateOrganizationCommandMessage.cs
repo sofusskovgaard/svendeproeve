@@ -1,4 +1,5 @@
-﻿using App.Infrastructure.Commands;
+﻿using App.Infrastructure.Grpc;
+using App.Services.Organizations.Data.Entities;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetOrganizationByIdCommandMessage : ICommandMessage
+    public class CreateOrganizationCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }

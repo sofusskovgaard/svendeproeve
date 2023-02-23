@@ -7,7 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\App.Data\App.Data.csproj" />
         <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Services.Organizations.Data\App.Services.Organizations.Data.csproj" />
         <ProjectReference Include="..\App.Services.Organizations.Infrastructure.Commands\App.Services.Organizations.Infrastructure.Commands.csproj" />
         <ProjectReference Include="..\App.Services.Organizations.Infrastructure.Events\App.Services.Organizations.Infrastructure.Events.csproj" />
         <ProjectReference Include="..\App.Services.Organizations.Infrastructure.Grpc\App.Services.Organizations.Infrastructure.Grpc.csproj" />
