@@ -28,7 +28,7 @@ public class EntityIndexGenerator : IEntityIndexGenerator
     {
         foreach (var entityType in entityTypes)
         {
-            var indexDefinitions = entityType.GetCustomAttributes<IndexDefinitionAttribute>();
+            var indexDefinitions = entityType.GetCustomAttributes<IndexDefinitionAttribute>().ToList();
 
             if (!indexDefinitions.Any()) continue;
 
@@ -47,14 +47,13 @@ public class EntityIndexGenerator : IEntityIndexGenerator
                 if (!foundIndex)
                 {
                     var properties = entityType.GetProperties().Where(x =>
-                        x.GetCustomAttribute<IndexedPropertyAttribute>() is IndexedPropertyAttribute attr &&
-                        attr.IndexName.Equals(indexDefinition.Name));
+                        x.GetCustomAttributes<IndexedPropertyAttribute>().Any(y => y.IndexName.Equals(indexDefinition.Name)));
 
                     var keys = new BsonDocumentIndexKeysDefinition<IEntity>(new { }.ToBsonDocument());
 
                     foreach (var propertyInfo in properties)
                     {
-                        var propertyAttr = propertyInfo.GetCustomAttribute<IndexedPropertyAttribute>()!;
+                        var propertyAttr = propertyInfo.GetCustomAttributes<IndexedPropertyAttribute>().FirstOrDefault(x => x.IndexName.Equals(indexDefinition.Name))!;
                         keys.Document.Add(new BsonElement(propertyInfo.Name, (int)propertyAttr.Order));
                     }
 
