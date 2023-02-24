@@ -4,6 +4,7 @@ using App.Services.Organizations.Data.Entities;
 using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
 using App.Services.Organizations.Infrastructure.Grpc.CommandResults;
+using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 using ProtoBuf.Grpc.Configuration;
 
@@ -12,9 +13,12 @@ namespace App.Services.Organizations.Infrastructure
     public class OrganizationsGrpcService : IOrganizationsGrpcService
     {
         private readonly IEntityDataService _entityDataservice;
-        public OrganizationsGrpcService(IEntityDataService entityDataService)
+
+        private readonly IMapper _mapper;
+        public OrganizationsGrpcService(IEntityDataService entityDataService, IMapper mapper)
         {
             this._entityDataservice = entityDataService;
+            _mapper = mapper;
         }
         public async ValueTask<GetOrganizationByIdCommandResult> GetOrganizationById(GetOrganizationByIdCommandMessage message)
         {
@@ -57,7 +61,7 @@ namespace App.Services.Organizations.Infrastructure
                 Organizations = res.ToList()
             };
         }
-        public async ValueTask<CreateOrganizationCommandResult> CreateOrganization(CreateOrganizationCommandMessage message)
+        public async Task<CreateOrganizationCommandResult> CreateOrganization(CreateOrganizationCommandMessage message)
         {
             //TODO: masstransit
             var res = await this._entityDataservice.Create<OrganizationEntity>(new OrganizationEntity { Name = message.Name });

@@ -14,6 +14,6 @@ namespace App.Services.Organizations.Infrastructure.Grpc
         [Operation]
         ValueTask<GetOrganizationsByNameCommandResult> GetOrganizationsByName(GetOrganizationsByNameCommandMessage message);
         [Operation]
-        ValueTask<CreateOrganizationCommandResult> CreateOrganization(CreateOrganizationCommandMessage message);
+        Task<CreateOrganizationCommandResult> CreateOrganization(CreateOrganizationCommandMessage message);
     }
 }
