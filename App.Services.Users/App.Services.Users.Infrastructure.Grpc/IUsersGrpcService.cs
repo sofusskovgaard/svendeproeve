@@ -12,4 +12,7 @@ public interface IUsersGrpcService
 
     [Operation]
     ValueTask<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message);
+
+    [Operation]
+    ValueTask<TestCommandResult> Test();
 }

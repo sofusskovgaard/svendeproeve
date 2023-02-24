@@ -40,6 +40,13 @@ public class UsersController : ApiController
             return _usersGrpcService.CreateUser(command);
         });
     }
+
+    [HttpGet]
+    [Route("test")]
+    public Task<IActionResult> Test()
+    {
+        return TryAsync(() => _usersGrpcService.Test());
+    }
 }
 
 public record CreateUserModel(string Firstname, string Lastname, string Username, string Email, string Password);

@@ -1,15 +1,15 @@
 ﻿using App.Infrastructure.Events;
-using MassTransit;
 using App.Services.Users.Infrastructure.Events;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace App.Services.Users.Infrastructure.EventHandlers;
 
-public class TestEventHandler : IEventHandler<TestEventMessage>
+public class SecondTestEventHandler : IEventHandler<TestEventMessage>
 {
-    private readonly ILogger<TestEventHandler> _logger;
+    private readonly ILogger<SecondTestEventHandler> _logger;
 
-    public TestEventHandler(ILogger<TestEventHandler> logger)
+    public SecondTestEventHandler(ILogger<SecondTestEventHandler> logger)
     {
         _logger = logger;
     }
