@@ -17,15 +17,14 @@ public class UsersController : ApiController
 
     [HttpGet]
     [Route("{id}")]
-    public ValueTask<IActionResult> GetUserById(string id)
+    public Task<IActionResult> GetUserById(string id)
     {
-        return TryAsync(() =>
-            _usersGrpcService.GetUserById(new GetUserByIdCommandMessage { Id = id }));
+        return TryAsync(() => _usersGrpcService.GetUserById(new GetUserByIdCommandMessage { Id = id }));
     }
 
     [HttpPost]
     [Route("")]
-    public ValueTask<IActionResult> CreateUser([FromBody] CreateUserModel model)
+    public Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
     {
         return TryAsync(() =>
         {

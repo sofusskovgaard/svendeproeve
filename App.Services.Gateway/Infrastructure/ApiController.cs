@@ -7,23 +7,23 @@ namespace App.Services.Gateway.Infrastructure;
 public abstract class ApiController : ControllerBase
 {
     /// <summary>
-    /// Try running a piece of synchronous business logic in a task or create a proper error response and log error.
+    ///     Try running a piece of synchronous business logic in a task or create a proper error response and log error.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="func">The business logic to run</param>
     /// <returns></returns>
-    protected ValueTask<IActionResult> TryAsync<T>(Func<T> func, bool async = false) where T : IGrpcCommandResult
+    protected Task<IActionResult> TryAsync<T>(Func<T> func, bool async = false) where T : IGrpcCommandResult, new()
     {
-        return this.TryAsync(() => Task.Run(func), async);
+        return TryAsync(() => Task.Run(func), async);
     }
 
     /// <summary>
-    /// Try running a piece of asynchronous business logic or create a proper error response and log error.
+    ///     Try running a piece of asynchronous business logic or create a proper error response and log error.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="func">The business logic to run</param>
     /// <returns></returns>
-    protected async ValueTask<IActionResult> TryAsync<T>(Func<Task<T>> func, bool async = false) where T : IGrpcCommandResult
+    protected async Task<IActionResult> TryAsync<T>(Func<Task<T>> func, bool async = false) where T : IGrpcCommandResult, new()
     {
         try
         {
@@ -31,40 +31,68 @@ public abstract class ApiController : ControllerBase
 
             return async switch
             {
-                true => this.Accepted(response),
-                false => this.Ok(response)
-            };
-        }
-        catch (AggregateException ex)
-        {
-            var response = Activator.CreateInstance<T>();
-
-            response.Metadata = new GrpcCommandResultMetadata()
-            {
-                Success = false,
-                Message = ex.Message,
-                Errors = ex.InnerExceptions.Select(e => e.Message).ToArray()
-            };
-
-            return new ObjectResult(response)
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                true => Accepted(response),
+                false => Ok(response)
             };
         }
         catch (Exception ex)
         {
-            var response = Activator.CreateInstance<T>();
+            return HandleException<T>(ex);
+        }
+    }
 
-            response.Metadata = new GrpcCommandResultMetadata()
-            {
-                Success = false,
-                Message = ex.Message
-            };
+    /// <summary>
+    ///     Try running a piece of asynchronous business logic or create a proper error response and log error.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="func">The business logic to run</param>
+    /// <returns></returns>
+    protected async Task<IActionResult> TryAsync<T>(Func<ValueTask<T>> func, bool async = false) where T : IGrpcCommandResult, new()
+    {
+        try
+        {
+            var response = await func.Invoke();
 
-            return new ObjectResult(response)
+            return async switch
             {
-                StatusCode = (int)HttpStatusCode.InternalServerError
+                true => Accepted(response),
+                false => Ok(response)
             };
         }
+        catch (Exception ex)
+        {
+            return HandleException<T>(ex);
+        }
+    }
+
+    private IActionResult HandleException<T>(Exception ex)
+        where T : IGrpcCommandResult, new()
+    {
+        return ex switch
+        {
+            AggregateException aex => new ObjectResult(new T
+            {
+                Metadata = new GrpcCommandResultMetadata
+                {
+                    Success = false,
+                    Message = aex.Message,
+                    Errors = aex.InnerExceptions.Select(e => e.Message).ToArray()
+                }
+            })
+            {
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            },
+            _ => new ObjectResult(new T
+            {
+                Metadata = new GrpcCommandResultMetadata
+                {
+                    Success = false,
+                    Message = ex.Message
+                }
+            })
+            {
+                StatusCode = (int)HttpStatusCode.InternalServerError
+            }
+        };
     }
 }
