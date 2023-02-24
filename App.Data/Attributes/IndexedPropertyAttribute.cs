@@ -1,6 +1,6 @@
 ﻿namespace App.Data.Attributes;
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public class IndexedPropertyAttribute : Attribute
 {
     public enum Direction

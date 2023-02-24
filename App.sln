@@ -54,17 +54,21 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Organizations", "Organizations", "{D5F49B4B-D0A9-434F-B2B9-1D9CCCDB4EC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Organizations", "App.Services.Organizations\App.Services.Organizations\App.Services.Organizations.csproj", "{824BE52A-B01B-4BE3-B3E8-A7FF6158A5E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Organizations", "App.Services.Organizations\App.Services.Organizations\App.Services.Organizations.csproj", "{824BE52A-B01B-4BE3-B3E8-A7FF6158A5E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Organizations.Data", "App.Services.Organizations\App.Services.Organizations.Data\App.Services.Organizations.Data.csproj", "{905A7309-DF75-4FAA-84A0-F16E57B30660}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Organizations.Data", "App.Services.Organizations\App.Services.Organizations.Data\App.Services.Organizations.Data.csproj", "{905A7309-DF75-4FAA-84A0-F16E57B30660}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Organizations.Infrastructure", "App.Services.Organizations\App.Services.Organizations.Infrastructure\App.Services.Organizations.Infrastructure.csproj", "{21559305-9413-470C-81E8-751A83CE73FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Organizations.Infrastructure", "App.Services.Organizations\App.Services.Organizations.Infrastructure\App.Services.Organizations.Infrastructure.csproj", "{21559305-9413-470C-81E8-751A83CE73FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Organizations.Infrastructure.Commands", "App.Services.Organizations\App.Services.Organizations.Infrastructure.Commands\App.Services.Organizations.Infrastructure.Commands.csproj", "{7C888E79-3189-40D0-8365-23F22A18DFAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Organizations.Infrastructure.Commands", "App.Services.Organizations\App.Services.Organizations.Infrastructure.Commands\App.Services.Organizations.Infrastructure.Commands.csproj", "{7C888E79-3189-40D0-8365-23F22A18DFAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Organizations.Infrastructure.Events", "App.Services.Organizations\App.Services.Organizations.Infrastructure.Events\App.Services.Organizations.Infrastructure.Events.csproj", "{0CD67CC2-1015-40EE-9947-5DA63B64338E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Organizations.Infrastructure.Events", "App.Services.Organizations\App.Services.Organizations.Infrastructure.Events\App.Services.Organizations.Infrastructure.Events.csproj", "{0CD67CC2-1015-40EE-9947-5DA63B64338E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Organizations.Infrastructure.Grpc", "App.Services.Organizations\App.Services.Organizations.Infrastructure.Grpc\App.Services.Organizations.Infrastructure.Grpc.csproj", "{8A8AF709-D36D-46C0-B2FA-8A9E15CB10C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Organizations.Infrastructure.Grpc", "App.Services.Organizations\App.Services.Organizations.Infrastructure.Grpc\App.Services.Organizations.Infrastructure.Grpc.csproj", "{8A8AF709-D36D-46C0-B2FA-8A9E15CB10C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Users.Common", "App.Services.Users\App.Services.Users.Common\App.Services.Users.Common.csproj", "{E5F86246-8E9B-4E8B-B053-1CAB5F6BCF6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Template.Services.ServiceName.Common", "Templates.Microservice\Template.Services.ServiceName.Common\Template.Services.ServiceName.Common.csproj", "{F1657FF8-22B8-4AF7-BA7F-A2199E572FB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -164,6 +168,14 @@ Global
 		{8A8AF709-D36D-46C0-B2FA-8A9E15CB10C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A8AF709-D36D-46C0-B2FA-8A9E15CB10C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A8AF709-D36D-46C0-B2FA-8A9E15CB10C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5F86246-8E9B-4E8B-B053-1CAB5F6BCF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5F86246-8E9B-4E8B-B053-1CAB5F6BCF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5F86246-8E9B-4E8B-B053-1CAB5F6BCF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5F86246-8E9B-4E8B-B053-1CAB5F6BCF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1657FF8-22B8-4AF7-BA7F-A2199E572FB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1657FF8-22B8-4AF7-BA7F-A2199E572FB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1657FF8-22B8-4AF7-BA7F-A2199E572FB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1657FF8-22B8-4AF7-BA7F-A2199E572FB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +207,8 @@ Global
 		{7C888E79-3189-40D0-8365-23F22A18DFAB} = {D5F49B4B-D0A9-434F-B2B9-1D9CCCDB4EC0}
 		{0CD67CC2-1015-40EE-9947-5DA63B64338E} = {D5F49B4B-D0A9-434F-B2B9-1D9CCCDB4EC0}
 		{8A8AF709-D36D-46C0-B2FA-8A9E15CB10C3} = {D5F49B4B-D0A9-434F-B2B9-1D9CCCDB4EC0}
+		{E5F86246-8E9B-4E8B-B053-1CAB5F6BCF6D} = {6411FA01-0C52-438B-97C6-F2598D09429B}
+		{F1657FF8-22B8-4AF7-BA7F-A2199E572FB1} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5151DEE-0817-484F-8977-6CD05FF9DCB1}

@@ -3,6 +3,7 @@ using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.Organizations.Infrastructure;
 using ProtoBuf.Grpc.Server;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Host.RegisterSerilog();
 builder.Services.RegisterOptions();
 
 builder.Services.AddMongoDb();
-builder.Services.AddRabbitMq<OrganizationsGrpcService>();
+builder.Services.AddRabbitMq(Assembly.Load("App.Services.Organizations.Infrastructure"));
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();
