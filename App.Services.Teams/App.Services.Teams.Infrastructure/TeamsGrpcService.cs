@@ -7,7 +7,7 @@ using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 
 namespace App.Services.Teams.Infrastructure;
 
-public class TeamsGrpcService : ITeamsGrpcService
+public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 {
     private readonly IEntityDataService _entityDataService;
     public TeamsGrpcService(IEntityDataService entityDataService)
@@ -15,107 +15,128 @@ public class TeamsGrpcService : ITeamsGrpcService
         _entityDataService = entityDataService;
     }
 
-    public async ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message)
+    public ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message)
     {
-        return new GetTeamsByOrganizationIdCommandResult()
+        return TryAsync(async () =>
         {
-            Metadata = new GrpcCommandResultMetadata()
+            return new GetTeamsByOrganizationIdCommandResult()
             {
-                Success = true,
-                Message = "Will this work?"
-            },
-            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(to => to.OrganizationId == message.OrganizationId)
-        };
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Getting teams"
+                },
+                TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(to => to.OrganizationId == message.OrganizationId)
+            };
+        });
     }
 
-    public async ValueTask<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message)
+    public ValueTask<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message)
     {
-        return new GetTeamsByMemberIdCommandResult()
+        return TryAsync(async () =>
         {
-            Metadata = new GrpcCommandResultMetadata()
+            return new GetTeamsByMemberIdCommandResult()
             {
-                Success = true,
-                Message = "Getting teams"
-            },
-            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.MembersId.Contains(message.MemberId))
-        };
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Getting teams"
+                },
+                TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.MembersId.Contains(message.MemberId))
+            };
+        });
     }
 
-    public async ValueTask<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message)
+    public ValueTask<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message)
     {
-        return new GetTeamsByNameCommandResult()
+        return TryAsync(async () =>
         {
-            Metadata = new GrpcCommandResultMetadata()
+            return new GetTeamsByNameCommandResult()
             {
-                Success = true,
-                Message = "Getting teams"
-            },
-            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(t => t.Name.Contains(message.Name))
-        };
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Getting teams"
+                },
+                TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(t => t.Name.Contains(message.Name))
+            };
+        });
     }
 
-    public async ValueTask<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message)
+    public ValueTask<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message)
     {
-        return new GetTeamsByGameIdCommandResult()
+        return TryAsync(async () =>
         {
-            Metadata = new GrpcCommandResultMetadata()
+            return new GetTeamsByGameIdCommandResult()
             {
-                Success = true,
-                Message = "Getting teams"
-            },
-            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tg => tg.GameId == message.GameId)
-        };
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Getting teams"
+                },
+                TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tg => tg.GameId == message.GameId)
+            };
+        });
     }
 
-    public async ValueTask<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message)
+    public ValueTask<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message)
     {
-        return new GetTeamsByManagerIdCommandResult()
+        return TryAsync(async () =>
         {
-            Metadata = new GrpcCommandResultMetadata()
+            return new GetTeamsByManagerIdCommandResult()
             {
-                Success = true,
-                Message = "Getting teams"
-            },
-            TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.ManagerId == message.ManagerId)
-        };
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Getting teams"
+                },
+                TeamsEnties = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.ManagerId == message.ManagerId)
+            };
+        });
     }
 
-    public async ValueTask<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message)
+    public ValueTask<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message)
     {
-        return new GetTeamByIdCommandResult()
+        return TryAsync(async () =>
         {
-            Metadata = new GrpcCommandResultMetadata()
+            return new GetTeamByIdCommandResult()
             {
-                Success = true,
-                Message = "Returning team"
-            },
-            TeamEntity = await _entityDataService.GetEntity<TeamEntity>(message.Id)
-        };
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Returning team"
+                },
+                TeamEntity = await _entityDataService.GetEntity<TeamEntity>(message.Id)
+            };
+        });
     }
 
-    public async ValueTask<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message)
+    public ValueTask<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message)
     {
-        TeamEntity team = new TeamEntity()
+        return TryAsync(async () =>
         {
-            Name = message.Name,
-            Bio = message.Bio,
-            ProfilePicturePath = message.ProfilePicturePath,
-            CoverPicturePath = message.CoverPicturePath,
-            GameId = message.GameId,
-            OrganizationId = message.OrganizationId,
-            MembersId = message.MembersId,
-            ManagerId = message.ManagerId,
-        };
-
-        await _entityDataService.Create<TeamEntity>(team);
-
-        return new CreateTeamCommandResult()
-        {
-            Metadata = new GrpcCommandResultMetadata()
+            TeamEntity team = new TeamEntity()
             {
-                Success = true,
-                Message = "Team oprettet"
-            }
-        };
+                Name = message.Name,
+                Bio = message.Bio,
+                ProfilePicturePath = message.ProfilePicturePath,
+                CoverPicturePath = message.CoverPicturePath,
+                GameId = message.GameId,
+                OrganizationId = message.OrganizationId,
+                MembersId = message.MembersId,
+                ManagerId = message.ManagerId,
+            };
+
+            await _entityDataService.Create<TeamEntity>(team);
+
+            return new CreateTeamCommandResult()
+            {
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Team oprettet"
+                }
+            };
+        });
     }
 }

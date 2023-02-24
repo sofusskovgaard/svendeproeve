@@ -11,7 +11,7 @@ builder.Host.RegisterSerilog();
 builder.Services.RegisterOptions();
 
 builder.Services.AddMongoDb();
-builder.Services.AddRabbitMq<TeamsGrpcService>();
+builder.Services.AddRabbitMq();
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();

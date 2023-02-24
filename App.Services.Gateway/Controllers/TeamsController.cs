@@ -1,11 +1,13 @@
-﻿using App.Services.Teams.Infrastructure.Grpc;
+﻿using App.Services.Gateway.Infrastructure;
+using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
+using ProtoBuf;
 
 namespace App.Services.Gateway.Controllers
 {
     [Route("api/[controller]")]
-    public class TeamsController : ControllerBase
+    public class TeamsController : ApiController
     {
         private readonly ITeamsGrpcService _teamsGrpcService;
 
@@ -43,48 +45,47 @@ namespace App.Services.Gateway.Controllers
 
         [HttpGet]
         [Route("gameteams")]
-        public async ValueTask<IActionResult> GetTeamsByGameI(string gameId)
+        public Task<IActionResult> GetTeamsByGameId(string gameId)
         {
-            var res = await this._teamsGrpcService.GetTeamsByGameId(new GetTeamsByGameIdCommandMessage() { GameId = gameId });
-
-            return Ok(res);
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByGameId(new GetTeamsByGameIdCommandMessage() { GameId = gameId }));
         }
 
         [HttpGet]
         [Route("managerteams")]
-        public async ValueTask<IActionResult> GetTeamsByManagerId(string managerId)
+        public Task<IActionResult> GetTeamsByManagerId(string managerId)
         {
-            var res = await this._teamsGrpcService.GetTeamsByManagerId(new GetTeamsByManagerIdCommandMessage() { ManagerId = managerId });
-
-            return Ok(res);
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByManagerId(new GetTeamsByManagerIdCommandMessage() { ManagerId = managerId }));
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async ValueTask<IActionResult> GetTeamById(string id)
+        public Task<IActionResult> GetTeamById(string id)
         {
-            var res = await this._teamsGrpcService.GetTeamById(new GetTeamByIdCommandMessage() { Id = id });
-
-            return Ok(res);
+            return TryAsync(() => this._teamsGrpcService.GetTeamById(new GetTeamByIdCommandMessage() { Id = id }));
         }
 
         [HttpPost]
         [Route("team")]
-        public async ValueTask<IActionResult> CreateTeam(string name, string bio, string profilePicturePath, string coverPicturePath, string gameId, string[] membersId, string managerId, string organizationId)
+        public Task<IActionResult> CreateTeam([FromBody] CreateTeamModel model)
         {
-            var res = await this._teamsGrpcService.CreateTeam(new CreateTeamCommandMessage() 
-            { 
-                Name = name,
-                Bio = bio,
-                ProfilePicturePath = profilePicturePath,
-                CoverPicturePath = coverPicturePath,
-                GameId = gameId,
-                MembersId = membersId,
-                ManagerId = managerId,
-                OrganizationId = organizationId
-            });
+            return TryAsync(() =>
+            {
+                var command = new CreateTeamCommandMessage
+                {
+                    Name = model.Name,
+                    Bio = model.Bio,
+                    ProfilePicturePath = model.ProfilePicturePath,
+                    CoverPicturePath = model.CoverPicturePath,
+                    GameId = model.GameId,
+                    MembersId = model.MembersId,
+                    ManagerId = model.ManagerId,
+                    OrganizationId = model.OrganizationId
+                };
 
-            return Ok(res);
+                return _teamsGrpcService.CreateTeam(command);
+            });
         }
     }
+
+    public record CreateTeamModel(string Name, string Bio, string ProfilePicturePath, string CoverPicturePath, string GameId, string[] MembersId, string ManagerId, string OrganizationId);
 }
