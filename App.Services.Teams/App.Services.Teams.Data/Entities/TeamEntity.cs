@@ -3,9 +3,11 @@ using App.Data.Attributes;
 
 namespace App.Services.Teams.Data.Entities
 {
+    [IndexDefinition("name", isUnique: true)]
     [CollectionDefinition(nameof(TeamEntity))]
     public class TeamEntity : BaseEntity
     {
+        [IndexedProperty("name")]
         public string Name { get; set; }
         public string Bio { get; set; }
         public string ProfilePicturePath { get; set; }
