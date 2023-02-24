@@ -7,7 +7,6 @@ using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
-using MassTransit;
 
 namespace App.Services.Users.Infrastructure;
 
@@ -19,27 +18,30 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
     public UsersGrpcService(IEntityDataService entityDataService, IMapper mapper)
     {
-        this._entityDataService = entityDataService;
+        _entityDataService = entityDataService;
         _mapper = mapper;
     }
 
-    public Task<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message) =>
-        this.TryAsync(async () =>
+    public ValueTask<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            var user = await this._entityDataService.GetEntity<UserEntity>(message.Id);
+            var user = await _entityDataService.GetEntity<UserEntity>(message.Id);
 
-            return new GetUserByIdCommandResult()
+            return new GetUserByIdCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true
                 },
                 User = _mapper.Map<UserDto>(user)
-        };
+            };
         });
+    }
 
-    public Task<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message) =>
-        this.TryAsync(async () =>
+    public ValueTask<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
             var user = new UserEntity
             {
@@ -58,7 +60,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
             var dto = _mapper.Map<UserDetailedDto>(user);
 
-            return new CreateUserCommandResult()
+            return new CreateUserCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata
                 {
@@ -67,4 +69,5 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
                 User = dto
             };
         });
+    }
 }
