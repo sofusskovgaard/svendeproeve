@@ -207,4 +207,22 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
             };
         });
     }
+
+    public ValueTask<UpdateTeamCommandResult> UpdateTeam(UpdateTeamCommandMessage message)
+    {
+        return TryAsync(async () =>
+        {
+            TeamEntity team = _mapper.Map<TeamEntity>(message.TeamDto);
+            await _entityDataService.Update<TeamEntity>(team);
+
+            return new UpdateTeamCommandResult()
+            {
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Team updated"
+                }
+            };
+        });
+    }
 }

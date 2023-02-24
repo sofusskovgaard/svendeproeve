@@ -1,4 +1,5 @@
 ﻿using App.Services.Gateway.Infrastructure;
+using App.Services.Teams.Common.Dtos;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -93,7 +94,34 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() => this._teamsGrpcService.DeleteTeamById(new DeleteTeamByIdCommandMessage() { Id = id }));
         }
+
+        [HttpPost]
+        [Route("updateteam")]
+        public Task<IActionResult> UpdateTeam([FromBody] UpdateTeamModel model)
+        {
+            return TryAsync(() =>
+            {
+                var command = new UpdateTeamCommandMessage
+                {
+                    TeamDto = new TeamDto
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        Bio = model.Bio,
+                        ProfilePicturePath = model.ProfilePicturePath,
+                        CoverPicturePath = model.CoverPicturePath,
+                        GameId = model.GameId,
+                        MembersId = model.MembersId,
+                        ManagerId = model.ManagerId,
+                        OrganizationId = model.OrganizationId
+                    }
+                };
+
+                return _teamsGrpcService.UpdateTeam(command);
+            });
+        }
     }
 
     public record CreateTeamModel(string Name, string Bio, string ProfilePicturePath, string CoverPicturePath, string GameId, string[] MembersId, string ManagerId, string OrganizationId);
+    public record UpdateTeamModel(string Id, string Name, string Bio, string ProfilePicturePath, string CoverPicturePath, string GameId, string[] MembersId, string ManagerId, string OrganizationId);
 }
