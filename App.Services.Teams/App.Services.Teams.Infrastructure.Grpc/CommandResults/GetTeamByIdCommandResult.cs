@@ -1,5 +1,5 @@
 ﻿using App.Infrastructure.Grpc;
-using App.Services.Teams.Data.Entities;
+using App.Services.Teams.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Teams.Infrastructure.Grpc.CommandResults
@@ -11,6 +11,6 @@ namespace App.Services.Teams.Infrastructure.Grpc.CommandResults
         public GrpcCommandResultMetadata Metadata { get; set; }
 
         [ProtoMember(2)]
-        public TeamEntity TeamEntity { get; set; }
+        public TeamDto TeamDto { get; set; }
     }
 }
