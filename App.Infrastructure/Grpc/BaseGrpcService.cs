@@ -8,10 +8,10 @@ public abstract class BaseGrpcService
     /// <typeparam name="T"></typeparam>
     /// <param name="func">The business logic to run</param>
     /// <returns></returns>
-    protected Task<T> TryAsync<T>(Func<T> func) where T : IGrpcCommandResult
-    {
-        return this.TryAsync(() => Task.Run(func));
-    }
+    //protected ValueTask<T> TryAsync<T>(Func<T> func) where T : IGrpcCommandResult
+    //{
+    //    return this.TryAsync(() => );
+    //}
 
     /// <summary>
     /// Try running a piece of asynchronous business logic or create a proper error response and log error.
@@ -19,7 +19,7 @@ public abstract class BaseGrpcService
     /// <typeparam name="T"></typeparam>
     /// <param name="func">The business logic to run</param>
     /// <returns></returns>
-    protected async Task<T> TryAsync<T>(Func<Task<T>> func) where T : IGrpcCommandResult
+    protected async ValueTask<T> TryAsync<T>(Func<ValueTask<T>> func) where T : IGrpcCommandResult
     {
         try
         {

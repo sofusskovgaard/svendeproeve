@@ -8,6 +8,6 @@ namespace Template.Services.ServiceName.Infrastructure;
 
 public class ServiceNameGrpcService : BaseGrpcService, IServiceNameGrpcService
 {
-    public Task<GetByIdGrpcCommandResult> GetById(GetByIdGrpcCommandMessage message) =>
-        this.TryAsync(() => new GetByIdGrpcCommandResult());
+    public ValueTask<GetByIdGrpcCommandResult> GetById(GetByIdGrpcCommandMessage message) =>
+        this.TryAsync(async () => new GetByIdGrpcCommandResult());
 }
