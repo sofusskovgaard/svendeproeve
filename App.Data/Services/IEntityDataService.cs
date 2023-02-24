@@ -8,6 +8,8 @@ public interface IEntityDataService
 
     Task<IEnumerable<T>> ListEntities<T>() where T : IEntity;
 
+    Task<T> SaveEntity<T>(T entity) where T : IEntity;
+
     Task<IEnumerable<T>> SaveEntities<T>(IEnumerable<T> entities) where T : IEntity;
 
     Task<T> Update<T>(T entity) where T : IEntity;

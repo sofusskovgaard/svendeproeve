@@ -1,6 +1,6 @@
 ﻿namespace App.Data.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class IndexDefinitionAttribute : Attribute
 {
     public IndexDefinitionAttribute(string name, bool isUnique = false)

@@ -52,6 +52,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway", "App
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{2C140880-5160-4C34-AC82-0B1B31331401}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Template.Services.ServiceName.Common", "Templates.Microservice\Template.Services.ServiceName.Common\Template.Services.ServiceName.Common.csproj", "{DD88751C-7936-4BE2-A822-F4914D2621EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Users.Common", "App.Services.Users\App.Services.Users.Common\App.Services.Users.Common.csproj", "{47666D8D-A412-40E0-B341-F5292120D84A}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Teams", "Teams", "{A4F65854-4F90-42B5-9A44-AFE669B2D8D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Teams", "App.Services.Teams\App.Services.Teams\App.Services.Teams.csproj", "{E4EA7064-A702-40B9-AF5B-E4AC60649310}"
@@ -164,6 +168,14 @@ Global
 		{3E963DCB-A59C-4335-ABDB-2FB7E0AFBB24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E963DCB-A59C-4335-ABDB-2FB7E0AFBB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E963DCB-A59C-4335-ABDB-2FB7E0AFBB24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD88751C-7936-4BE2-A822-F4914D2621EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD88751C-7936-4BE2-A822-F4914D2621EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD88751C-7936-4BE2-A822-F4914D2621EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD88751C-7936-4BE2-A822-F4914D2621EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47666D8D-A412-40E0-B341-F5292120D84A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47666D8D-A412-40E0-B341-F5292120D84A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47666D8D-A412-40E0-B341-F5292120D84A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47666D8D-A412-40E0-B341-F5292120D84A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +207,8 @@ Global
 		{14B54AD3-8BC0-49BC-9556-08FEF8B1F298} = {A4F65854-4F90-42B5-9A44-AFE669B2D8D3}
 		{0F32774F-1438-4774-B2A9-BA71CAB79E9B} = {A4F65854-4F90-42B5-9A44-AFE669B2D8D3}
 		{3E963DCB-A59C-4335-ABDB-2FB7E0AFBB24} = {A4F65854-4F90-42B5-9A44-AFE669B2D8D3}
+		{DD88751C-7936-4BE2-A822-F4914D2621EB} = {6820FB1D-5D47-432E-89DD-DC3E470D90AE}
+		{47666D8D-A412-40E0-B341-F5292120D84A} = {6411FA01-0C52-438B-97C6-F2598D09429B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5151DEE-0817-484F-8977-6CD05FF9DCB1}
