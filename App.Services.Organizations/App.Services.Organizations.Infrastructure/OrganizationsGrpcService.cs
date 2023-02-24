@@ -1,5 +1,6 @@
 using App.Data.Services;
 using App.Infrastructure.Grpc;
+using App.Services.Organizations.Common.Dtos;
 using App.Services.Organizations.Data.Entities;
 using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
@@ -30,7 +31,7 @@ namespace App.Services.Organizations.Infrastructure
                     Success = true,
                     Message = "Oh my lord it clearly worked"
                 },
-                Organization = entity
+                Organization = _mapper.Map<OrganizationDto>(entity),
 
             };
         }

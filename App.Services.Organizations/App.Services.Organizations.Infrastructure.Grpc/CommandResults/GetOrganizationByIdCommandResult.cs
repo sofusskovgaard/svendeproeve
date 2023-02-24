@@ -1,4 +1,5 @@
 ﻿using App.Infrastructure.Grpc;
+using App.Services.Organizations.Common.Dtos;
 using App.Services.Organizations.Data.Entities;
 using ProtoBuf;
 using System;
@@ -15,6 +16,6 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandResults
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
         [ProtoMember(2)]
-        public OrganizationEntity Organization { get; set; }
+        public OrganizationDto Organization { get; set; }
     }
 }

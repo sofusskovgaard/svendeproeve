@@ -41,15 +41,15 @@ public class OrganisationsController : ApiController
         return Ok(res);
     }
 
-    [HttpPost]
-    [Route("")]
     /// <summary>
     /// Creates organization from model
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
     /// <response code="202">Returns if it has accepted the request</response>
-    public ValueTask<IActionResult> CreateOrganization([FromBody] CreateOrganizationModel model)
+    [HttpPost]
+    [Route("")]
+    public Task<IActionResult> CreateOrganization([FromBody] CreateOrganizationModel model)
     {
         return TryAsync(() =>
         {
