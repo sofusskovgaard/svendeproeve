@@ -15,6 +15,22 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         _entityDataService = entityDataService;
     }
 
+    public ValueTask<GetAllTeamsCommandResult> GetAllTeams(GetAllTeamsCommandMessage message)
+    {
+        return TryAsync(async () =>
+        {
+            return new GetAllTeamsCommandResult()
+            {
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Getting teams"
+                },
+                TeamsEnties = await _entityDataService.ListEntities<TeamEntity>()
+            };
+        });
+    }
+
     public ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message)
     {
         return TryAsync(async () =>

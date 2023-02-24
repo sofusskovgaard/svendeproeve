@@ -8,6 +8,9 @@ namespace App.Services.Teams.Infrastructure.Grpc
     public interface ITeamsGrpcService
     {
         [Operation]
+        ValueTask<GetAllTeamsCommandResult> GetAllTeams(GetAllTeamsCommandMessage message);
+
+        [Operation]
         ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message);
 
         [Operation]

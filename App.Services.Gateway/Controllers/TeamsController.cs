@@ -18,29 +18,30 @@ namespace App.Services.Gateway.Controllers
 
         [HttpGet]
         [Route("Index")]
-        public async ValueTask<IActionResult> Index(string id)
+        public Task<IActionResult> Index()
         {
-            var res = await this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdCommandMessage() { OrganizationId = id });
-
-            return Ok(res);
+            return TryAsync(() => this._teamsGrpcService.GetAllTeams(new GetAllTeamsCommandMessage()));
         }
 
         [HttpGet]
-        [Route("name")]
-        public async ValueTask<IActionResult> GetTeamsByName(string name)
+        [Route("organizationteams")]
+        public Task<IActionResult> GetTeamsByOrganizationId(string id)
         {
-            var res = await this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameCommandMessage() { Name = name });
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdCommandMessage() { OrganizationId = id }));
+        }
 
-            return Ok(res);
+        [HttpGet]
+        [Route("nameteams")]
+        public Task<IActionResult> GetTeamsByName(string name)
+        {
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameCommandMessage() { Name = name }));
         }
 
         [HttpGet]
         [Route("memberteams")]
-        public async ValueTask<IActionResult> GetTeamsByMemberId(string memberId)
+        public Task<IActionResult> GetTeamsByMemberId(string memberId)
         {
-            var res = await this._teamsGrpcService.GetTeamsByMemberId(new GetTeamsByMemberIdCommandMessage() { MemberId = memberId });
-
-            return Ok(res);
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByMemberId(new GetTeamsByMemberIdCommandMessage() { MemberId = memberId }));
         }
 
         [HttpGet]
