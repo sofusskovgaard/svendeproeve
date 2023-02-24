@@ -8,5 +8,5 @@ namespace Template.Services.ServiceName.Infrastructure.Grpc;
 public interface IServiceNameGrpcService
 {
     [Operation]
-    Task<GetByIdGrpcCommandResult> GetById(GetByIdGrpcCommandMessage message);
+    ValueTask<GetByIdGrpcCommandResult> GetById(GetByIdGrpcCommandMessage message);
 }
