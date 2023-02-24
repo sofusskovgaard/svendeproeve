@@ -4,6 +4,7 @@ using App.Services.Teams.Data.Entities;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using App.Services.Teams.Infrastructure.Grpc.CommandResults;
+using Grpc.Core;
 
 namespace App.Services.Teams.Infrastructure;
 
@@ -152,6 +153,40 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                     Success = true,
                     Message = "Team oprettet"
                 }
+            };
+        });
+    }
+
+    public ValueTask<DeleteTeamByIdCommandResult> DeleteTeamById(DeleteTeamByIdCommandMessage message)
+    {
+        return TryAsync(async () =>
+        {
+            TeamEntity team = await _entityDataService.GetEntity<TeamEntity>(message.Id);
+
+            GrpcCommandResultMetadata metadata;
+
+            if (team != null)
+            {
+                await _entityDataService.Delete<TeamEntity>(team);
+
+                metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                    Message = "Team deleted"
+                };
+            }
+            else
+            {
+                metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = false,
+                    Message = "Could not find any teams with that id"
+                };
+            }
+
+            return new DeleteTeamByIdCommandResult()
+            {
+                Metadata = metadata
             };
         });
     }

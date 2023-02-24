@@ -86,6 +86,13 @@ namespace App.Services.Gateway.Controllers
                 return _teamsGrpcService.CreateTeam(command);
             });
         }
+
+        [HttpDelete]
+        [Route("deleteteam")]
+        public Task<IActionResult> DeleteTeamById(string id)
+        {
+            return TryAsync(() => this._teamsGrpcService.DeleteTeamById(new DeleteTeamByIdCommandMessage() { Id = id }));
+        }
     }
 
     public record CreateTeamModel(string Name, string Bio, string ProfilePicturePath, string CoverPicturePath, string GameId, string[] MembersId, string ManagerId, string OrganizationId);

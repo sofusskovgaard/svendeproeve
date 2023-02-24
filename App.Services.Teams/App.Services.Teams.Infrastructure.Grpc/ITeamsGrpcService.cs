@@ -30,5 +30,8 @@ namespace App.Services.Teams.Infrastructure.Grpc
 
         [Operation]
         ValueTask<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message);
+
+        [Operation]
+        ValueTask<DeleteTeamByIdCommandResult> DeleteTeamById(DeleteTeamByIdCommandMessage message);
     }
 }
