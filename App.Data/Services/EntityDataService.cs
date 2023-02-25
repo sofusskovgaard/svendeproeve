@@ -27,10 +27,11 @@ public class EntityDataService : IEntityDataService
         return await collection.AsQueryable().Where(x => ids.Any(y => x.Id == y)).ToListAsync();
     }
 
-    public async Task<IEnumerable<T>> ListEntities<T>() where T : IEntity
+    public async Task<IEnumerable<T>> ListEntities<T>(FilterDefinition<T>? filter = default, FindOptions<T>? options = default) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();
-        return await collection.AsQueryable().ToListAsync();
+        var query = await collection.FindAsync(filter ?? FilterDefinition<T>.Empty, options);
+        return await query.ToListAsync();
     }
 
     public async Task<T> SaveEntity<T>(T entity) where T : IEntity

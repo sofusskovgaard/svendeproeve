@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Users.Infrastructure.Grpc.CommandMessages;
 
 [ProtoContract]
-public class CreateUserCommandMessage : IGrpcCommandMessage
+public class CreateUserGrpcCommandMessage : IGrpcCommandMessage
 {
     [ProtoMember(1)]
     public string Firstname { get; set; }
