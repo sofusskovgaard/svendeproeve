@@ -9,6 +9,8 @@ using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace App.Services.Users.Infrastructure;
 
@@ -27,13 +29,13 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
         _publishEndpoint = publishEndpoint;
     }
 
-    public ValueTask<GetUserByIdCommandResult> GetUserById(GetUserByIdCommandMessage message)
+    public ValueTask<GetUserByIdGrpcCommandResult> GetUserById(GetUserByIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var user = await _entityDataService.GetEntity<UserEntity>(message.Id);
 
-            return new GetUserByIdCommandResult
+            return new GetUserByIdGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata
                 {
@@ -44,7 +46,40 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
         });
     }
 
-    public ValueTask<CreateUserCommandResult> CreateUser(CreateUserCommandMessage message)
+    public async ValueTask<GetUsersGrpcCommandResult> GetUsers(GetUsersGrpcCommandMessage message)
+    {
+        var users = await this._entityDataService.ListEntities<UserEntity>();
+
+        return new GetUsersGrpcCommandResult
+        {
+            Metadata = new GrpcCommandResultMetadata(),
+            Users = this._mapper.Map<UserDto[]>(users)
+        };
+    }
+
+    public async ValueTask<GetUsersInTeamGrpcCommandResult> GetUsersInTeam(GetUsersInTeamGrpcCommandMessage message)
+    {
+        var users = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Teams.Contains(message.TeamId)));
+
+        return new GetUsersInTeamGrpcCommandResult
+        {
+            Metadata = new GrpcCommandResultMetadata(),
+            Users = this._mapper.Map<UserDto[]>(users)
+        };
+    }
+
+    public async ValueTask<GetUsersInOrganizationGrpcCommandResult> GetUsersInOrganization(GetUsersInOrganizationGrpcCommandMessage message)
+    {
+        var users = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Organizations.Contains(message.OrganizatioId)));
+
+        return new GetUsersInOrganizationGrpcCommandResult
+        {
+            Metadata = new GrpcCommandResultMetadata(),
+            Users = this._mapper.Map<UserDto[]>(users)
+        };
+    }
+
+    public ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
@@ -65,7 +100,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
             var dto = _mapper.Map<UserDetailedDto>(user);
 
-            return new CreateUserCommandResult
+            return new CreateUserGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata
                 {
