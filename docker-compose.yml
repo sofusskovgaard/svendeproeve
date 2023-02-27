@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   mongo:
-    image: mongo
+    image: mongo:6.0.4
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
@@ -14,6 +14,11 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
+
+  redis:
+    image: redis:7.0.8-alpine
+    ports:
+      - "6379:6379"
 
   app.services.gateway:
     image: ${DOCKER_REGISTRY-}appservicesgateway

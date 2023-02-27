@@ -91,7 +91,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
                 Username = message.Username
             };
 
-            var passwordHash = PasswordHasher.Hash(message.Password);
+            var passwordHash = Hasher.Hash(message.Password);
 
             user.PasswordHash = passwordHash.Hash;
             user.PasswordSalt = passwordHash.Salt;
