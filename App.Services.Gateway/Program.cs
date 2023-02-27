@@ -1,4 +1,5 @@
 using App.Infrastructure.Extensions;
+using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
 using Serilog.Events;
@@ -15,6 +16,7 @@ builder.Services.RegisterOptions();
 builder.Services.AddRabbitMq();
 
 builder.Services.AddGrpcServiceClient<IUsersGrpcService>();
+builder.Services.AddGrpcServiceClient<IDepartmentsGrpcService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

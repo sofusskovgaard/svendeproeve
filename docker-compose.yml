@@ -26,3 +26,10 @@ services:
     build:
       context: .
       dockerfile: App.Services.Users/App.Services.Users/Dockerfile
+
+  app.services.departments:
+    image: ${DOCKER_REGISTRY-}appservicesdepartments
+    build:
+      context: .
+      dockerfile: App.Services.Departments/App.Services.Departments/Dockerfile
+
