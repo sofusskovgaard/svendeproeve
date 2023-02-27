@@ -18,5 +18,8 @@ namespace App.Services.Games.Infrastructure.Grpc
 
         [Operation]
         ValueTask<GetGamesByGenreCommandResult> GetGamesByGenre(GetGamesByGenreCommandMessage message);
+
+        [Operation]
+        ValueTask<GetGameByIdCommandResult> GetGameById(GetGameByIdCommandMessage message);
     }
 }

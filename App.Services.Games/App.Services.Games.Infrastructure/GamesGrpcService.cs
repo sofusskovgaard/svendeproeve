@@ -71,6 +71,23 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
+        public ValueTask<GetGameByIdCommandResult> GetGameById(GetGameByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
+
+                return new GetGameByIdCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    GameDto = this._mapper.Map<GameDto>(game)
+                };
+            });
+        }
+
         public ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message)
         {
             return TryAsync(async () =>
