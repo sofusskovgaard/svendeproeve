@@ -21,6 +21,13 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => this._gamesGrpcService.GetAllGames(new GetAllGamesCommandMessage()));
         }
 
+        [HttpGet]
+        [Route("name")]
+        public Task<IActionResult> GetGamesByName(string name)
+        {
+            return TryAsync(() => this._gamesGrpcService.GetGamesByName(new GetGamesByNameCommandMessage() { Name = name }));
+        }
+
         [HttpPost]
         [Route("create")]
         public Task<IActionResult> CreateGame([FromBody] CreateGameModel model)

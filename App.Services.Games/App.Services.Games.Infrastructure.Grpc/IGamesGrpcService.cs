@@ -12,5 +12,8 @@ namespace App.Services.Games.Infrastructure.Grpc
 
         [Operation]
         ValueTask<GetAllGamesCommandResult> GetAllGames(GetAllGamesCommandMessage message);
+
+        [Operation]
+        ValueTask<GetGamesByNameCommandResult> GetGamesByName(GetGamesByNameCommandMessage message);
     }
 }

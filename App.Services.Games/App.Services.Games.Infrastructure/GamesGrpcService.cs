@@ -6,6 +6,7 @@ using App.Services.Games.Infrastructure.Grpc;
 using App.Services.Games.Infrastructure.Grpc.CommandMessages;
 using App.Services.Games.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
+using MongoDB.Driver;
 
 namespace App.Services.Games.Infrastructure
 {
@@ -26,6 +27,23 @@ namespace App.Services.Games.Infrastructure
                 var games = await this._entityDataService.ListEntities<GameEntity>();
 
                 return new GetAllGamesCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
+                };
+            });
+        }
+
+        public ValueTask<GetGamesByNameCommandResult> GetGamesByName(GetGamesByNameCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var games = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<GameEntity>(entity => entity.Name.Contains(message.Name)));
+
+                return new GetGamesByNameCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
