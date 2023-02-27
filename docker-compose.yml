@@ -52,3 +52,31 @@ services:
       context: .
       dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
 
+
+  app.services.billing:
+    image: ${DOCKER_REGISTRY-}appservicesbilling
+    build:
+      context: .
+      dockerfile: App.Services.Billing/App.Services.Billing/Dockerfile
+
+
+  app.services.events:
+    image: ${DOCKER_REGISTRY-}appservicesevents
+    build:
+      context: .
+      dockerfile: App.Services.Events/App.Services.Events/Dockerfile
+
+
+  app.services.orders:
+    image: ${DOCKER_REGISTRY-}appservicesorders
+    build:
+      context: .
+      dockerfile: App.Services.Orders/App.Services.Orders/Dockerfile
+
+
+  app.services.tickets:
+    image: ${DOCKER_REGISTRY-}appservicestickets
+    build:
+      context: .
+      dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
+
