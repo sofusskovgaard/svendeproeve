@@ -116,5 +116,57 @@ namespace App.Services.Departments.Infrastructure
                 };
             });
         }
+
+        public ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                DepartmentEntity department = this._mapper.Map<DepartmentEntity>(message.DepartmentDto);
+                await this._entityDataService.Update<DepartmentEntity>(department);
+
+                return new UpdateDepartmentCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true,
+                        Message = "Department updated"
+                    }
+                };
+            });
+        }
+
+        public ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                DepartmentEntity department = await this._entityDataService.GetEntity<DepartmentEntity>(message.Id);
+
+                GrpcCommandResultMetadata metadata;
+
+                if (department != null)
+                {
+                    await this._entityDataService.Delete<DepartmentEntity>(department);
+
+                    metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true,
+                        Message = "Department deleted"
+                    };
+                }
+                else
+                {
+                    metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = false,
+                        Message = "Could not find any departments with that id"
+                    };
+                }
+
+                return new DeleteDepartmentByIdCommandResult()
+                {
+                    Metadata = metadata
+                };
+            });
+        }
     }
 }

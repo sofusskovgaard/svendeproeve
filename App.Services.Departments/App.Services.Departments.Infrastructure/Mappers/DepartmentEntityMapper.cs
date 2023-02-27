@@ -9,6 +9,7 @@ namespace App.Services.Departments.Infrastructure.Mappers
         public DepartmentEntityMapper()
         {
             this.CreateMap<DepartmentEntity, DepartmentDto>();
+            this.CreateMap<DepartmentDto, DepartmentEntity>();
         }
     }
 }

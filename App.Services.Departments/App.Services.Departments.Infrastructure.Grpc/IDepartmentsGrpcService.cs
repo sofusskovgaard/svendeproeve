@@ -21,5 +21,11 @@ namespace App.Services.Departments.Infrastructure.Grpc
 
         [Operation]
         ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdCommandMessage message);
+
+        [Operation]
+        ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdCommandMessage message);
+
+        [Operation]
+        ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentCommandMessage message);
     }
 }
