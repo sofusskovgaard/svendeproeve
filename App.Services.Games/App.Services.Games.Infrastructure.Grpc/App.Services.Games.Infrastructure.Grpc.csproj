@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+      <ProjectReference Include="..\App.Services.Games.Common\App.Services.Games.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CommandMessages\" />
+      <Folder Include="CommandResults\" />
+    </ItemGroup>
+
+</Project>

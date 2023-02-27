@@ -52,3 +52,10 @@ services:
       context: .
       dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
 
+
+  app.services.games:
+    image: ${DOCKER_REGISTRY-}appservicesgames
+    build:
+      context: .
+      dockerfile: App.Services.Games/App.Services.Games/Dockerfile
+
