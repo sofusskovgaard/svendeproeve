@@ -7,6 +7,7 @@ using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using Grpc.Core;
+using MongoDB.Driver;
 
 namespace App.Services.Teams.Infrastructure;
 
@@ -42,7 +43,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = (await _entityDataService.ListEntities<TeamEntity>()).Where(to => to.OrganizationId == message.OrganizationId);
+            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.OrganizationId == message.OrganizationId));
             return new GetTeamsByOrganizationIdCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
@@ -59,7 +60,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.MembersId.Contains(message.MemberId));
+            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.MembersId.Contains(message.MemberId)));
 
             return new GetTeamsByMemberIdCommandResult()
             {
@@ -77,7 +78,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = (await _entityDataService.ListEntities<TeamEntity>()).Where(t => t.Name.Contains(message.Name));
+            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.Name.Contains(message.Name)));
 
             return new GetTeamsByNameCommandResult()
             {
@@ -95,7 +96,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = (await _entityDataService.ListEntities<TeamEntity>()).Where(tg => tg.GameId == message.GameId);
+            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.GameId == message.GameId));
 
             return new GetTeamsByGameIdCommandResult()
             {
@@ -113,7 +114,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = (await _entityDataService.ListEntities<TeamEntity>()).Where(tm => tm.ManagerId == message.ManagerId);
+            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.ManagerId == message.ManagerId));
 
             return new GetTeamsByManagerIdCommandResult()
             {
