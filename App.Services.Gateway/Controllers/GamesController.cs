@@ -1,4 +1,5 @@
-﻿using App.Services.Games.Infrastructure.Grpc;
+﻿using App.Services.Games.Common.Dtos;
+using App.Services.Games.Infrastructure.Grpc;
 using App.Services.Games.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,29 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("update")]
+        public Task<IActionResult> UpdateGame([FromBody] UpdateGameModel model)
+        {
+            return TryAsync(() =>
+            {
+                var command = new UpdateGameCommandMessage()
+                {
+                    GameDto = new GameDto
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        Discription = model.Discription,
+                        ProfilePicture = model.ProfilePicture,
+                        CoverPicture = model.CoverPicture,
+                        Genre = model.Genre
+                    }
+                };
+
+                return this._gamesGrpcService.updateGame(command);
+            });
+        }
+
         [HttpDelete]
         [Route("delete")]
         public Task<IActionResult> DeleteGameById(string id)
@@ -70,4 +94,5 @@ namespace App.Services.Gateway.Controllers
     }
 
     public record CreateGameModel(string Name, string Discription, string ProfilePicture, string CoverPicture, string[] Genre);
+    public record UpdateGameModel(string Id, string Name, string Discription, string ProfilePicture, string CoverPicture, string[] Genre);
 }

@@ -113,6 +113,23 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
+        public ValueTask<UpdateGameCommandResult> updateGame(UpdateGameCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var game = this._mapper.Map<GameEntity>(message.GameDto);
+                await this._entityDataService.Update<GameEntity>(game);
+
+                return new UpdateGameCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    }
+                };
+            });
+        }
+
         public ValueTask<DeleteGameByIdCommandResult> DeleteGameById(DeleteGameByIdCommandMessage message)
         {
             return TryAsync(async () =>
