@@ -1,10 +1,12 @@
 using App.Data.Services;
 using App.Infrastructure.Grpc;
+using App.Infrastructure.Options;
 using App.Infrastructure.Utilities;
 using App.Services.Authentication.Data.Entities;
 using App.Services.Authentication.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
+using App.Services.Users.Infrastructure.Commands;
 using MassTransit;
 using MongoDB.Driver;
 using ProtoBuf.Grpc.Configuration;
@@ -25,7 +27,37 @@ namespace App.Services.Authentication.Infrastructure
 
         public ValueTask<RegisterGrpcCommandResult> Register(RegisterGrpcCommandMessage message)
         {
-            return this.TryAsync(async () => new RegisterGrpcCommandResult());
+            return this.TryAsync(async () =>
+            {
+                var login = new UserLoginEntity()
+                {
+                    Username = message.Username,
+                    Email = message.Email,
+                };
+
+                var passwordHashResponse = Hasher.Hash(message.Password);
+
+                login.PasswordHash = passwordHashResponse.Hash;
+                login.PasswordSalt = passwordHashResponse.Salt;
+
+                await _entityDataService.SaveEntity(login);
+
+                await _publishEndpoint.Publish(new CreateUserCommandMessage()
+                {
+                    Id = login.Id,
+                    Firstname = message.Firstname,
+                    Lastname = message.Lastname,
+                    Username = login.Username,
+                    Email = login.Email
+                });
+
+                return new RegisterGrpcCommandResult()
+                {
+                    Id = login.Id,
+                    Username = login.Username,
+                    Email = login.Email
+                };
+            });
         }
 
         public ValueTask<LoginGrpcCommandResult> Login(LoginGrpcCommandMessage message)
@@ -48,19 +80,38 @@ namespace App.Services.Authentication.Infrastructure
 
                 if (login == null)
                 {
-                    throw new Exception("User with that username does not exist");
+                    // don't tell enduser if the user could be found or not, security by obscurity ;)
+                    throw new Exception("Username or password is incorrect");
                 }
 
                 var valid = Hasher.VerifyValue(message.Password, login.PasswordHash, login.PasswordSalt);
 
                 if (!valid)
                 {
-                    throw new Exception($"{nameof(message.Password)} is incorrect");
+                    // more security by obscurity
+                    throw new Exception("Username or password is incorrect");
                 }
 
-                var token = JwtGenerator.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email));
+                var accessToken = JwtGenerator.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email));
+                var refreshToken = JwtGenerator.GenerateRefreshToken();
 
-                return new LoginGrpcCommandResult();
+                var refreshTokenHashResponse = Hasher.Hash(refreshToken, false);
+
+                var session = new UserSessionEntity()
+                {
+                    TokenHash = refreshTokenHashResponse.Hash,
+                    UserId = login.Id
+                };
+
+                await _entityDataService.SaveEntity(session);
+
+                return new LoginGrpcCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata(),
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken,
+                    ExpiresIn = TimeSpan.FromSeconds(JwtOptions.TokenLifeTime).Seconds
+                };
             });
         }
     }

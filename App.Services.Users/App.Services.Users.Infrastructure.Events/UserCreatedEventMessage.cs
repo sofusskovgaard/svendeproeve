@@ -2,6 +2,7 @@
 
 namespace App.Services.Users.Infrastructure.Events;
 
-public class TestEventMessage : IEventMessage
+public class UserCreatedEventMessage : IEventMessage
 {
+    public string Id { get; set; }
 }

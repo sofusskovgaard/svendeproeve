@@ -16,28 +16,31 @@ public static class JwtGenerator
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("Id", payload.Id),
-                new Claim("Id", Guid.NewGuid().ToString()),
+                new Claim("id", payload.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, payload.Username),
-                new Claim(JwtRegisteredClaimNames.Email, payload.Email)
+                new Claim(JwtRegisteredClaimNames.Email, payload.Email),
             }),
-            Expires = DateTime.UtcNow.AddMinutes(30),
+            Expires = DateTime.UtcNow.AddSeconds(JwtOptions.TokenLifeTime),
             Issuer = JwtOptions.Issuer,
             Audience = JwtOptions.Audience,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key)), SecurityAlgorithms.HmacSha512Signature)
         };
+
+        if (payload.Roles?.Length > 0)
+        {
+            descriptor.Subject.AddClaims(payload.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        }
 
         var handler = new JwtSecurityTokenHandler();
         var token = handler.CreateToken(descriptor);
         return handler.WriteToken(token);
     }
 
-    public static string GenerateRefreshToken(string id)
+    public static string GenerateRefreshToken()
     {
-        // 8 bytes may be a little overkill since there are 18.446.744.073.709.551.616 possibilities
-        var rnd = RandomNumberGenerator.GetBytes(8);
+        var rnd = RandomNumberGenerator.GetBytes(32);
         return Convert.ToHexString(rnd);
     }
 }
 
-public record JwtPayload(string Id, string Username, string Email);
+public record JwtPayload(string Id, string Username, string Email, params string[]? Roles);

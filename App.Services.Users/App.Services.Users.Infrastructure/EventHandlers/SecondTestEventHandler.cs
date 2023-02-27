@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace App.Services.Users.Infrastructure.EventHandlers;
 
-public class SecondTestEventHandler : IEventHandler<TestEventMessage>
+public class SecondTestEventHandler : IEventHandler<UserCreatedEventMessage>
 {
     private readonly ILogger<SecondTestEventHandler> _logger;
 
@@ -14,7 +14,7 @@ public class SecondTestEventHandler : IEventHandler<TestEventMessage>
         _logger = logger;
     }
 
-    public Task Consume(ConsumeContext<TestEventMessage> context)
+    public Task Consume(ConsumeContext<UserCreatedEventMessage> context)
     {
         _logger.LogInformation("Consumed a event message");
         return Task.CompletedTask;

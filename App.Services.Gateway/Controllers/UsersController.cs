@@ -48,20 +48,6 @@ public class UsersController : ApiController
     }
 
     /// <summary>
-    /// Get currently logged in user
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    [HttpGet]
-    [Route("me")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public Task<IActionResult> GetCurrentlyLoggedInUser()
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
     /// Create a user
     /// </summary>
     /// <param name="model">the data required to create user</param>

@@ -53,10 +53,11 @@ public abstract class ApiController : ControllerBase
         {
             var response = await func.Invoke();
 
-            return async switch
+            return (async, response) switch
             {
-                true => Accepted(response),
-                false => Ok(response)
+                (true, { Metadata.Success: true }) => Accepted(response),
+                (false, { Metadata.Success: true }) => Ok(response),
+                (_, { Metadata.Success: false }) => BadRequest(response)
             };
         }
         catch (Exception ex)

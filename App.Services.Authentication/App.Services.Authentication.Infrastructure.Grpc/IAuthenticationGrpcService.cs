@@ -4,7 +4,7 @@ using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Authentication.Infrastructure.Grpc
 {
-    [Service]
+    [Service("app.services.authentication")]
     public interface IAuthenticationGrpcService
     {
         [Operation]

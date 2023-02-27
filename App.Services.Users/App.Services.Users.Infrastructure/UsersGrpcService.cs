@@ -113,7 +113,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
     public async ValueTask<TestCommandResult> Test()
     {
-        await _publishEndpoint.Publish(new TestCommandMessage());
+        await _publishEndpoint.Publish(new CreateUserCommandMessage());
 
         return new TestCommandResult()
         {
