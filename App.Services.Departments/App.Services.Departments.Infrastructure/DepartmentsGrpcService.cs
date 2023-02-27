@@ -1,5 +1,6 @@
 using App.Data.Services;
 using App.Infrastructure.Grpc;
+using App.Services.Departments.Common.Dtos;
 using App.Services.Departments.Data.Entities;
 using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandMessages;
@@ -17,6 +18,24 @@ namespace App.Services.Departments.Infrastructure
         {
             _entityDataService = entityDataService;
             _mapper = mapper;
+        }
+
+        public ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var departments = await _entityDataService.ListEntities<DepartmentEntity>();
+
+                return new GetAllDepartmentsCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true,
+                        Message = "Getting departments"
+                    },
+                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                };
+            });
         }
 
         public ValueTask<CreateDepartmentCommandResult> CreateDepartment(CreateDepartmentCommandMessage message)

@@ -14,6 +14,13 @@ namespace App.Services.Gateway.Controllers
             _departmentsGrpcService = departmentsGrpcService;
         }
 
+        [HttpGet]
+        [Route("index")]
+        public Task<IActionResult> GetAllDepartments()
+        {
+            return TryAsync(() => this._departmentsGrpcService.GetAllDepartments(new GetAllDepartmentsCommandMessage()));
+        }
+
         [HttpPost]
         [Route("create")]
         public Task<IActionResult> CreateDepartment([FromBody] CreateDepartemtnModel model)
@@ -27,7 +34,7 @@ namespace App.Services.Gateway.Controllers
                     OrganizationIds = model.OrganizationIds
                 };
 
-                return _departmentsGrpcService.CreateDepartment(command);
+                return this._departmentsGrpcService.CreateDepartment(command);
             });
         }
     }
