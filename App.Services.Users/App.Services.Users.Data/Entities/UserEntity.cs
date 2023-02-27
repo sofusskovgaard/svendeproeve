@@ -5,6 +5,8 @@ namespace App.Services.Users.Data.Entities;
 
 [IndexDefinition("email", isUnique: true)]
 [IndexDefinition("username", isUnique: true)]
+[IndexDefinition("teams")]
+[IndexDefinition("organizations")]
 [CollectionDefinition(nameof(UserEntity))]
 public class UserEntity : BaseEntity
 {
@@ -22,13 +24,13 @@ public class UserEntity : BaseEntity
 
     public string PasswordSalt { get; set; }
 
-    public DateTime DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     
-    public string ProfilePicture { get; set; }
+    public string? ProfilePicture { get; set; }
     
-    public string CoverPicture { get; set; }
+    public string? CoverPicture { get; set; }
 
-    public string Bio { get; set; }
+    public string? Bio { get; set; }
     
     //public object[] Games { get; set; }
     
@@ -37,4 +39,10 @@ public class UserEntity : BaseEntity
     //public object[] Intergrations { get; set; }
     
     //public byte[] Permissions { get; set; }
+
+    [IndexedProperty("organizations")]
+    public string[]? Organizations { get; set; }
+
+    [IndexedProperty("teams")]
+    public string[]? Teams { get; set; }
 }

@@ -1,4 +1,6 @@
-﻿namespace App.Data.Services;
+﻿using MongoDB.Driver;
+
+namespace App.Data.Services;
 
 public interface IEntityDataService
 {
@@ -6,7 +8,7 @@ public interface IEntityDataService
 
     Task<IEnumerable<T>> ListEntitiesByIds<T>(IEnumerable<string> ids) where T : IEntity;
 
-    Task<IEnumerable<T>> ListEntities<T>() where T : IEntity;
+    Task<IEnumerable<T>> ListEntities<T>(FilterDefinition<T>? filter = default, FindOptions<T>? options = default) where T : IEntity;
 
     Task<T> SaveEntity<T>(T entity) where T : IEntity;
 
