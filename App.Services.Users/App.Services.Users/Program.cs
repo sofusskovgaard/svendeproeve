@@ -4,6 +4,7 @@ using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using ProtoBuf.Grpc.Server;
 using App.Services.Users.Infrastructure;
+using App.Services.Organizations.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
