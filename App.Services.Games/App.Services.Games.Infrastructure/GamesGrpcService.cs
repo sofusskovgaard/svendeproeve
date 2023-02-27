@@ -54,6 +54,23 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
+        public ValueTask<GetGamesByGenreCommandResult> GetGamesByGenre(GetGamesByGenreCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var games = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<GameEntity>(entity => entity.Genre.Contains(message.Genre)));
+
+                return new GetGamesByGenreCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
+                };
+            });
+        }
+
         public ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message)
         {
             return TryAsync(async () =>

@@ -28,6 +28,13 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => this._gamesGrpcService.GetGamesByName(new GetGamesByNameCommandMessage() { Name = name }));
         }
 
+        [HttpGet]
+        [Route("Genre")]
+        public Task<IActionResult> GetGamesByGenre(string genre)
+        {
+            return TryAsync(() => this._gamesGrpcService.GetGamesByGenre(new GetGamesByGenreCommandMessage() { Genre = genre }));
+        }
+
         [HttpPost]
         [Route("create")]
         public Task<IActionResult> CreateGame([FromBody] CreateGameModel model)
