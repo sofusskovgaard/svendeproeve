@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Services.Tickets.Data\App.Services.Tickets.Data.csproj" />
+        <ProjectReference Include="..\App.Services.Tickets.Infrastructure.Commands\App.Services.Tickets.Infrastructure.Commands.csproj" />
+        <ProjectReference Include="..\App.Services.Tickets.Infrastructure.Events\App.Services.Tickets.Infrastructure.Events.csproj" />
+        <ProjectReference Include="..\App.Services.Tickets.Infrastructure.Grpc\App.Services.Tickets.Infrastructure.Grpc.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mappers\" />
+    </ItemGroup>
+
+</Project>

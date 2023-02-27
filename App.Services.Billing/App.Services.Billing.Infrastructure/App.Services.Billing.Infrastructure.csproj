@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Services.Billing.Data\App.Services.Billing.Data.csproj" />
+        <ProjectReference Include="..\App.Services.Billing.Infrastructure.Commands\App.Services.Billing.Infrastructure.Commands.csproj" />
+        <ProjectReference Include="..\App.Services.Billing.Infrastructure.Events\App.Services.Billing.Infrastructure.Events.csproj" />
+        <ProjectReference Include="..\App.Services.Billing.Infrastructure.Grpc\App.Services.Billing.Infrastructure.Grpc.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mappers\" />
+    </ItemGroup>
+
+</Project>
