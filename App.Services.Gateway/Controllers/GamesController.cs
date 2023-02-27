@@ -60,6 +60,13 @@ namespace App.Services.Gateway.Controllers
                 return this._gamesGrpcService.CreateGame(command);
             });
         }
+
+        [HttpDelete]
+        [Route("delete")]
+        public Task<IActionResult> DeleteGameById(string id)
+        {
+            return TryAsync(() => this._gamesGrpcService.DeleteGameById(new DeleteGameByIdCommandMessage() { Id = id }));
+        }
     }
 
     public record CreateGameModel(string Name, string Discription, string ProfilePicture, string CoverPicture, string[] Genre);

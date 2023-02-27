@@ -21,5 +21,8 @@ namespace App.Services.Games.Infrastructure.Grpc
 
         [Operation]
         ValueTask<GetGameByIdCommandResult> GetGameById(GetGameByIdCommandMessage message);
+
+        [Operation]
+        ValueTask<DeleteGameByIdCommandResult> DeleteGameById(DeleteGameByIdCommandMessage message);
     }
 }

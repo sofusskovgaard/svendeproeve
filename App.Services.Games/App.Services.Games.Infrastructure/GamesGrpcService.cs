@@ -112,5 +112,38 @@ namespace App.Services.Games.Infrastructure
                 };
             });
         }
+
+        public ValueTask<DeleteGameByIdCommandResult> DeleteGameById(DeleteGameByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
+
+                GrpcCommandResultMetadata metadata;
+
+                if (game != null)
+                {
+                    await this._entityDataService.Delete<GameEntity>(game);
+
+                    metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    };
+                }
+                else
+                {
+                    metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = false,
+                        Message = "Could not find any games with that id"
+                    };
+                }
+
+                return new DeleteGameByIdCommandResult
+                {
+                    Metadata = metadata
+                };
+            });
+        }
     }
 }
