@@ -7,5 +7,7 @@ namespace App.Services.Games.Infrastructure.Grpc
     [Service("app.services.games")]
     public interface IGamesGrpcService
     {
+        [Operation]
+        ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message);
     }
 }

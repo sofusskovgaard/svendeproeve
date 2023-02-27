@@ -11,9 +11,4 @@
       <ProjectReference Include="..\App.Services.Games.Common\App.Services.Games.Common.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="CommandMessages\" />
-      <Folder Include="CommandResults\" />
-    </ItemGroup>
-
 </Project>

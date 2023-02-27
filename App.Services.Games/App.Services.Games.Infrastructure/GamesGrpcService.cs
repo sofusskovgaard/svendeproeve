@@ -1,6 +1,9 @@
 using App.Data.Services;
 using App.Infrastructure.Grpc;
+using App.Services.Games.Data.Entities;
 using App.Services.Games.Infrastructure.Grpc;
+using App.Services.Games.Infrastructure.Grpc.CommandMessages;
+using App.Services.Games.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 
 namespace App.Services.Games.Infrastructure
@@ -13,6 +16,31 @@ namespace App.Services.Games.Infrastructure
         {
             _entityDataService = entityDataService;
             _mapper = mapper;
+        }
+
+        public ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                GameEntity game = new GameEntity
+                {
+                    Name = message.Name,
+                    Discription = message.Discription,
+                    ProfilePicture = message.ProfilePicture,
+                    CoverPicture = message.CoverPicture,
+                    Genre = message.Genre
+                };
+
+                await this._entityDataService.Create<GameEntity>(game);
+
+                return new CreateGameCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true
+                    }
+                };
+            });
         }
     }
 }
