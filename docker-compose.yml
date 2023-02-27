@@ -33,3 +33,10 @@ services:
     build:
       context: .
       dockerfile: App.Services.Organizations/App.Services.Organizations/Dockerfile
+
+  app.services.teams:
+    image: ${DOCKER_REGISTRY-}appservicesteams
+    build:
+      context: .
+      dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
+
