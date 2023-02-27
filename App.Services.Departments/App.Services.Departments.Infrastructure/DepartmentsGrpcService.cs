@@ -6,7 +6,8 @@ using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandMessages;
 using App.Services.Departments.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
-using ProtoBuf.Grpc.Configuration;
+using Grpc.Core;
+using MongoDB.Driver;
 
 namespace App.Services.Departments.Infrastructure
 {
@@ -27,6 +28,24 @@ namespace App.Services.Departments.Infrastructure
                 var departments = await _entityDataService.ListEntities<DepartmentEntity>();
 
                 return new GetAllDepartmentsCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true,
+                        Message = "Getting departments"
+                    },
+                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                };
+            });
+        }
+
+        public ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var departments = await _entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.Name.Contains(message.Name)));
+
+                return new GetDepartmentsByNameCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {

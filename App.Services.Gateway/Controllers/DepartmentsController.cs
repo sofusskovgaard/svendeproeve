@@ -21,6 +21,13 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => this._departmentsGrpcService.GetAllDepartments(new GetAllDepartmentsCommandMessage()));
         }
 
+        [HttpGet]
+        [Route("name")]
+        public Task<IActionResult> GetDepartmentsByName(string name)
+        {
+            return TryAsync(() => this._departmentsGrpcService.GetDepartmentsByName(new GetDepartmentsByNameCommandMessage() { Name = name }));
+        }
+
         [HttpPost]
         [Route("create")]
         public Task<IActionResult> CreateDepartment([FromBody] CreateDepartemtnModel model)
