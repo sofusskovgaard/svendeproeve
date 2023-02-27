@@ -5,11 +5,11 @@ using ProtoBuf;
 namespace App.Services.Users.Infrastructure.Grpc.CommandResults;
 
 [ProtoContract]
-public class GetUserByIdCommandResult : IGrpcCommandResult
+public class GetUsersGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
 
     [ProtoMember(2)]
-    public UserDto User { get; set; }
+    public UserDto[] Users { get; set; }
 }
