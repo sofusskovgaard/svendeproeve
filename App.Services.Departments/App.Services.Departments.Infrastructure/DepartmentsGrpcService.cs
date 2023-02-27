@@ -34,7 +34,7 @@ namespace App.Services.Departments.Infrastructure
                         Success = true,
                         Message = "Getting departments"
                     },
-                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                    DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
                 };
             });
         }
@@ -52,7 +52,7 @@ namespace App.Services.Departments.Infrastructure
                         Success = true,
                         Message = "Getting departments"
                     },
-                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                    DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
                 };
             });
         }
@@ -70,7 +70,25 @@ namespace App.Services.Departments.Infrastructure
                         Success = true,
                         Message = "Getting departments"
                     },
-                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                    DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                };
+            });
+        }
+
+        public ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var department = await this._entityDataService.GetEntity<DepartmentEntity>(message.Id);
+
+                return new GetDepartmentByIdCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true,
+                        Message = "Getting department"
+                    },
+                    DepartmentDto = this._mapper.Map<DepartmentDto>(department)
                 };
             });
         }
