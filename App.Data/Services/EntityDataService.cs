@@ -21,6 +21,13 @@ public class EntityDataService : IEntityDataService
         return await (await collection.FindAsync(entity => entity.Id == id)).FirstOrDefaultAsync();
     }
 
+    public async Task<T> GetEntity<T>(FilterDefinition<T>? filter = default, FindOptions<T>? options = default) where T : IEntity
+    {
+        var collection = this._db.GetCollection<T>();
+        var cursor = await collection.FindAsync(filter, options);
+        return await cursor.FirstOrDefaultAsync();
+    }
+
     public async Task<IEnumerable<T>> ListEntitiesByIds<T>(IEnumerable<string> ids) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();

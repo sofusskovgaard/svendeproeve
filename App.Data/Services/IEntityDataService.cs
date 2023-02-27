@@ -6,6 +6,8 @@ public interface IEntityDataService
 {
     Task<T> GetEntity<T>(string id) where T : IEntity;
 
+    Task<T> GetEntity<T>(FilterDefinition<T>? filter = default, FindOptions<T>? options = default) where T : IEntity;
+
     Task<IEnumerable<T>> ListEntitiesByIds<T>(IEnumerable<string> ids) where T : IEntity;
 
     Task<IEnumerable<T>> ListEntities<T>(FilterDefinition<T>? filter = default, FindOptions<T>? options = default) where T : IEntity;
