@@ -7,6 +7,7 @@ using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using Grpc.Core;
+using MongoDB.Driver;
 
 namespace App.Services.Teams.Infrastructure;
 
@@ -42,7 +43,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = (await _entityDataService.ListEntities<TeamEntity>()).Where(to => to.OrganizationId == message.OrganizationId);
+            var teams = (await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.OrganizationId == message.OrganizationId)));
             return new GetTeamsByOrganizationIdCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
