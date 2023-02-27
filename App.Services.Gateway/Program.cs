@@ -1,4 +1,5 @@
 using App.Infrastructure.Extensions;
+using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
@@ -16,6 +17,7 @@ builder.Services.RegisterOptions();
 builder.Services.AddRabbitMq();
 
 builder.Services.AddGrpcServiceClient<IUsersGrpcService>();
+builder.Services.AddGrpcServiceClient<IOrganizationsGrpcService>();
 builder.Services.AddGrpcServiceClient<ITeamsGrpcService>();
 
 builder.Services.AddControllers();
