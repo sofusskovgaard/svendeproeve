@@ -43,9 +43,27 @@ namespace App.Services.Departments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var departments = await _entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.Name.Contains(message.Name)));
+                var departments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.Name.Contains(message.Name)));
 
                 return new GetDepartmentsByNameCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true,
+                        Message = "Getting departments"
+                    },
+                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                };
+            });
+        }
+
+        public ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var departments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.OrganizationIds.Contains(message.OrganizationId)));
+
+                return new GetDepartmentsByOrganizationIdCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
@@ -68,7 +86,7 @@ namespace App.Services.Departments.Infrastructure
                     OrganizationIds = message.OrganizationIds
                 };
 
-                await _entityDataService.Create<DepartmentEntity>(department);
+                await this._entityDataService.Create<DepartmentEntity>(department);
 
                 return new CreateDepartmentCommandResult()
                 {

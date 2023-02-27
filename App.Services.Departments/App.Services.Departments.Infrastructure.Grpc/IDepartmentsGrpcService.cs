@@ -15,5 +15,8 @@ namespace App.Services.Departments.Infrastructure.Grpc
 
         [Operation]
         ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameCommandMessage message);
+
+        [Operation]
+        ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdCommandMessage message);
     }
 }
