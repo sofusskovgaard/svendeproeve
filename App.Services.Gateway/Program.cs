@@ -6,6 +6,11 @@ using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using App.Infrastructure.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +42,23 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidIssuer = JwtOptions.Issuer,
+            ValidAudience = JwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key))
+        };
+    });
+
 var app = builder.Build();
 
 app.UseSerilogRequestLogging(options =>
@@ -66,6 +88,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

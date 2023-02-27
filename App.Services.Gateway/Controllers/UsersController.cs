@@ -2,6 +2,7 @@ using System.Net.Mime;
 using App.Services.Gateway.Infrastructure;
 using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Services.Gateway.Controllers;
@@ -23,7 +24,7 @@ public class UsersController : ApiController
     /// </summary>
     /// <param name="id">id of the user</param>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet, Authorize]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
