@@ -1,5 +1,6 @@
 using App.Data.Services;
 using App.Infrastructure.Grpc;
+using App.Services.Games.Common.Dtos;
 using App.Services.Games.Data.Entities;
 using App.Services.Games.Infrastructure.Grpc;
 using App.Services.Games.Infrastructure.Grpc.CommandMessages;
@@ -16,6 +17,23 @@ namespace App.Services.Games.Infrastructure
         {
             _entityDataService = entityDataService;
             _mapper = mapper;
+        }
+
+        public ValueTask<GetAllGamesCommandResult> GetAllGames(GetAllGamesCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var games = await this._entityDataService.ListEntities<GameEntity>();
+
+                return new GetAllGamesCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
+                };
+            });
         }
 
         public ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message)

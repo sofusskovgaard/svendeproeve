@@ -14,6 +14,13 @@ namespace App.Services.Gateway.Controllers
             _gamesGrpcService = gamesGrpcService;
         }
 
+        [HttpGet]
+        [Route("index")]
+        public Task<IActionResult> GetAllGames()
+        {
+            return TryAsync(() => this._gamesGrpcService.GetAllGames(new GetAllGamesCommandMessage()));
+        }
+
         [HttpPost]
         [Route("create")]
         public Task<IActionResult> CreateGame([FromBody] CreateGameModel model)

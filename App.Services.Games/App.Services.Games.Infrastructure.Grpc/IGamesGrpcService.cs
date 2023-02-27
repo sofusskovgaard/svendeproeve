@@ -9,5 +9,8 @@ namespace App.Services.Games.Infrastructure.Grpc
     {
         [Operation]
         ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message);
+
+        [Operation]
+        ValueTask<GetAllGamesCommandResult> GetAllGames(GetAllGamesCommandMessage message);
     }
 }
