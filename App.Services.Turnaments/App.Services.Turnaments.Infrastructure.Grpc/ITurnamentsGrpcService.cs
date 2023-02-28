@@ -7,6 +7,7 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
     [Service("app.services.turnaments")]
     public interface ITurnamentsGrpcService
     {
+        #region Turnaments
         [Operation]
         ValueTask<GetAllTurnamentsCommandResult> GetAllTurnaments(GetAllTurnamentsCommandMessage message);
 
@@ -31,7 +32,15 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
         [Operation]
         ValueTask<DeleteTurnamentByIdCommandResult> DeleteTurnamentById(DeleteTurnamentByIdCommandMessage message);
 
+        #endregion
+        #region Mathes
+
+        [Operation]
+        ValueTask<GetMatchesByTurnamentIdCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdCommandMessage message);
+
         [Operation]
         ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message);
+
+        #endregion
     }
 }

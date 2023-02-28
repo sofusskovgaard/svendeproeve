@@ -185,6 +185,23 @@ namespace App.Services.Turnaments.Infrastructure
 
         #region Matches
         
+        public ValueTask<GetMatchesByTurnamentIdCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var matches = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<MatchEntity>(entity => entity.TurnamentId == message.TurnamentId));
+
+                return new GetMatchesByTurnamentIdCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    MatchDtos = this._mapper.Map<IEnumerable<MatchDto>>(matches)
+                };
+            });
+        }
+
         public ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message)
         {
             return TryAsync(async () =>

@@ -15,6 +15,8 @@ namespace App.Services.Gateway.Controllers
             _turnamentsGrpcService = turnamentsGrpcService;
         }
 
+        #region Turnaments
+
         [HttpGet]
         [Route("getallturnaments")]
         public Task<IActionResult> GetAllTurnaments()
@@ -97,8 +99,18 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdCommandMessage() { Id = id }));
         }
 
+        #endregion
+        #region Mathes
+
+        [HttpGet]
+        [Route("Matches/{turnamentid}")]
+        public Task<IActionResult> GetMatchesByTurnamentId(string turnamentid)
+        {
+            return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTurnamentId(new GetMatchesByTurnamentIdCommandMessage() { TurnamentId = turnamentid }));
+        }
+
         [HttpPost]
-        [Route("match/create")]
+        [Route("matches/create")]
         public Task<IActionResult> CreateMatch([FromBody] CreateMatchModel model)
         {
             return TryAsync(() =>
@@ -113,6 +125,8 @@ namespace App.Services.Gateway.Controllers
                 return this._turnamentsGrpcService.CreateMatch(command);
             });
         }
+
+        #endregion
     }
 
     public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
