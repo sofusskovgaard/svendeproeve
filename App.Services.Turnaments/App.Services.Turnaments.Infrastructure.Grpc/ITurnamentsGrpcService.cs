@@ -50,6 +50,9 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
         [Operation]
         ValueTask<UpdateMatchCommandResult> UpdateMatch(UpdateMatchCommandMessage message);
 
+        [Operation]
+        ValueTask<DeleteMatchByIdCommandResult> DeleteMatchById(DeleteMatchByIdCommandMessage message);
+
         #endregion
     }
 }

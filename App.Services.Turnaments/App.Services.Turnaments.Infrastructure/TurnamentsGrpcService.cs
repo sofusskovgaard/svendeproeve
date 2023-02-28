@@ -276,6 +276,39 @@ namespace App.Services.Turnaments.Infrastructure
                 };
             });
         }
+
+        public ValueTask<DeleteMatchByIdCommandResult> DeleteMatchById(DeleteMatchByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var match = await this._entityDataService.GetEntity<MatchEntity>(message.Id);
+
+                GrpcCommandResultMetadata metadata;
+
+                if (match != null)
+                {
+                    await this._entityDataService.Delete<MatchEntity>(match);
+
+                    metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    };
+                }
+                else
+                {
+                    metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = false,
+                        Message = "Could not find any matches with that id"
+                    };
+                }
+
+                return new DeleteMatchByIdCommandResult
+                {
+                    Metadata = metadata
+                };
+            });
+        }
         
         #endregion
     }

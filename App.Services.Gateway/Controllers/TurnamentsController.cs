@@ -162,6 +162,13 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        [HttpDelete]
+        [Route("matches/delete")]
+        public Task<IActionResult> DeleteMatchById(string id)
+        {
+            return TryAsync(() => this._turnamentsGrpcService.DeleteMatchById(new DeleteMatchByIdCommandMessage() { Id = id }));
+        }
+
         #endregion
     }
 
