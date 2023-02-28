@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Infrastructure.Options;
+using App.Services.Tickets.Infrastructure.Grpc;
 using App.Services.Events.Infrastructure.Grpc;
 using App.Services.Games.Infrastructure.Grpc;
 
@@ -30,6 +31,7 @@ builder.Services.AddGrpcServiceClient<IOrganizationsGrpcService>();
 builder.Services.AddGrpcServiceClient<ITeamsGrpcService>();
 builder.Services.AddGrpcServiceClient<IEventsGrpcService>();
 builder.Services.AddGrpcServiceClient<IGamesGrpcService>();
+builder.Services.AddGrpcServiceClient<ITicketGrpcService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

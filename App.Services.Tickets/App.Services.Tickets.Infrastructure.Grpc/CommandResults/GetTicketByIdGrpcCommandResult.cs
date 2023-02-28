@@ -1,16 +1,16 @@
 using App.Infrastructure.Grpc;
-using App.Services.Tickets.Common.Test;
+using App.Services.Tickets.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Tickets.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class GetByIdGrpcCommandResult : IGrpcCommandResult
+    public class GetTicketByIdGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
 
         [ProtoMember(2)]
-        public TestDto Data { get; set; }
+        public TicketDto Ticket { get; set; }
     }
 }
