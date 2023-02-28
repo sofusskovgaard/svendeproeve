@@ -3,10 +3,13 @@ using App.Services.Turnaments.Common.Dtos;
 using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Turnaments.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace App.Services.Gateway.Controllers
 {
     [Route("api/[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     public class TurnamentsController : ApiController
     {
         private readonly ITurnamentsGrpcService _turnamentsGrpcService;
@@ -17,43 +20,84 @@ namespace App.Services.Gateway.Controllers
 
         #region Turnaments
 
+        /// <summary>
+        /// Gets all turnaments
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetAllTurnaments()
         {
             return TryAsync(() => this._turnamentsGrpcService.GetAllTurnaments(new GetAllTurnamentsCommandMessage()));
         }
 
+        /// <summary>
+        /// Get all turnaments that is part of an event based on id of the event
+        /// </summary>
+        /// <param name="eventid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{eventid}/event")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentsByEventId(string eventid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByEventId(new GetTurnamentsByEventIdCommandMessage() { EventId = eventid }));
         }
 
+        /// <summary>
+        /// Gets all turnaments that is playing a game based on id
+        /// </summary>
+        /// <param name="gameid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{gameid}/game")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentsByGameId(string gameid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByGameId(new GetTurnamentsByGameIdCommandMessage() { GameId = gameid }));
         }
 
+        /// <summary>
+        /// Get a turnament where a match is played based on id of the match
+        /// </summary>
+        /// <param name="matchid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{matchid}/match")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentByMatchId(string matchid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetTurnamentByMatchId(new GetTurnamentByMatchIdCommandMessage() { MatchId = matchid }));
         }
 
+        /// <summary>
+        /// Get turnament by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetTuenamentById(new GetTurnamentByIdCommandMessage() { Id = id }));
         }
 
+        /// <summary>
+        /// Create a turnament
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> CreateTurnament([FromBody] CreateTurnamentModel model)
         {
             return TryAsync(() =>
@@ -70,8 +114,15 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        /// <summary>
+        /// Update a turnament
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> UpdateTurnament([FromBody] UpdateTurnamentModel model)
         {
             return TryAsync(() =>
@@ -92,8 +143,15 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        /// <summary>
+        /// Delete a turnament
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteTurnamentById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdCommandMessage() { Id = id }));
@@ -102,29 +160,57 @@ namespace App.Services.Gateway.Controllers
         #endregion
         #region Matches
 
+        /// <summary>
+        /// Gets all matches in a turnament based on id of the turnament
+        /// </summary>
+        /// <param name="turnamentid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("matches/{turnamentid}/turnament")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetMatchesByTurnamentId(string turnamentid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTurnamentId(new GetMatchesByTurnamentIdCommandMessage() { TurnamentId = turnamentid }));
         }
 
+        /// <summary>
+        /// Gets matches a team is playing in based on id of the team
+        /// </summary>
+        /// <param name="teamid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("matches/{teamid}/team")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetMatchesByTeamId(string teamid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTeamId(new GetMatchesByTeamIdCommandMessage() { TeamId = teamid }));
         }
 
+        /// <summary>
+        /// Get a match by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("matches/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetMatchById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchById(new GetMatchByIdCommandMessage() { Id = id }));
         }
 
+        /// <summary>
+        /// Create a match
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("matches")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> CreateMatch([FromBody] CreateMatchModel model)
         {
             return TryAsync(() =>
@@ -140,8 +226,15 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        /// <summary>
+        /// Update a match
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("matches")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> UpdateMatch([FromBody] UpdateMatchModel model)
         {
             return TryAsync(() =>
@@ -162,8 +255,15 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        /// <summary>
+        /// Delete a match
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("matches/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteMatchById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.DeleteMatchById(new DeleteMatchByIdCommandMessage() { Id = id }));
@@ -172,8 +272,40 @@ namespace App.Services.Gateway.Controllers
         #endregion
     }
 
+    /// <summary>
+    /// Data required to create a new turnament
+    /// </summary>
+    /// <param name="Name"></param>
+    /// <param name="GameId"></param>
+    /// <param name="MatchesId"></param>
+    /// <param name="EventId"></param>
     public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
+
+    /// <summary>
+    /// Data required to update a turnament
+    /// </summary>
+    /// <param name="Id"></param>
+    /// <param name="Name"></param>
+    /// <param name="GameId"></param>
+    /// <param name="MatchesId"></param>
+    /// <param name="EventId"></param>
     public record UpdateTurnamentModel(string Id, string Name, string GameId, string[] MatchesId, string EventId);
+
+    /// <summary>
+    /// Data required to create a new match
+    /// </summary>
+    /// <param name="Name"></param>
+    /// <param name="TeamsId"></param>
+    /// <param name="TurnamentId"></param>
     public record CreateMatchModel(string Name, string[] TeamsId, string TurnamentId);
+
+    /// <summary>
+    /// Data required to update a match
+    /// </summary>
+    /// <param name="Id"></param>
+    /// <param name="Name"></param>
+    /// <param name="TeamsId"></param>
+    /// <param name="TurnamentId"></param>
+    /// <param name="WinningTeamId"></param>
     public record UpdateMatchModel(string Id, string Name, string[] TeamsId, string TurnamentId, string WinningTeamId);
 }
