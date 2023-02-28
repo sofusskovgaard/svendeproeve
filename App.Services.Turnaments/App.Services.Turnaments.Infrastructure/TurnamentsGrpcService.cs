@@ -219,6 +219,23 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
+        public ValueTask<GetMatchByIdCommandResult> GetMatchById(GetMatchByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var match = await this._entityDataService.GetEntity<MatchEntity>(message.Id);
+
+                return new GetMatchByIdCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    MatchDto = this._mapper.Map<MatchDto>(match)
+                };
+            });
+        }
+
         public ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message)
         {
             return TryAsync(async () =>
