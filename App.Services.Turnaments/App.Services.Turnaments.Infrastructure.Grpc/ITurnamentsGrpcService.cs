@@ -8,6 +8,9 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
     public interface ITurnamentsGrpcService
     {
         [Operation]
+        ValueTask<GetAllTurnamentsCommandResult> GetAllTurnaments(GetAllTurnamentsCommandMessage message);
+
+        [Operation]
         ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message);
     }
 }

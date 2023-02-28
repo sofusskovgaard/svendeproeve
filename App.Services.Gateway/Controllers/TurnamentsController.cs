@@ -14,6 +14,13 @@ namespace App.Services.Gateway.Controllers
             _turnamentsGrpcService = turnamentsGrpcService;
         }
 
+        [HttpGet]
+        [Route("getallturnaments")]
+        public Task<IActionResult> GetAllTurnaments()
+        {
+            return TryAsync(() => this._turnamentsGrpcService.GetAllTurnaments(new GetAllTurnamentsCommandMessage()));
+        }
+
         [HttpPost]
         [Route("createturnament")]
         public Task<IActionResult> CreateTurnament([FromBody] CreateTurnamentModel model)
