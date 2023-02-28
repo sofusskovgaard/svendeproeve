@@ -1,16 +1,16 @@
 using App.Infrastructure.Grpc;
-using App.Services.Billing.Common.Test;
+using App.Services.Billing.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Billing.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class GetByIdGrpcCommandResult : IGrpcCommandResult
+    public class GetBillingByIdGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
 
         [ProtoMember(2)]
-        public TestDto Data { get; set; }
+        public BillingDto Billing { get; set; }
     }
 }
