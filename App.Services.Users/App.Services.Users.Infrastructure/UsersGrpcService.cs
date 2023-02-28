@@ -59,7 +59,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
     public async ValueTask<GetUsersInTeamGrpcCommandResult> GetUsersInTeam(GetUsersInTeamGrpcCommandMessage message)
     {
-        var users = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Teams.Contains(message.TeamId)));
+        var users = await this._entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Teams, message.TeamId));
 
         return new GetUsersInTeamGrpcCommandResult
         {
@@ -70,7 +70,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
     public async ValueTask<GetUsersInOrganizationGrpcCommandResult> GetUsersInOrganization(GetUsersInOrganizationGrpcCommandMessage message)
     {
-        var users = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Organizations.Contains(message.OrganizatioId)));
+        var users = await this._entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Organizations, message.OrganizatioId));
 
         return new GetUsersInOrganizationGrpcCommandResult
         {

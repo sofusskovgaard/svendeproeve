@@ -15,4 +15,9 @@
         <ProjectReference Include="..\App.Services.Authentication.Infrastructure.Grpc\App.Services.Authentication.Infrastructure.Grpc.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="EventHandlers\" />
+      <Folder Include="Validators\" />
+    </ItemGroup>
+
 </Project>
