@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\App.Services.Turnaments.Data\App.Services.Turnaments.Data.csproj" />
+        <ProjectReference Include="..\App.Services.Turnaments.Infrastructure.Commands\App.Services.Turnaments.Infrastructure.Commands.csproj" />
+        <ProjectReference Include="..\App.Services.Turnaments.Infrastructure.Events\App.Services.Turnaments.Infrastructure.Events.csproj" />
+        <ProjectReference Include="..\App.Services.Turnaments.Infrastructure.Grpc\App.Services.Turnaments.Infrastructure.Grpc.csproj" />
+    </ItemGroup>
+
+</Project>

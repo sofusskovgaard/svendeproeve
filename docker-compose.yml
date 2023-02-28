@@ -89,3 +89,10 @@ services:
       context: .
       dockerfile: App.Services.Games/App.Services.Games/Dockerfile
 
+
+  app.services.turnaments:
+    image: ${DOCKER_REGISTRY-}appservicesturnaments
+    build:
+      context: .
+      dockerfile: App.Services.Turnaments/App.Services.Turnaments/Dockerfile
+
