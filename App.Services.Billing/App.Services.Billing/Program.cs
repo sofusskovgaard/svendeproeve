@@ -24,7 +24,7 @@ var app = builder.Build();
 var entityIndexGenerator = app.Services.GetRequiredService<IEntityIndexGenerator>();
 await entityIndexGenerator.Generate(Assembly.Load("App.Services.Billing.Data"));
 
-app.MapGrpcService<ServiceNameGrpcService>();
+app.MapGrpcService<BillingGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
 
 await app.RunAsync();
