@@ -48,44 +48,30 @@ public class UsersController : ApiController
     }
 
     /// <summary>
-    /// Get currently logged in user
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    [HttpGet]
-    [Route("me")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public Task<IActionResult> GetCurrentlyLoggedInUser()
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
     /// Create a user
     /// </summary>
     /// <param name="model">the data required to create user</param>
     /// <returns></returns>
-    [HttpPost]
-    [Route("")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
-    {
-        return TryAsync(() =>
-        {
-            var command = new CreateUserGrpcCommandMessage
-            {
-                Firstname = model.Firstname,
-                Lastname = model.Lastname,
-                Username = model.Username,
-                Email = model.Email,
-                Password = model.Password
-            };
+    //[HttpPost]
+    //[Route("")]
+    //[ProducesResponseType(StatusCodes.Status202Accepted)]
+    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+    //public Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
+    //{
+    //    return TryAsync(() =>
+    //    {
+    //        var command = new CreateUserGrpcCommandMessage
+    //        {
+    //            Firstname = model.Firstname,
+    //            Lastname = model.Lastname,
+    //            Username = model.Username,
+    //            Email = model.Email,
+    //            Password = model.Password
+    //        };
 
-            return _usersGrpcService.CreateUser(command);
-        });
-    }
+    //        return _usersGrpcService.CreateUser(command);
+    //    });
+    //}
 
     /// <summary>
     /// Get teams a specific user is part of

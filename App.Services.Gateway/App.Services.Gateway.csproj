@@ -29,6 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
+      <ProjectReference Include="..\App.Services.Authentication\App.Services.Authentication.Infrastructure.Grpc\App.Services.Authentication.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Billing\App.Services.Billing.Infrastructure.Grpc\App.Services.Billing.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Departments\App.Services.Departments.Infrastructure.Grpc\App.Services.Departments.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Games\App.Services.Games.Infrastructure.Grpc\App.Services.Games.Infrastructure.Grpc.csproj" />

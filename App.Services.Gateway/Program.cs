@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using App.Infrastructure.Extensions;
 using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc;
@@ -6,6 +7,7 @@ using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +19,9 @@ using App.Services.Games.Infrastructure.Grpc;
 using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Billing.Infrastructure.Grpc;
+using App.Services.Authentication.Infrastructure.Grpc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,12 +43,40 @@ builder.Services.AddGrpcServiceClient<ITurnamentsGrpcService>();
 builder.Services.AddGrpcServiceClient<IOrdersGrpcService>();
 builder.Services.AddGrpcServiceClient<ITicketGrpcService>();
 builder.Services.AddGrpcServiceClient<IBillingGrpcService>();
+builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo()
+    {
+        Title = "EUC Syd ESport Association",
+        Version = "v1"
+    });
+
+    var jwtSecurityScheme = new OpenApiSecurityScheme()
+    {
+        BearerFormat = "JWT",
+        Name = "JWT Authentication",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "**ONLY** insert your token",
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme,
+        },
+    };
+
+    options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
@@ -70,6 +103,11 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key))
         };
     });
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("SuperAdmin");
+//});
 
 var app = builder.Build();
 

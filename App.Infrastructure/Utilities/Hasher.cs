@@ -1,41 +1,40 @@
 using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace App.Infrastructure.Utilities;
 
 public static class Hasher
 {
-    public static HasherResponse Hash(string value)
+    public static HasherResponse Hash(string value, bool useSalt = true)
     {
-        var saltByteArray = Hasher._generateSalt();
-        var hashByteArray = Hasher._generateHash(value, saltByteArray);
-
-        return new HasherResponse(Convert.ToBase64String(saltByteArray), Convert.ToBase64String(hashByteArray));
+        if (useSalt)
+        {
+            var saltByteArray = _generateSalt();
+            return new HasherResponse(Convert.ToBase64String(saltByteArray), Convert.ToBase64String(_generateHash(value, saltByteArray)));
+        }
+        return new HasherResponse(string.Empty, Convert.ToBase64String(_generateHash(value)));
     }
         
-    public static bool VerifyValue(string value, string hash, string salt)
+    public static bool VerifyValue(string value, string hash, string? salt = null)
     {
-        var saltByteArray = Convert.FromBase64String(salt);
         var hashByteArray = Convert.FromBase64String(hash);
-
-        var verificationHashByteArray = Hasher._generateHash(value, saltByteArray);
-
+        var verificationHashByteArray = _generateHash(value, string.IsNullOrEmpty(salt) ? null : Convert.FromBase64String(salt));
         return hashByteArray.SequenceEqual(verificationHashByteArray);
     }
 
     private static byte[] _generateSalt()
     {
-        var salt = new byte[128];
-
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetNonZeroBytes(salt);
-
-        return salt;
+        return RandomNumberGenerator.GetBytes(32);
     }
 
-    private static byte[] _generateHash(string value, byte[] salt)
+    private static byte[] _generateHash(string value, byte[]? salt = null)
     {
-        return KeyDerivation.Pbkdf2(value, salt, KeyDerivationPrf.HMACSHA512, 1000, 512 / 8);
+        return salt switch
+        {
+            null => SHA512.HashData(Encoding.UTF8.GetBytes(value)),
+            _ => KeyDerivation.Pbkdf2(value, salt, KeyDerivationPrf.HMACSHA512, 1000, 512 / 8)
+        };
     }
 }
 

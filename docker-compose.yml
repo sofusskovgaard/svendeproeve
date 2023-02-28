@@ -40,8 +40,6 @@ services:
       context: .
       dockerfile: App.Services.Departments/App.Services.Departments/Dockerfile
 
-
-
   app.services.organizations:
     image: ${DOCKER_REGISTRY-}appservicesorganizations
     build:
@@ -54,13 +52,11 @@ services:
       context: .
       dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
 
-
   app.services.billing:
     image: ${DOCKER_REGISTRY-}appservicesbilling
     build:
       context: .
       dockerfile: App.Services.Billing/App.Services.Billing/Dockerfile
-
 
   app.services.events:
     image: ${DOCKER_REGISTRY-}appservicesevents
@@ -68,13 +64,11 @@ services:
       context: .
       dockerfile: App.Services.Events/App.Services.Events/Dockerfile
 
-
   app.services.orders:
     image: ${DOCKER_REGISTRY-}appservicesorders
     build:
       context: .
       dockerfile: App.Services.Orders/App.Services.Orders/Dockerfile
-
 
   app.services.tickets:
     image: ${DOCKER_REGISTRY-}appservicestickets
@@ -96,3 +90,8 @@ services:
       context: .
       dockerfile: App.Services.Turnaments/App.Services.Turnaments/Dockerfile
 
+  app.services.authentication:
+    image: ${DOCKER_REGISTRY-}appservicesauthentication
+    build:
+      context: .
+      dockerfile: App.Services.Authentication/App.Services.Authentication/Dockerfile

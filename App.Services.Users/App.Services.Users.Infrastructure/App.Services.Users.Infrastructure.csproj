@@ -9,6 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\App.Data\App.Data.csproj" />
         <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\App.Services.Authentication\App.Services.Authentication.Infrastructure.Events\App.Services.Authentication.Infrastructure.Events.csproj" />
         <ProjectReference Include="..\App.Services.Users.Data\App.Services.Users.Data.csproj" />
         <ProjectReference Include="..\App.Services.Users.Infrastructure.Commands\App.Services.Users.Infrastructure.Commands.csproj" />
         <ProjectReference Include="..\App.Services.Users.Infrastructure.Events\App.Services.Users.Infrastructure.Events.csproj" />
@@ -16,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="EventHandlers\" />
       <Folder Include="Mappers\" />
     </ItemGroup>
 
