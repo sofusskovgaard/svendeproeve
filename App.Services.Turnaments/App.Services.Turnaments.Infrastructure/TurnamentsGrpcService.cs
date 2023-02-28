@@ -72,6 +72,23 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
+        public ValueTask<GetTurnamentByMatchIdCommandResult> GetTurnamentByMatchId(GetTurnamentByMatchIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var turnament = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<TurnamentEntity>(entity => entity.MatchesId.Contains(message.MatchId)));
+
+                return new GetTurnamentByMatchIdCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    TurnamentDto = this._mapper.Map<TurnamentDto>(turnament.FirstOrDefault())
+                };
+            });
+        }
+
         public ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message)
         {
             return TryAsync(async () =>

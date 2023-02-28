@@ -35,6 +35,13 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByGameId(new GetTurnamentsByGameIdCommandMessage() { GameId = gameId }));
         }
 
+        [HttpGet]
+        [Route("matchid")]
+        public Task<IActionResult> GetTurnamentByMatchId(string matchId)
+        {
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentByMatchId(new GetTurnamentByMatchIdCommandMessage() { MatchId = matchId }));
+        }
+
         [HttpPost]
         [Route("createturnament")]
         public Task<IActionResult> CreateTurnament([FromBody] CreateTurnamentModel model)
