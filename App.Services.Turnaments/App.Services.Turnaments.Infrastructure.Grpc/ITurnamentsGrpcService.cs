@@ -7,5 +7,7 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
     [Service("app.services.turnaments")]
     public interface ITurnamentsGrpcService
     {
+        [Operation]
+        ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message);
     }
 }

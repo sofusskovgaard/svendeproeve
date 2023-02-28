@@ -9,10 +9,10 @@ namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
         [ProtoMember(1)]
         public string Name { get; set; }
         [ProtoMember(2)]
-        public string[] TeamsId { get; set; }
+        public string GameId { get; set; }
         [ProtoMember(3)]
-        public string TurnamentId { get; set; }
+        public string[] MatchesId { get; set; }
         [ProtoMember(4)]
-        public string WinningTeamId { get; set; }
+        public string EventId { get; set; }
     }
 }
