@@ -79,37 +79,37 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
         };
     }
 
-    public ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var user = new UserEntity
-            {
-                Firstname = message.Firstname,
-                Lastname = message.Lastname,
-                Email = message.Email,
-                Username = message.Username
-            };
+    //public ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message)
+    //{
+    //    return TryAsync(async () =>
+    //    {
+    //        var user = new UserEntity
+    //        {
+    //            Firstname = message.Firstname,
+    //            Lastname = message.Lastname,
+    //            Email = message.Email,
+    //            Username = message.Username
+    //        };
 
-            var passwordHash = Hasher.Hash(message.Password);
+    //        var passwordHash = Hasher.Hash(message.Password);
 
-            user.PasswordHash = passwordHash.Hash;
-            user.PasswordSalt = passwordHash.Salt;
+    //        user.PasswordHash = passwordHash.Hash;
+    //        user.PasswordSalt = passwordHash.Salt;
 
-            await _entityDataService.SaveEntity(user);
+    //        await _entityDataService.SaveEntity(user);
 
-            var dto = _mapper.Map<UserDetailedDto>(user);
+    //        var dto = _mapper.Map<UserDetailedDto>(user);
 
-            return new CreateUserGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                User = dto
-            };
-        });
-    }
+    //        return new CreateUserGrpcCommandResult
+    //        {
+    //            Metadata = new GrpcCommandResultMetadata
+    //            {
+    //                Success = true
+    //            },
+    //            User = dto
+    //        };
+    //    });
+    //}
 
     public async ValueTask<TestCommandResult> Test()
     {
