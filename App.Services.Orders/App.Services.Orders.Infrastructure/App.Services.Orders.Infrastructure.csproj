@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\App.Services.Tickets\App.Services.Tickets.Infrastructure.Events\App.Services.Tickets.Infrastructure.Events.csproj" />
         <ProjectReference Include="..\App.Services.Orders.Data\App.Services.Orders.Data.csproj" />
         <ProjectReference Include="..\App.Services.Orders.Infrastructure.Commands\App.Services.Orders.Infrastructure.Commands.csproj" />
         <ProjectReference Include="..\App.Services.Orders.Infrastructure.Events\App.Services.Orders.Infrastructure.Events.csproj" />
