@@ -21,6 +21,16 @@ services:
     image: redis:7.0.8-alpine
     ports:
       - "6379:6379"
+  
+  gateway-localtunnel:
+    image: ${DOCKER_REGISTRY-}gateway-localtunnel
+    build:
+      context: .
+      dockerfile: docker/LocalTunnel.Dockerfile
+    depends_on:
+      - app.services.gateway
+    command:
+      --local-host app.services.gateway --port 443 --local-https --allow-invalid-cert -s app-services-gateway
 
   app.services.gateway:
     image: ${DOCKER_REGISTRY-}appservicesgateway
