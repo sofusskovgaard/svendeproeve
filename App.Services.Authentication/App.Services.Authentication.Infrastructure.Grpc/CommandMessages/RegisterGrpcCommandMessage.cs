@@ -20,4 +20,7 @@ public class RegisterGrpcCommandMessage : IGrpcCommandMessage
 
     [ProtoMember(5)]
     public string Password { get; set; }
+
+    [ProtoMember(6)]
+    public string ConfirmPassword { get; set; }
 }

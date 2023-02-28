@@ -59,7 +59,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
     public async ValueTask<GetUsersInTeamGrpcCommandResult> GetUsersInTeam(GetUsersInTeamGrpcCommandMessage message)
     {
-        var users = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Teams.Contains(message.TeamId)));
+        var users = await this._entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Teams, message.TeamId));
 
         return new GetUsersInTeamGrpcCommandResult
         {
@@ -70,7 +70,7 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
 
     public async ValueTask<GetUsersInOrganizationGrpcCommandResult> GetUsersInOrganization(GetUsersInOrganizationGrpcCommandMessage message)
     {
-        var users = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Organizations.Contains(message.OrganizatioId)));
+        var users = await this._entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Organizations, message.OrganizatioId));
 
         return new GetUsersInOrganizationGrpcCommandResult
         {
@@ -79,41 +79,41 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
         };
     }
 
-    public ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var user = new UserEntity
-            {
-                Firstname = message.Firstname,
-                Lastname = message.Lastname,
-                Email = message.Email,
-                Username = message.Username
-            };
+    //public ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message)
+    //{
+    //    return TryAsync(async () =>
+    //    {
+    //        var user = new UserEntity
+    //        {
+    //            Firstname = message.Firstname,
+    //            Lastname = message.Lastname,
+    //            Email = message.Email,
+    //            Username = message.Username
+    //        };
 
-            var passwordHash = Hasher.Hash(message.Password);
+    //        var passwordHash = Hasher.Hash(message.Password);
 
-            user.PasswordHash = passwordHash.Hash;
-            user.PasswordSalt = passwordHash.Salt;
+    //        user.PasswordHash = passwordHash.Hash;
+    //        user.PasswordSalt = passwordHash.Salt;
 
-            await _entityDataService.SaveEntity(user);
+    //        await _entityDataService.SaveEntity(user);
 
-            var dto = _mapper.Map<UserDetailedDto>(user);
+    //        var dto = _mapper.Map<UserDetailedDto>(user);
 
-            return new CreateUserGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                User = dto
-            };
-        });
-    }
+    //        return new CreateUserGrpcCommandResult
+    //        {
+    //            Metadata = new GrpcCommandResultMetadata
+    //            {
+    //                Success = true
+    //            },
+    //            User = dto
+    //        };
+    //    });
+    //}
 
     public async ValueTask<TestCommandResult> Test()
     {
-        await _publishEndpoint.Publish(new TestCommandMessage());
+        await _publishEndpoint.Publish(new CreateUserCommandMessage());
 
         return new TestCommandResult()
         {

@@ -19,8 +19,8 @@ public interface IUsersGrpcService
     [Operation]
     ValueTask<GetUsersInOrganizationGrpcCommandResult> GetUsersInOrganization(GetUsersInOrganizationGrpcCommandMessage message);
 
-    [Operation]
-    ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message);
+    //[Operation]
+    //ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message);
 
     [Operation]
     ValueTask<TestCommandResult> Test();

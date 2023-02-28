@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Services.Gateway.Controllers
 {
+    [Route("api/[controller]")]
     public class TicketsController : ApiController
     {
         private readonly ITicketGrpcService _ticketsGrpcService;
