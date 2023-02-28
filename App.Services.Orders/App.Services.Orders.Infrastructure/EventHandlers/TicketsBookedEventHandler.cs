@@ -1,4 +1,7 @@
-﻿using App.Infrastructure.Events;
+﻿using App.Data.Services;
+using App.Infrastructure.Events;
+using App.Services.Orders.Data.Entities;
+using App.Services.Orders.Infrastructure.Events;
 using App.Services.Tickets.Infrastructure.Events;
 using MassTransit;
 using System;
@@ -11,17 +14,48 @@ namespace App.Services.Orders.Infrastructure.EventHandlers
 {
     public class TicketsBookedEventHandler : IEventHandler<TicketsBookedEventMessage>
     {
-        private readonly IOrdersService _ordersService;
+        private readonly IEntityDataService _entityDataService;
 
-        public TicketsBookedEventHandler(IOrdersService ordersService)
+        private readonly IPublishEndpoint _publishEndpoint;
+
+        public TicketsBookedEventHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
         {
-            _ordersService = ordersService;
+            _entityDataService = entityDataService;
+            _publishEndpoint = publishEndpoint;
         }
 
-        public Task Consume(ConsumeContext<TicketsBookedEventMessage> context)
+        public async Task Consume(ConsumeContext<TicketsBookedEventMessage> context)
         {
-            _ordersService.TicketsBooked(context.Message);
-            return Task.CompletedTask;
+            var entity = new OrderEntity
+            {
+                UserId = context.Message.UserId,
+                TicketIds = context.Message.Tickets.Select(x => x.TicketId).ToArray(),
+                Total = await GetTotal(context.Message.Tickets)
+            };
+
+            await _entityDataService.SaveEntity(entity);
+
+            TicketOrderCreatedEventMessage message = new TicketOrderCreatedEventMessage
+            {
+                OrderId = entity.Id,
+                Tickets = entity.TicketIds,
+                Total = entity.Total,
+                UserId = entity.UserId,
+            };
+
+            await _publishEndpoint.Publish(message);
+
+        }
+        private async Task<double> GetTotal(TicketsBookedEventMessage.Ticket[] tickets)
+        {
+            //TODO: smarter code
+            double total = 0;
+            foreach (var ticket in tickets)
+            {
+                var product = await _entityDataService.GetEntity<ProductEntity>(ticket.ProductId);
+                total += product.Price;
+            }
+            return total;
         }
     }
 }

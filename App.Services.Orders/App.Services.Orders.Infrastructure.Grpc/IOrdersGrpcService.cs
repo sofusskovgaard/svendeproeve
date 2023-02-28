@@ -1,5 +1,6 @@
 ﻿using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
+using Google.Protobuf.WellKnownTypes;
 using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Orders.Infrastructure.Grpc
@@ -12,5 +13,11 @@ namespace App.Services.Orders.Infrastructure.Grpc
 
         [Operation]
         ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message);
+
+        [Operation]
+        ValueTask<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage message);
+
+        [Operation]
+        ValueTask<GetProductByIdGrpcCommandResult> GetProductById(GetProductByIdGrpcCommandMessage message);
     }
 }

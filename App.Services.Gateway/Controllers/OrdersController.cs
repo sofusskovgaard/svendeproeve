@@ -36,6 +36,31 @@ namespace App.Services.Gateway.Controllers
                  return _ordersGrpcService.CreateOrder(command);
             });
         }
+
+        [HttpGet]
+        [Route("product/{id}")]
+        public Task<IActionResult> GetProductById(string id)
+        {
+            return TryAsync(() => _ordersGrpcService.GetProductById(new GetProductByIdGrpcCommandMessage { Id = id }));
+        }
+
+        [HttpPost]
+        [Route("product")]
+        public Task<IActionResult> CreateProduct([FromBody] CreateProductModel model)
+        {
+            return TryAsync(() =>
+            {
+                var command = new CreateProductGrpcCommandMessage
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Price = model.Price
+                };
+
+                return _ordersGrpcService.CreateProduct(command);
+            });
+        }
     }
     public record CreateOrderModel(string UserId, double Total, string[] TicketIds);
+    public record CreateProductModel(string Name, string Description, double Price);
 }
