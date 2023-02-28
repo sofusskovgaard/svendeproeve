@@ -14,8 +14,4 @@
         <ProjectReference Include="..\App.Services.Billing.Infrastructure.Grpc\App.Services.Billing.Infrastructure.Grpc.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Mappers\" />
-    </ItemGroup>
-
 </Project>
