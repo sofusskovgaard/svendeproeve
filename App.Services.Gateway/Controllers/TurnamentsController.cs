@@ -18,31 +18,31 @@ namespace App.Services.Gateway.Controllers
         #region Turnaments
 
         [HttpGet]
-        [Route("getallturnaments")]
+        [Route("")]
         public Task<IActionResult> GetAllTurnaments()
         {
             return TryAsync(() => this._turnamentsGrpcService.GetAllTurnaments(new GetAllTurnamentsCommandMessage()));
         }
 
         [HttpGet]
-        [Route("eventid")]
-        public Task<IActionResult> GetTurnamentsByEventId(string eventId)
+        [Route("{eventid}/event")]
+        public Task<IActionResult> GetTurnamentsByEventId(string eventid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByEventId(new GetTurnamentsByEventIdCommandMessage() { EventId = eventId }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByEventId(new GetTurnamentsByEventIdCommandMessage() { EventId = eventid }));
         }
 
         [HttpGet]
-        [Route("gameid")]
-        public Task<IActionResult> GetTurnamentsByGameId(string gameId)
+        [Route("{gameid}/game")]
+        public Task<IActionResult> GetTurnamentsByGameId(string gameid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByGameId(new GetTurnamentsByGameIdCommandMessage() { GameId = gameId }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByGameId(new GetTurnamentsByGameIdCommandMessage() { GameId = gameid }));
         }
 
         [HttpGet]
-        [Route("matchid")]
-        public Task<IActionResult> GetTurnamentByMatchId(string matchId)
+        [Route("{matchid}/match")]
+        public Task<IActionResult> GetTurnamentByMatchId(string matchid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentByMatchId(new GetTurnamentByMatchIdCommandMessage() { MatchId = matchId }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentByMatchId(new GetTurnamentByMatchIdCommandMessage() { MatchId = matchid }));
         }
 
         [HttpGet]
@@ -53,7 +53,7 @@ namespace App.Services.Gateway.Controllers
         }
 
         [HttpPost]
-        [Route("createturnament")]
+        [Route("")]
         public Task<IActionResult> CreateTurnament([FromBody] CreateTurnamentModel model)
         {
             return TryAsync(() =>
@@ -70,8 +70,8 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
-        [HttpPost]
-        [Route("updateturnament")]
+        [HttpPut]
+        [Route("")]
         public Task<IActionResult> UpdateTurnament([FromBody] UpdateTurnamentModel model)
         {
             return TryAsync(() =>
@@ -93,38 +93,38 @@ namespace App.Services.Gateway.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
+        [Route("{id}")]
         public Task<IActionResult> DeleteTurnamentById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdCommandMessage() { Id = id }));
         }
 
         #endregion
-        #region Mathes
+        #region Matches
 
         [HttpGet]
-        [Route("matches/{turnamentid}")]
+        [Route("matches/{turnamentid}/turnament")]
         public Task<IActionResult> GetMatchesByTurnamentId(string turnamentid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTurnamentId(new GetMatchesByTurnamentIdCommandMessage() { TurnamentId = turnamentid }));
         }
 
         [HttpGet]
-        [Route("matches/teamid")]
+        [Route("matches/{teamid}/team")]
         public Task<IActionResult> GetMatchesByTeamId(string teamid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTeamId(new GetMatchesByTeamIdCommandMessage() { TeamId = teamid }));
         }
 
         [HttpGet]
-        [Route("Matches/id")]
+        [Route("matches/{id}")]
         public Task<IActionResult> GetMatchById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchById(new GetMatchByIdCommandMessage() { Id = id }));
         }
 
         [HttpPost]
-        [Route("matches/create")]
+        [Route("matches")]
         public Task<IActionResult> CreateMatch([FromBody] CreateMatchModel model)
         {
             return TryAsync(() =>
@@ -140,8 +140,8 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
-        [HttpPost]
-        [Route("matches/update")]
+        [HttpPut]
+        [Route("matches")]
         public Task<IActionResult> UpdateMatch([FromBody] UpdateMatchModel model)
         {
             return TryAsync(() =>
@@ -163,7 +163,7 @@ namespace App.Services.Gateway.Controllers
         }
 
         [HttpDelete]
-        [Route("matches/delete")]
+        [Route("matches/{id}")]
         public Task<IActionResult> DeleteMatchById(string id)
         {
             return TryAsync(() => this._turnamentsGrpcService.DeleteMatchById(new DeleteMatchByIdCommandMessage() { Id = id }));
