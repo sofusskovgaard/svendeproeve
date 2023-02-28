@@ -20,6 +20,9 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
         ValueTask<GetTurnamentByMatchIdCommandResult> GetTurnamentByMatchId(GetTurnamentByMatchIdCommandMessage message);
 
         [Operation]
+        ValueTask<GetTurnamentByIdCommandResult> GetTuenamentById(GetTurnamentByIdCommandMessage message);
+
+        [Operation]
         ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message);
     }
 }
