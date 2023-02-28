@@ -140,10 +140,33 @@ namespace App.Services.Gateway.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("matches/update")]
+        public Task<IActionResult> UpdateMatch([FromBody] UpdateMatchModel model)
+        {
+            return TryAsync(() =>
+            {
+                var command = new UpdateMatchCommandMessage
+                {
+                    MatchDto = new MatchDto
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        TeamsId = model.TeamsId,
+                        TurnamentId = model.TurnamentId,
+                        WinningTeamId = model.WinningTeamId
+                    }
+                };
+
+                return this._turnamentsGrpcService.UpdateMatch(command);
+            });
+        }
+
         #endregion
     }
 
     public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
     public record UpdateTurnamentModel(string Id, string Name, string GameId, string[] MatchesId, string EventId);
     public record CreateMatchModel(string Name, string[] TeamsId, string TurnamentId);
+    public record UpdateMatchModel(string Id, string Name, string[] TeamsId, string TurnamentId, string WinningTeamId);
 }

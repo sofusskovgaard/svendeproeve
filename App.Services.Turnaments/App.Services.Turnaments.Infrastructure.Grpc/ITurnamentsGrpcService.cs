@@ -47,6 +47,9 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
         [Operation]
         ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message);
 
+        [Operation]
+        ValueTask<UpdateMatchCommandResult> UpdateMatch(UpdateMatchCommandMessage message);
+
         #endregion
     }
 }
