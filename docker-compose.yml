@@ -76,6 +76,13 @@ services:
       context: .
       dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
 
+
+  app.services.games:
+    image: ${DOCKER_REGISTRY-}appservicesgames
+    build:
+      context: .
+      dockerfile: App.Services.Games/App.Services.Games/Dockerfile
+
   app.services.authentication:
     image: ${DOCKER_REGISTRY-}appservicesauthentication
     build:
