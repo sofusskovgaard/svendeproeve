@@ -14,6 +14,6 @@ namespace App.Services.Orders.Infrastructure.Events
 
         public string[] Tickets { get; set; }
 
-        public double total { get; set; }
+        public double Total { get; set; }
     }
 }
