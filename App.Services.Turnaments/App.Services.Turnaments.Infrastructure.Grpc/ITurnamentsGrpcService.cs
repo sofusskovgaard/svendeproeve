@@ -11,6 +11,9 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
         ValueTask<GetAllTurnamentsCommandResult> GetAllTurnaments(GetAllTurnamentsCommandMessage message);
 
         [Operation]
+        ValueTask<GetTurnamentsByEventIdCommandResult> GetTurnamentsByEventId(GetTurnamentsByEventIdCommandMessage message);
+
+        [Operation]
         ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message);
     }
 }

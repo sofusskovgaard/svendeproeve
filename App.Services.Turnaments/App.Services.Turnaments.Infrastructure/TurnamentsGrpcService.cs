@@ -25,7 +25,7 @@ namespace App.Services.Turnaments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var turnament = await this._entityDataService.ListEntities<TurnamentEntity>();
+                var turnaments = await this._entityDataService.ListEntities<TurnamentEntity>();
 
                 return new GetAllTurnamentsCommandResult
                 {
@@ -33,7 +33,24 @@ namespace App.Services.Turnaments.Infrastructure
                     {
                         Success = true
                     },
-                    TurnamentDtos = this._mapper.Map<IEnumerable<TurnamentDto>>(turnament)
+                    TurnamentDtos = this._mapper.Map<IEnumerable<TurnamentDto>>(turnaments)
+                };
+            });
+        }
+
+        public ValueTask<GetTurnamentsByEventIdCommandResult> GetTurnamentsByEventId(GetTurnamentsByEventIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var turnaments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<TurnamentEntity>(entity => entity.EventId == message.EventId));
+
+                return new GetTurnamentsByEventIdCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    TurnamentDtos = this._mapper.Map<IEnumerable<TurnamentDto>>(turnaments)
                 };
             });
         }
