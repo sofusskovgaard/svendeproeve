@@ -39,6 +39,9 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
         ValueTask<GetMatchesByTurnamentIdCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdCommandMessage message);
 
         [Operation]
+        ValueTask<GetMatchesByTeamIdCommandResult> GetMatchesByTeamId(GetMatchesByTeamIdCommandMessage message);
+
+        [Operation]
         ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message);
 
         #endregion

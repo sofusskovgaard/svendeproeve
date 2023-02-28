@@ -103,10 +103,17 @@ namespace App.Services.Gateway.Controllers
         #region Mathes
 
         [HttpGet]
-        [Route("Matches/{turnamentid}")]
+        [Route("matches/{turnamentid}")]
         public Task<IActionResult> GetMatchesByTurnamentId(string turnamentid)
         {
             return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTurnamentId(new GetMatchesByTurnamentIdCommandMessage() { TurnamentId = turnamentid }));
+        }
+
+        [HttpGet]
+        [Route("matches/teamid")]
+        public Task<IActionResult> GetMatchesByTeamId(string teamid)
+        {
+            return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTeamId(new GetMatchesByTeamIdCommandMessage() { TeamId = teamid }));
         }
 
         [HttpPost]
