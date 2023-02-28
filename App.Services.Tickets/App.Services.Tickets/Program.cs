@@ -15,6 +15,7 @@ builder.Services.AddAutoMapper(Assembly.Load("App.Services.Tickets.Infrastructur
 
 builder.Services.AddMongoDb();
 builder.Services.AddRabbitMq(Assembly.Load("App.Services.Tickets.Infrastructure"));
+builder.Services.AddScoped<ITicketService, TicketService>();
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();
