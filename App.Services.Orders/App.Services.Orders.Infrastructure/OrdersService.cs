@@ -1,11 +1,14 @@
 ﻿using App.Data.Services;
+using App.Services.Orders.Data.Entities;
 using App.Services.Orders.Infrastructure.Commands;
+using App.Services.Orders.Infrastructure.Events;
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Tickets.Infrastructure.Events;
 using MassTransit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +37,6 @@ namespace App.Services.Orders.Infrastructure
         {
             throw new NotImplementedException();
         }
-
         public ValueTask CreateProduct(CreateProductCommandMessage message)
         {
             throw new NotImplementedException();
@@ -45,14 +47,36 @@ namespace App.Services.Orders.Infrastructure
             throw new NotImplementedException();
         }
 
-        public ValueTask TicketsBooked(TicketsBookedEventMessage message)
+        public async ValueTask TicketsBooked(TicketsBookedEventMessage message)
         {
-            CreateOrder(new CreateOrderCommandMessage
+            //Get product pricings
+
+            await CreateOrder(new CreateOrderCommandMessage
             {
-                
+                UserId = message.UserId,
+                TicketIds = message.Tickets.Select(x => x.TicketId).ToArray(),
+                Total = await GetTotal(message.Tickets)
             });
-            _publishEndpoint.Publish()
-            throw new NotImplementedException();
+
+            //var @eventMessage = new TicketOrderCreatedEventMessage
+            //{
+            //    OrderId
+            //}
+
+            _publishEndpoint.Publish(message);
+            
+            //publish TicketOrderCreated
+        }
+        private async Task<double> GetTotal(TicketsBookedEventMessage.Ticket[] tickets)
+        {
+            //TODO: smarter code
+            double total = 0;
+            foreach (var ticket in tickets)
+            {
+                var product = await _entityDataService.GetEntity<ProductEntity>(ticket.ProductId);
+                total += product.Price;
+            }
+            return total;
         }
     }
 }

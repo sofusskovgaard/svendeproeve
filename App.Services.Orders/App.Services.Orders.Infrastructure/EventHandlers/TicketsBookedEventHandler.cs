@@ -20,7 +20,7 @@ namespace App.Services.Orders.Infrastructure.EventHandlers
 
         public Task Consume(ConsumeContext<TicketsBookedEventMessage> context)
         {
-            _ordersService.dosomething
+            _ordersService.TicketsBooked(context.Message);
             return Task.CompletedTask;
         }
     }
