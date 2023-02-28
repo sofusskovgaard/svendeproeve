@@ -14,6 +14,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
+    ports:
+      - "15672:15672"
 
   redis:
     image: redis:7.0.8-alpine
@@ -79,4 +81,11 @@ services:
     build:
       context: .
       dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
+
+
+  app.services.games:
+    image: ${DOCKER_REGISTRY-}appservicesgames
+    build:
+      context: .
+      dockerfile: App.Services.Games/App.Services.Games/Dockerfile
 

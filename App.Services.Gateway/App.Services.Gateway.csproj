@@ -30,6 +30,7 @@
     <ItemGroup>
       <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
       <ProjectReference Include="..\App.Services.Departments\App.Services.Departments.Infrastructure.Grpc\App.Services.Departments.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\App.Services.Games\App.Services.Games.Infrastructure.Grpc\App.Services.Games.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Events\App.Services.Events.Infrastructure.Grpc\App.Services.Events.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Organizations\App.Services.Organizations.Infrastructure.Grpc\App.Services.Organizations.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Teams\App.Services.Teams.Infrastructure.Grpc\App.Services.Teams.Infrastructure.Grpc.csproj" />
