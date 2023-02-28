@@ -96,8 +96,26 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdCommandMessage() { Id = id }));
         }
+
+        [HttpPost]
+        [Route("match/create")]
+        public Task<IActionResult> CreateMatch([FromBody] CreateMatchModel model)
+        {
+            return TryAsync(() =>
+            {
+                var command = new CreateMatchCommandMessage
+                {
+                    Name = model.Name,
+                    TeamsId = model.TeamsId,
+                    TurnamentId = model.TurnamentId
+                };
+
+                return this._turnamentsGrpcService.CreateMatch(command);
+            });
+        }
     }
 
     public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
     public record UpdateTurnamentModel(string Id, string Name, string GameId, string[] MatchesId, string EventId);
+    public record CreateMatchModel(string Name, string[] TeamsId, string TurnamentId);
 }

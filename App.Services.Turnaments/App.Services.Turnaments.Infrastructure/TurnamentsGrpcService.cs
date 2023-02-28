@@ -21,6 +21,8 @@ namespace App.Services.Turnaments.Infrastructure
             _mapper = mapper;
         }
 
+        #region Turnaments
+
         public ValueTask<GetAllTurnamentsCommandResult> GetAllTurnaments(GetAllTurnamentsCommandMessage message)
         {
             return TryAsync(async () =>
@@ -179,5 +181,34 @@ namespace App.Services.Turnaments.Infrastructure
                 };
             });
         }
+        #endregion
+
+        #region Matches
+        
+        public ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                MatchEntity match = new MatchEntity
+                {
+                    Name = message.Name,
+                    TeamsId = message.TeamsId,
+                    TurnamentId = message.TurnamentId
+                };
+
+                match = await this._entityDataService.Create<MatchEntity>(match);
+
+                return new CreateMatchCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
+                    Id = match.Id
+                };
+            });
+        }
+        
+        #endregion
     }
 }

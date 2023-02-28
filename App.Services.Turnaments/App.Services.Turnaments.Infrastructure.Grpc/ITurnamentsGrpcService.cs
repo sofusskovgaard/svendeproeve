@@ -30,5 +30,8 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
 
         [Operation]
         ValueTask<DeleteTurnamentByIdCommandResult> DeleteTurnamentById(DeleteTurnamentByIdCommandMessage message);
+
+        [Operation]
+        ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message);
     }
 }
