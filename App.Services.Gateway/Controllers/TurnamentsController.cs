@@ -89,6 +89,13 @@ namespace App.Services.Gateway.Controllers
                 return this._turnamentsGrpcService.UpdateTurnament(command);
             });
         }
+
+        [HttpDelete]
+        [Route("{id}/delete")]
+        public Task<IActionResult> DeleteTurnamentById(string id)
+        {
+            return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdCommandMessage() { Id = id }));
+        }
     }
 
     public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);

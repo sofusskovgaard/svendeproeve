@@ -27,5 +27,8 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
 
         [Operation]
         ValueTask<UpdateTurnamentCommandResult> UpdateTurnament(UpdateTurnamentCommandMessage message);
+
+        [Operation]
+        ValueTask<DeleteTurnamentByIdCommandResult> DeleteTurnamentById(DeleteTurnamentByIdCommandMessage message);
     }
 }

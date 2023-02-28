@@ -146,5 +146,38 @@ namespace App.Services.Turnaments.Infrastructure
                 };
             });
         }
+
+        public ValueTask<DeleteTurnamentByIdCommandResult> DeleteTurnamentById(DeleteTurnamentByIdCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var turnament = await this._entityDataService.GetEntity<TurnamentEntity>(message.Id);
+
+                GrpcCommandResultMetadata metadata;
+
+                if (turnament != null)
+                {
+                    await this._entityDataService.Delete<TurnamentEntity>(turnament);
+
+                    metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    };
+                }
+                else
+                {
+                    metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = false,
+                        Message = "Could not find any Turnaments with that id"
+                    };
+                }
+
+                return new DeleteTurnamentByIdCommandResult
+                {
+                    Metadata = metadata
+                };
+            });
+        }
     }
 }
