@@ -129,5 +129,22 @@ namespace App.Services.Turnaments.Infrastructure
                 };
             });
         }
+
+        public ValueTask<UpdateTurnamentCommandResult> UpdateTurnament(UpdateTurnamentCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var turnament = this._mapper.Map<TurnamentEntity>(message.TurnamentDto);
+                await this._entityDataService.Update<TurnamentEntity>(turnament);
+
+                return new UpdateTurnamentCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    }
+                };
+            });
+        }
     }
 }

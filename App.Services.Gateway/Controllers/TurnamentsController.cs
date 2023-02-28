@@ -1,4 +1,5 @@
 ﻿using App.Services.Gateway.Infrastructure;
+using App.Services.Turnaments.Common.Dtos;
 using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Turnaments.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -66,7 +67,30 @@ namespace App.Services.Gateway.Controllers
                 return this._turnamentsGrpcService.CreateTurnament(command);
             });
         }
+
+        [HttpPost]
+        [Route("updateturnament")]
+        public Task<IActionResult> UpdateTurnament([FromBody] UpdateTurnamentModel model)
+        {
+            return TryAsync(() =>
+            {
+                var command = new UpdateTurnamentCommandMessage
+                {
+                    TurnamentDto = new TurnamentDto
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        GameId = model.GameId,
+                        MatchesId = model.MatchesId,
+                        EventId = model.EventId
+                    }
+                };
+
+                return this._turnamentsGrpcService.UpdateTurnament(command);
+            });
+        }
     }
 
     public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
+    public record UpdateTurnamentModel(string Id, string Name, string GameId, string[] MatchesId, string EventId);
 }

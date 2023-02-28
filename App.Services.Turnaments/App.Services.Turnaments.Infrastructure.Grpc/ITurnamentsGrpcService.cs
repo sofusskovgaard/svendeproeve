@@ -24,5 +24,8 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
 
         [Operation]
         ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message);
+
+        [Operation]
+        ValueTask<UpdateTurnamentCommandResult> UpdateTurnament(UpdateTurnamentCommandMessage message);
     }
 }
