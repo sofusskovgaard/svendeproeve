@@ -2,11 +2,13 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Teams.Common.Dtos;
 using App.Services.Teams.Data.Entities;
+using App.Services.Teams.Infrastructure.Events;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using Grpc.Core;
+using MassTransit;
 using MongoDB.Driver;
 
 namespace App.Services.Teams.Infrastructure;
@@ -15,10 +17,12 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 {
     private readonly IEntityDataService _entityDataService;
     private readonly IMapper _mapper;
-    public TeamsGrpcService(IEntityDataService entityDataService, IMapper mapper)
+    private readonly IPublishEndpoint _publishEndpoint;
+    public TeamsGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _entityDataService = entityDataService;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
 
     public ValueTask<GetAllTeamsCommandResult> GetAllTeams(GetAllTeamsCommandMessage message)
@@ -185,13 +189,15 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 
             if (team != null)
             {
-                await _entityDataService.Delete<TeamEntity>(team);
+                //await _entityDataService.Delete<TeamEntity>(team);
 
                 metadata = new GrpcCommandResultMetadata()
                 {
                     Success = true,
                     Message = "Team deleted"
                 };
+
+                await _publishEndpoint.Publish(new TeamDeletedEventMessage() { Id = message.Id });
             }
             else
             {
