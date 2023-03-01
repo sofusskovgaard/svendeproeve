@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using App.Infrastructure.Events;
 
 namespace App.Services.Orders.Infrastructure.Events
 {
-    public class TicketOrderCreatedEventMessage
+    public class TicketOrderCreatedEventMessage : IEventMessage
     {
         public string UserId { get; set; }
 
