@@ -167,7 +167,21 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 ManagerId = message.ManagerId,
             };
 
-            await _entityDataService.Create<TeamEntity>(team);
+            team = await _entityDataService.Create<TeamEntity>(team);
+
+            TeamCreatedEventMessage eventMessage = new TeamCreatedEventMessage()
+            {
+                Id = team.Id,
+                OrganizationId = team.OrganizationId,
+                UsersId = team.MembersId
+            };
+
+            if (!team.MembersId.Contains(team.ManagerId) && !string.IsNullOrEmpty(team.ManagerId))
+            {
+                eventMessage.UsersId.Append(team.ManagerId);
+            }
+
+            await _publishEndpoint.Publish(eventMessage);
 
             return new CreateTeamCommandResult()
             {
