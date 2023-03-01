@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.Infrastructure.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,16 @@ namespace App.Services.Orders.Infrastructure.Events
 
         public string OrderId { get; set; }
 
-        public string[] Tickets { get; set; }
+        public decimal Total { get; set; }
 
-        public double Total { get; set; }
+        public OrderLine[] OrderLines { get; set; }
+
+        public class OrderLine
+        {
+            public string TicketId { get; set; }
+            public string ProductId { get; set; }
+            public int Quantity { get; set; }
+            public decimal Price { get; set; }
+        }
     }
 }
