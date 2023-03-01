@@ -43,7 +43,7 @@ public static class RabbitMqRegistrator
     {
         services.AddMassTransit(options =>
         {
-            options.SetKebabCaseEndpointNameFormatter();
+            options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(true));
 
             options.AddConsumers(assemblyToScan);
 
@@ -70,7 +70,7 @@ public static class RabbitMqRegistrator
     {
         services.AddMassTransit(options =>
         {
-            options.SetKebabCaseEndpointNameFormatter();
+            options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(true));
 
             options.UsingRabbitMq((context, configure) =>
             {
