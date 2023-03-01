@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 
 namespace App.Services.Tickets.Infrastructure.EventHandlers
 {
@@ -22,14 +23,13 @@ namespace App.Services.Tickets.Infrastructure.EventHandlers
 
         public async Task Consume(ConsumeContext<TicketOrderCreatedEventMessage> context)
         {
-            foreach (var ticket in context.Message.Tickets)
+            foreach (var orderLine in context.Message.OrderLines)
             {
-                var entity = await _entityDataService.GetEntity<TicketEntity>(ticket);
-
-                entity.OrderId = context.Message.OrderId;
-                entity.Status = "Ordered";
-
-                await _entityDataService.Update<TicketEntity>(entity);
+                await _entityDataService.Update<TicketEntity>(
+                    filter => filter.Eq(entity => entity.Id, orderLine.TicketId),
+                    builder => builder.Set(entity => entity.OrderId, context.Message.OrderId)
+                                      .Set(entity => entity.Status, "Ordered")
+                    );
             }
         }
     }

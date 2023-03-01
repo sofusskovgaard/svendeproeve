@@ -20,6 +20,19 @@ namespace App.Services.Orders.Common.Dtos
         public double Total { get; set; }
 
         [ProtoMember(4)]
-        public string[] TicketIds { get; set; }
+        public OrderLine[] OrderLines { get; set; }
+
+        [ProtoContract]
+        public class OrderLine
+        {
+            [ProtoMember(1)]
+            public string TicketId { get; set; }
+
+            [ProtoMember(2)]
+            public int Quantity { get; set; }
+
+            [ProtoMember(3)]
+            public decimal Price { get; set; }
+        }
     }
 }

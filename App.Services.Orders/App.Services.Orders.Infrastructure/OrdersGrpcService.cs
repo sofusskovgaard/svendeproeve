@@ -43,31 +43,31 @@ namespace App.Services.Orders.Infrastructure
             });
         }
 
-        public ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message)
-        {
-            return TryAsync(async () =>
-            {
-                var order = new OrderEntity
-                {
-                    UserId = message.UserId,
-                    Total = message.Total,
-                    TicketIds = message.TicketIds
-                };
+        //public ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message)
+        //{
+        //    return TryAsync(async () =>
+        //    {
+        //        var order = new OrderEntity
+        //        {
+        //            UserId = message.UserId,
+        //            Total = message.Total,
+        //            TicketIds = message.TicketIds
+        //        };
 
-                await _entityDataService.SaveEntity(order);
+        //        await _entityDataService.SaveEntity(order);
                 
-                var dto = _mapper.Map<OrderDto>(order);
+        //        var dto = _mapper.Map<OrderDto>(order);
 
-                return new CreateOrderGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Order = dto
-                };
-            });
-        }
+        //        return new CreateOrderGrpcCommandResult
+        //        {
+        //            Metadata = new GrpcCommandResultMetadata
+        //            {
+        //                Success = true
+        //            },
+        //            Order = dto
+        //        };
+        //    });
+        //}
 
         public ValueTask<GetProductByIdGrpcCommandResult> GetProductById(GetProductByIdGrpcCommandMessage message)
         {

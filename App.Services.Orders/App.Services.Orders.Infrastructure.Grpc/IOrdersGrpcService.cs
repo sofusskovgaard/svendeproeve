@@ -11,8 +11,8 @@ namespace App.Services.Orders.Infrastructure.Grpc
         [Operation]
         ValueTask<GetOrderByIdGrpcCommandResult> GetOrderById(GetOrderByIdGrpcCommandMessage message);
 
-        [Operation]
-        ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message);
+        //[Operation]
+        //ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message);
 
         [Operation]
         ValueTask<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage message);

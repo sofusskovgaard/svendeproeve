@@ -26,19 +26,21 @@ namespace App.Services.Orders.Infrastructure.EventHandlers
 
         public async Task Consume(ConsumeContext<TicketsBookedEventMessage> context)
         {
+            var products = await _entityDataService.ListEntities<ProductEntity>();
+
             var entity = new OrderEntity
             {
                 UserId = context.Message.UserId,
-                TicketIds = context.Message.Tickets.Select(x => x.TicketId).ToArray(),
-                Total = await GetTotal(context.Message.Tickets)
+                OrderLines = context.Message.Tickets.Select((ticket) => new OrderEntity.OrderLine { TicketId = ticket.TicketId, Price = products.FirstOrDefault(x => x.Id == ticket.ProductId).Price, Quantity = 1 , ProductId = ticket.ProductId}).ToArray(),
             };
+            entity.Total = GetTotal(entity.OrderLines);
 
             await _entityDataService.SaveEntity(entity);
 
             TicketOrderCreatedEventMessage message = new TicketOrderCreatedEventMessage
             {
                 OrderId = entity.Id,
-                Tickets = entity.TicketIds,
+                OrderLines = entity.OrderLines.Select((orderLine) => new TicketOrderCreatedEventMessage.OrderLine { TicketId = orderLine.TicketId, Price = orderLine.Price, ProductId = orderLine.ProductId, Quantity = orderLine.Quantity}).ToArray(),
                 Total = entity.Total,
                 UserId = entity.UserId,
             };
@@ -46,16 +48,9 @@ namespace App.Services.Orders.Infrastructure.EventHandlers
             await _publishEndpoint.Publish(message);
 
         }
-        private async Task<double> GetTotal(TicketsBookedEventMessage.Ticket[] tickets)
+        private decimal GetTotal(OrderEntity.OrderLine[] tickets)
         {
-            //TODO: smarter code
-            double total = 0;
-            foreach (var ticket in tickets)
-            {
-                var product = await _entityDataService.GetEntity<ProductEntity>(ticket.ProductId);
-                total += product.Price;
-            }
-            return total;
+            return tickets.Sum(x => x.Price);
         }
     }
 }

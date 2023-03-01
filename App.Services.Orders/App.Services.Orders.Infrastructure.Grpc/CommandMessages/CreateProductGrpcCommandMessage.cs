@@ -18,6 +18,6 @@ namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
         public string Description { get; set; }
 
         [ProtoMember(3)]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

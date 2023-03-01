@@ -21,21 +21,22 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id}));
         }
-        [HttpPost]
-        public Task<IActionResult> CreateOrder([FromBody] CreateOrderModel model)
-        {
-            return TryAsync(() =>
-            {
-                var command = new CreateOrderGrpcCommandMessage
-                {
-                    UserId  = model.UserId,
-                    Total = model.Total,
-                    TicketIds = model.TicketIds,
-                };
 
-                 return _ordersGrpcService.CreateOrder(command);
-            });
-        }
+        //[HttpPost]
+        //public Task<IActionResult> CreateOrder([FromBody] CreateOrderModel model)
+        //{
+        //    return TryAsync(() =>
+        //    {
+        //        var command = new CreateOrderGrpcCommandMessage
+        //        {
+        //            UserId  = model.UserId,
+        //            Total = model.Total,
+        //            TicketIds = model.TicketIds,
+        //        };
+
+        //         return _ordersGrpcService.CreateOrder(command);
+        //    });
+        //}
 
         [HttpGet]
         [Route("product/{id}")]
@@ -61,6 +62,6 @@ namespace App.Services.Gateway.Controllers
             });
         }
     }
-    public record CreateOrderModel(string UserId, double Total, string[] TicketIds);
-    public record CreateProductModel(string Name, string Description, double Price);
+    //public record CreateOrderModel(string UserId, decimal Total, string[] TicketIds);
+    public record CreateProductModel(string Name, string Description, decimal Price);
 }
