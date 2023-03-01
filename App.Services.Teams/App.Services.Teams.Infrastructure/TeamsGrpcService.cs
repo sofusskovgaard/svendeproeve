@@ -9,6 +9,7 @@ using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using Grpc.Core;
 using MassTransit;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace App.Services.Teams.Infrastructure;
@@ -219,15 +220,34 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            TeamEntity team = _mapper.Map<TeamEntity>(message.TeamDto);
-            await _entityDataService.Update<TeamEntity>(team);
+            //TeamEntity team = _mapper.Map<TeamEntity>(message.TeamDto);
+            //await _entityDataService.Update<TeamEntity>(team);
 
+            var team = await _entityDataService.GetEntity<TeamEntity>(message.TeamId);
+
+
+            var updateDefinition = new UpdateDefinitionBuilder<TeamEntity>().Set(entity => entity.Name, message.TeamDto.Name);
+
+            if (message.TeamDto.Bio != team.Bio)
+            {
+                updateDefinition.Set(entity => entity.Bio, message.TeamDto.Bio);
+            }
+            if (message.TeamDto.ProfilePicturePath != team.ProfilePicturePath)
+            {
+                updateDefinition.Set(entity => entity.ProfilePicturePath, message.TeamDto.ProfilePicturePath);
+            }
+            if (message.TeamDto.CoverPicturePath != team.CoverPicturePath)
+            {
+                updateDefinition.Set(entity => entity.CoverPicturePath, message.TeamDto.CoverPicturePath);
+            }
+
+            var result = await _entityDataService.Update<TeamEntity>(filter => filter.Eq(entity => entity.Id, team.Id), _ => updateDefinition);
+            
             return new UpdateTeamCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
-                    Success = true,
-                    Message = "Team updated"
+                    Success = result
                 }
             };
         });

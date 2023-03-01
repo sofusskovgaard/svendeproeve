@@ -8,8 +8,8 @@ namespace App.Services.Teams.Infrastructure.Mappers
     {
         public TeamEntityMapper()
         {
-            this.CreateMap<TeamEntity, TeamDto>();
-            this.CreateMap<TeamDto, TeamEntity>();
+            this.CreateMap<TeamEntity, TeamDto>().ReverseMap();
+            this.CreateMap<TeamEntity, UpdateTeamDto>().ReverseMap();
         }
     }
 }
