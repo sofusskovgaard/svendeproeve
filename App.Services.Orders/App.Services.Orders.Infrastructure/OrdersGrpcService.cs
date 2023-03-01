@@ -111,5 +111,16 @@ namespace App.Services.Orders.Infrastructure
                 };
             });
         }
+
+        public ValueTask<GetProductsGrpcCommandResult> GetProducts(GetProductsGrpcCommandMessage message)
+        {
+            return TryAsync(() =>
+            {
+                await _entityDataService.ListEntities<ProductEntity>();
+            });
+
+            
+
+        }
     }
 }

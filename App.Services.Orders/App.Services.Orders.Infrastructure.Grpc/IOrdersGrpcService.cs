@@ -19,5 +19,8 @@ namespace App.Services.Orders.Infrastructure.Grpc
 
         [Operation]
         ValueTask<GetProductByIdGrpcCommandResult> GetProductById(GetProductByIdGrpcCommandMessage message);
+
+        [Operation]
+        ValueTask<GetProductsGrpcCommandResult> GetProducts(GetProductsGrpcCommandMessage message);
     }
 }
