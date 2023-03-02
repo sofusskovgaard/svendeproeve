@@ -8,12 +8,18 @@ namespace App.Services.Organizations.Infrastructure.Grpc
     public interface IOrganizationsGrpcService
     {
         [Operation]
-        ValueTask<GetOrganizationByIdCommandResult> GetOrganizationById(GetOrganizationByIdCommandMessage message);
+        ValueTask<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(GetOrganizationByIdGrpcCommandMessage message);
         [Operation]
-        ValueTask<GetOrganizationsByAddressCommandResult> GetOrganizationsByAddress(GetOrganizationsByAddressCommandMessage message);
+        ValueTask<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(GetOrganizationsByAddressGrpcCommandMessage message);
         [Operation]
-        ValueTask<GetOrganizationsByNameCommandResult> GetOrganizationsByName(GetOrganizationsByNameCommandMessage message);
+        ValueTask<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(GetOrganizationsByNameGrpcCommandMessage message);
         [Operation]
-        ValueTask<CreateOrganizationCommandResult> CreateOrganization(CreateOrganizationCommandMessage message);
+        ValueTask<CreateOrganizationGrpcCommandResult> CreateOrganization(CreateOrganizationGrpcCommandMessage message);
+        [Operation]
+        ValueTask<UpdateOrganizationGrpcCommandResult> UpdateOrganization(UpdateOrganizationGrpcCommandMessage message);
+        [Operation]
+        ValueTask<DeleteOrganizationGrpcCommandResult> DeleteOrganization(DeleteOrganizationGrpcCommandMessage message);
+        [Operation]
+        ValueTask<GetOrganizationsGrpcCommandResult> GetOrganizations(GetOrganizationsGrpcCommandMessage message);
     }
 }

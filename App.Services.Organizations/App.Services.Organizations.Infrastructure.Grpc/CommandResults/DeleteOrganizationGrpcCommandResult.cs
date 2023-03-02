@@ -9,11 +9,9 @@ using System.Threading.Tasks;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class CreateOrganizationCommandResult : IGrpcCommandResult
+    public class DeleteOrganizationGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
-        [ProtoMember(2)]
-        public string OrganizationId { get; set; }
     }
 }
