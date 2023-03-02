@@ -17,5 +17,7 @@ namespace App.Services.Tickets.Data.Entities
         public string Recipient { get; set; }
 
         public string Status { get; set; }
+
+        public string OrderId { get; set; }
     }
 }
