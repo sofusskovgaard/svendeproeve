@@ -2,6 +2,7 @@
 using App.Infrastructure.Commands;
 using App.Services.Turnaments.Data.Entities;
 using App.Services.Turnaments.Infrastructure.Commands;
+using App.Services.Turnaments.Infrastructure.Events;
 using MassTransit;
 
 namespace App.Services.Turnaments.Infrastructure.CommandHandlers
@@ -28,6 +29,12 @@ namespace App.Services.Turnaments.Infrastructure.CommandHandlers
             };
 
             turnament = await this._entityDataService.Create<TurnamentEntity>(turnament);
+
+            await _publishEndpoint.Publish(new TurnamentCreatedEventMessage
+            {
+                Id = turnament.Id,
+                EventId = message.EventId
+            });
         }
     }
 }
