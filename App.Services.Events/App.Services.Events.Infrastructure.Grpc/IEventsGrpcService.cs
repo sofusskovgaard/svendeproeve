@@ -11,5 +11,9 @@ namespace App.Services.Events.Infrastructure.Grpc
         ValueTask<GetEventByIdGrpcCommandResult> GetEventById(GetEventByIdGrpcCommandMessage message);
         [Operation]
         ValueTask<CreateEventGrpcCommandResult> CreateEvent(CreateEventGrpcCommandMessage message);
+        [Operation]
+        ValueTask<UpdateEventGrpcCommandResult> UpdateEvent(UpdateEventGrpcCommandMessage message);
+        [Operation]
+        ValueTask<DeleteEventGrpcCommandResult> DeleteEvent(DeleteEventGrpcCommandMessage message);
     }
 }
