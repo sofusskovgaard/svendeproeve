@@ -10,9 +10,12 @@ using System.Threading.Tasks;
 namespace App.Services.Orders.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class CreateProductGrpcCommandResult : IGrpcCommandResult
+    public class GetProductsGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
+
+        [ProtoMember(2)]
+        public ProductDto[] Products { get; set; }
     }
 }

@@ -38,6 +38,17 @@ namespace App.Services.Gateway.Controllers
         //    });
         //}
 
+        /// <summary>
+        /// Gets all products
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("product")]
+        public Task <IActionResult> GetProducts()
+        {
+            return TryAsync(() => _ordersGrpcService.GetProducts(new GetProductsGrpcCommandMessage { }));
+        }
+
         [HttpGet]
         [Route("product/{id}")]
         public Task<IActionResult> GetProductById(string id)
