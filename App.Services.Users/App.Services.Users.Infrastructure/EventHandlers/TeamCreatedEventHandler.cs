@@ -18,20 +18,25 @@ namespace App.Services.Users.Infrastructure.EventHandlers
 
         public async Task Consume(ConsumeContext<TeamCreatedEventMessage> context)
         {
-            var users = await _entityDataService.ListEntitiesByIds<UserEntity>(context.Message.UsersId);
+            var users = await _entityDataService.ListEntities<UserEntity>();
 
             foreach (var user in users)
             {
-                user.Teams.Append(context.Message.Id);
-
-                var updateDefinition = new UpdateDefinitionBuilder<UserEntity>().Set(entity => entity.Teams, user.Teams);
-
-                if (!user.IsInTeam)
+                if (context.Message.UsersId.Contains(user.Id))
                 {
-                    updateDefinition = updateDefinition.Set(entity => entity.IsInTeam, true);
-                }
+                    List<string> teams = new List<string>();
+                    teams = user.Teams.ToList();
+                    teams.Add(context.Message.Id);
 
-                await _entityDataService.Update<UserEntity>(filter => filter.Eq(entity => entity.Id, user.Id), _ => updateDefinition);
+                    var updateDefinition = new UpdateDefinitionBuilder<UserEntity>().Set(entity => entity.Teams, teams.ToArray());
+
+                    if (!user.IsInTeam)
+                    {
+                        updateDefinition = updateDefinition.Set(entity => entity.IsInTeam, true);
+                    }
+
+                    await _entityDataService.Update<UserEntity>(filter => filter.Eq(entity => entity.Id, user.Id), _ => updateDefinition);
+                }
             }
         }
     }

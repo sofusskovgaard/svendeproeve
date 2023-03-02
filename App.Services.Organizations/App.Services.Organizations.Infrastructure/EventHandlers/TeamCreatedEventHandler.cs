@@ -20,9 +20,11 @@ namespace App.Services.Organizations.Infrastructure.EventHandlers
         {
             var organization = await _entityDataService.GetEntity<OrganizationEntity>(context.Message.OrganizationId);
 
-            organization.TeamIds.Append(context.Message.Id);
+            List<string> teamIds = new List<string>();
+            teamIds = organization.TeamIds.ToList();
+            teamIds.Add(context.Message.Id);
 
-            var updateDefinition = new UpdateDefinitionBuilder<OrganizationEntity>().Set(entity => entity.TeamIds, organization.TeamIds);
+            var updateDefinition = new UpdateDefinitionBuilder<OrganizationEntity>().Set(entity => entity.TeamIds, teamIds.ToArray());
 
             await _entityDataService.Update<OrganizationEntity>(filter => filter.Eq(entity => entity.Id, organization.Id), _ => updateDefinition);
         }
