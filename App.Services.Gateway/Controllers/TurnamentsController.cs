@@ -133,8 +133,6 @@ namespace App.Services.Gateway.Controllers
                         Id = model.Id,
                         Name = model.Name,
                         GameId = model.GameId,
-                        MatchesId = model.MatchesId,
-                        EventId = model.EventId
                     }
                 };
 
@@ -286,8 +284,7 @@ namespace App.Services.Gateway.Controllers
     /// <param name="Name"></param>
     /// <param name="GameId"></param>
     /// <param name="MatchesId"></param>
-    /// <param name="EventId"></param>
-    public record UpdateTurnamentModel(string Id, string Name, string GameId, string[] MatchesId, string EventId);
+    public record UpdateTurnamentModel(string Id, string Name, string GameId);
 
     /// <summary>
     /// Data required to create a new match

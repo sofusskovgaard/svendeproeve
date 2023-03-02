@@ -138,8 +138,12 @@ namespace App.Services.Turnaments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var turnament = this._mapper.Map<TurnamentEntity>(message.TurnamentDto);
-                await this._entityDataService.Update<TurnamentEntity>(turnament);
+                await _publishEndpoint.Publish(new UpdateTurnamentCommandMessage
+                {
+                    Id = message.TurnamentDto.Id,
+                    Name = message.TurnamentDto.Name,
+                    GameId = message.TurnamentDto.GameId,
+                });
 
                 return new UpdateTurnamentGrpcCommandResult
                 {
