@@ -4,11 +4,6 @@ using App.Services.Teams.Data.Entities;
 using App.Services.Teams.Infrastructure.Commands;
 using MassTransit;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Teams.Infrastructure.CommandHandlers
 {

@@ -3,14 +3,11 @@ using App.Infrastructure.Grpc;
 using App.Services.Teams.Common.Dtos;
 using App.Services.Teams.Data.Entities;
 using App.Services.Teams.Infrastructure.Commands;
-using App.Services.Teams.Infrastructure.Events;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
-using Grpc.Core;
 using MassTransit;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace App.Services.Teams.Infrastructure;
@@ -182,34 +179,17 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            TeamEntity team = await _entityDataService.GetEntity<TeamEntity>(message.Id);
-
-            GrpcCommandResultMetadata metadata;
-
-            if (team != null)
+            await _publishEndpoint.Publish(new DeleteTeamCommandMessage
             {
-                //await _entityDataService.Delete<TeamEntity>(team);
-
-                metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Team deleted"
-                };
-
-                await _publishEndpoint.Publish(new TeamDeletedEventMessage() { Id = message.Id });
-            }
-            else
-            {
-                metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = false,
-                    Message = "Could not find any teams with that id"
-                };
-            }
+                Id = message.Id
+            });
 
             return new DeleteTeamByIdGrpcCommandResult()
             {
-                Metadata = metadata
+                Metadata = new GrpcCommandResultMetadata()
+                {
+                    Success = true,
+                }
             };
         });
     }
@@ -226,7 +206,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 ProfilePicturePath = message.TeamDto.ProfilePicturePath,
                 CoverPicturePath = message.TeamDto.CoverPicturePath
             });
-            
+
             return new UpdateTeamGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
