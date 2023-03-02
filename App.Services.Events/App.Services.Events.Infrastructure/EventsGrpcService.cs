@@ -77,5 +77,44 @@ namespace App.Services.Events.Infrastructure
             });
         }
 
+        public ValueTask<UpdateEventGrpcCommandResult> UpdateEvent(UpdateEventGrpcCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var updateMessage = new UpdateEventCommandMessage
+                {
+                    Id = message.Id,
+                    Location = message.Location,
+                    StartDate = message.StartDate,
+                    EndDate = message.EndDate,
+                    EventName = message.EventName
+                };
+
+                await _publishEndpoint.Publish(updateMessage);
+
+                return new UpdateEventGrpcCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata { Success = true }
+                };
+            });
+        }
+
+        public ValueTask<DeleteEventGrpcCommandResult> DeleteEvent(DeleteEventGrpcCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var deleteMessage = new DeleteEventCommandMessage
+                {
+                    Id = message.Id,
+                };
+
+                await _publishEndpoint.Publish(deleteMessage);
+
+                return new DeleteEventGrpcCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata { Success = true }
+                };
+            });
+        }
     }
 }
