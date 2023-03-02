@@ -11,6 +11,8 @@ builder.Host.RegisterSerilog();
 
 builder.Services.RegisterOptions();
 
+builder.Services.AddAutoMapper(Assembly.Load("App.Services.Organizations.Infrastructure"));
+
 builder.Services.AddMongoDb();
 builder.Services.AddRabbitMq(Assembly.Load("App.Services.Organizations.Infrastructure"));
 

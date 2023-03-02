@@ -172,17 +172,13 @@ namespace App.Services.Gateway.Controllers
             {
                 var command = new UpdateTeamCommandMessage
                 {
-                    TeamDto = new TeamDto
+                    TeamId = model.Id,
+                    TeamDto = new UpdateTeamDto
                     {
-                        Id = model.Id,
                         Name = model.Name,
                         Bio = model.Bio,
                         ProfilePicturePath = model.ProfilePicturePath,
-                        CoverPicturePath = model.CoverPicturePath,
-                        GameId = model.GameId,
-                        MembersId = model.MembersId,
-                        ManagerId = model.ManagerId,
-                        OrganizationId = model.OrganizationId
+                        CoverPicturePath = model.CoverPicturePath
                     }
                 };
 
@@ -212,9 +208,5 @@ namespace App.Services.Gateway.Controllers
     /// <param name="Bio"></param>
     /// <param name="ProfilePicturePath"></param>
     /// <param name="CoverPicturePath"></param>
-    /// <param name="GameId"></param>
-    /// <param name="MembersId"></param>
-    /// <param name="ManagerId"></param>
-    /// <param name="OrganizationId"></param>
-    public record UpdateTeamModel(string Id, string Name, string Bio, string ProfilePicturePath, string CoverPicturePath, string GameId, string[] MembersId, string ManagerId, string OrganizationId);
+    public record UpdateTeamModel(string Id, string Name, string Bio, string ProfilePicturePath, string CoverPicturePath);
 }
