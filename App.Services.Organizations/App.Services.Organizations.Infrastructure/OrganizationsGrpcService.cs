@@ -76,7 +76,7 @@ namespace App.Services.Organizations.Infrastructure
             return TryAsync(async () =>
             {
                 //TODO: masstransit
-                var res = await this._entityDataservice.Create<OrganizationEntity>(new OrganizationEntity { Name = message.Name });
+                var res = await this._entityDataservice.Create<OrganizationEntity>(new OrganizationEntity { Name = message.Name, DepartmentId = message.DepartmentId });
                 return new CreateOrganizationCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()

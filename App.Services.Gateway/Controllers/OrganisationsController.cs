@@ -60,10 +60,11 @@ public class OrganisationsController : ApiController
                 Bio = model.Bio,
                 CoverPicture = model.CoverPicture,
                 ProfilePicture = model.ProfilePicture,
+                DepartmentId = model.DepartmentId
             };
             return _organizationsGrpcService.CreateOrganization(command);
         });
     }
 }
 
-public record CreateOrganizationModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address);
+public record CreateOrganizationModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);

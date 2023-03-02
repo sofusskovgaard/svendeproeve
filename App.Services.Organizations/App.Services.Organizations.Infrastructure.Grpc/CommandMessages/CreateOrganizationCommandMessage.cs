@@ -23,10 +23,10 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
         [ProtoMember(5)]
         public string[]? MemberIds { get; set; }
         [ProtoMember(6)]
-        public string[]? GameIds { get; set; }
-        [ProtoMember(7)]
         public string[]? TeamIds { get; set; }
-        [ProtoMember(8)]
+        [ProtoMember(7)]
         public string? Address { get; set; }
+        [ProtoMember(8)]
+        public string? DepartmentId { get; set; }
     }
 }
