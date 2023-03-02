@@ -29,7 +29,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetAllTeams()
         {
-            return TryAsync(() => this._teamsGrpcService.GetAllTeams(new GetAllTeamsCommandMessage()));
+            return TryAsync(() => this._teamsGrpcService.GetAllTeams(new GetAllTeamsGrpcCommandMessage()));
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTeamsByOrganizationId(string organizationid)
         {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdCommandMessage() { OrganizationId = organizationid }));
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdGrpcCommandMessage() { OrganizationId = organizationid }));
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTeamsByName(string name)
         {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameCommandMessage() { Name = name }));
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameGrpcCommandMessage() { Name = name }));
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTeamsByMemberId(string memberid)
         {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByMemberId(new GetTeamsByMemberIdCommandMessage() { MemberId = memberid }));
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByMemberId(new GetTeamsByMemberIdGrpcCommandMessage() { MemberId = memberid }));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTeamsByGameId(string gameid)
         {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByGameId(new GetTeamsByGameIdCommandMessage() { GameId = gameid }));
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByGameId(new GetTeamsByGameIdGrpcCommandMessage() { GameId = gameid }));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace App.Services.Gateway.Controllers
         [Route("{managerid}/manager")]
         public Task<IActionResult> GetTeamsByManagerId(string managerid)
         {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByManagerId(new GetTeamsByManagerIdCommandMessage() { ManagerId = managerid }));
+            return TryAsync(() => this._teamsGrpcService.GetTeamsByManagerId(new GetTeamsByManagerIdGrpcCommandMessage() { ManagerId = managerid }));
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTeamById(string id)
         {
-            return TryAsync(() => this._teamsGrpcService.GetTeamById(new GetTeamByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._teamsGrpcService.GetTeamById(new GetTeamByIdGrpcCommandMessage() { Id = id }));
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new CreateTeamCommandMessage
+                var command = new CreateTeamGrpcCommandMessage
                 {
                     Name = model.Name,
                     Bio = model.Bio,
@@ -154,7 +154,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteTeamById(string id)
         {
-            return TryAsync(() => this._teamsGrpcService.DeleteTeamById(new DeleteTeamByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._teamsGrpcService.DeleteTeamById(new DeleteTeamByIdGrpcCommandMessage() { Id = id }));
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new UpdateTeamCommandMessage
+                var command = new UpdateTeamGrpcCommandMessage
                 {
                     TeamId = model.Id,
                     TeamDto = new UpdateTeamDto

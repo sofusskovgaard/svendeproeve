@@ -1,15 +1,10 @@
 ﻿using App.Infrastructure.Grpc;
 using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Teams.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateTeamCommandMessage : IGrpcCommandMessage
+    public class CreateTeamGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Name { get; set; }

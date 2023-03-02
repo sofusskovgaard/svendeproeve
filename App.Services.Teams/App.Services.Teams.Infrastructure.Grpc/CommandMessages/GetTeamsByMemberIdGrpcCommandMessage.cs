@@ -4,8 +4,9 @@ using ProtoBuf;
 namespace App.Services.Teams.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetAllTeamsCommandMessage : IGrpcCommandMessage
+    public class GetTeamsByMemberIdGrpcCommandMessage : IGrpcCommandMessage
     {
-
+        [ProtoMember(1)]
+        public string MemberId { get; set; }
     }
 }
