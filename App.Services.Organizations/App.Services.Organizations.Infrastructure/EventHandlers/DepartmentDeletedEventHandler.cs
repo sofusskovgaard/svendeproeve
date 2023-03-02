@@ -5,7 +5,7 @@ using App.Services.Organizations.Data.Entities;
 using MassTransit;
 using MongoDB.Driver;
 
-namespace App.Services.Organizations.Infrastructure.Events
+namespace App.Services.Organizations.Infrastructure.EventHandlers
 {
     public class DepartmentDeletedEventHandler : IEventHandler<DepartmentDeletedEventMessage>
     {

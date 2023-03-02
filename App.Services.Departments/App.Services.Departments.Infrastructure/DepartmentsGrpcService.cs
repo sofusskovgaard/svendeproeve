@@ -17,10 +17,11 @@ namespace App.Services.Departments.Infrastructure
         private readonly IEntityDataService _entityDataService;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
-        public DepartmentsGrpcService(IEntityDataService entityDataService, IMapper mapper)
+        public DepartmentsGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _entityDataService = entityDataService;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         public ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsCommandMessage message)
