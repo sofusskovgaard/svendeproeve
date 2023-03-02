@@ -2,6 +2,7 @@
 using App.Infrastructure.Commands;
 using App.Services.Turnaments.Data.Entities;
 using App.Services.Turnaments.Infrastructure.Commands;
+using App.Services.Turnaments.Infrastructure.Events;
 using MassTransit;
 
 namespace App.Services.Turnaments.Infrastructure.CommandHandlers
@@ -24,6 +25,11 @@ namespace App.Services.Turnaments.Infrastructure.CommandHandlers
             var turnament = await _entityDataService.GetEntity<TurnamentEntity>(message.Id);
 
             await _entityDataService.Delete<TurnamentEntity>(turnament);
+
+            await _publishEndpoint.Publish(new TurnamentDeletedEventMessage
+            {
+                Id = message.Id
+            });
         }
     }
 }
