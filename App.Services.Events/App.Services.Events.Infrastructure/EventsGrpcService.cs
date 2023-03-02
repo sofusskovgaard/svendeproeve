@@ -2,6 +2,7 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Events.Common.Dtos;
 using App.Services.Events.Data.Entities;
+using App.Services.Events.Infrastructure.Commands;
 using App.Services.Events.Infrastructure.Grpc;
 using App.Services.Events.Infrastructure.Grpc.CommandMessages;
 using App.Services.Events.Infrastructure.Grpc.CommandResults;
@@ -43,10 +44,9 @@ namespace App.Services.Events.Infrastructure
 
         public ValueTask<CreateEventGrpcCommandResult> CreateEvent(CreateEventGrpcCommandMessage message)
         {
-            //TODO: Masstransit
             return TryAsync(async () =>
             {
-                var @event = new EventEntity
+                var @event = new CreateEventCommandMessage
                 {
                     EventName = message.EventName,
                     Location = message.Location,
@@ -54,14 +54,11 @@ namespace App.Services.Events.Infrastructure
                     EndDate = message.EndDate,
                 };
 
-                await _entityDataService.SaveEntity(@event);
-
-                var dto = _mapper.Map<EventDto>(@event);
+                await _publishEndpoint.Publish(@event);;
 
                 return new CreateEventGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata { Success = true },
-                    Event = dto
                 };
             });
         }
