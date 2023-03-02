@@ -1,12 +1,13 @@
 ﻿using App.Infrastructure.Grpc;
+using App.Services.Turnaments.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetMatchesByTurnamentIdCommandMessage : IGrpcCommandMessage
+    public class UpdateTurnamentGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public string TurnamentId { get; set; }
+        public TurnamentDto TurnamentDto { get; set; }
     }
 }

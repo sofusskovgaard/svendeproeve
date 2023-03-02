@@ -4,9 +4,9 @@ using ProtoBuf;
 namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetTurnamentByMatchIdCommandMessage : IGrpcCommandMessage
+    public class DeleteTurnamentByIdGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public string MatchId { get; set; }
+        public string Id { get; set; }
     }
 }

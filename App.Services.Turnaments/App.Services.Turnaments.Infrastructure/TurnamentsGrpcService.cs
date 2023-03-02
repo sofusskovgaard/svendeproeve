@@ -108,7 +108,7 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message)
+        public ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -236,7 +236,7 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message)
+        public ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -277,7 +277,7 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<DeleteMatchByIdCommandResult> DeleteMatchById(DeleteMatchByIdCommandMessage message)
+        public ValueTask<DeleteMatchByIdCommandResult> DeleteMatchById(DeleteMatchByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {

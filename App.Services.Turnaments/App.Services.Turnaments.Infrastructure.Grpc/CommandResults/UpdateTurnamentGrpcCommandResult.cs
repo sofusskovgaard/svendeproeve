@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Turnaments.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class DeleteMatchByIdCommandResult : IGrpcCommandResult
+    public class UpdateTurnamentGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
