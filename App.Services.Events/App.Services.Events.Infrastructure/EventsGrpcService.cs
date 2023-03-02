@@ -42,6 +42,20 @@ namespace App.Services.Events.Infrastructure
             });
         }
 
+        public ValueTask<GetEventsGrpcCommandResult> GetEvents(GetEventsGrpcCommandMessage mesage)
+        {
+            return TryAsync(async () =>
+            {
+                var events = await _entityDataService.ListEntities<EventEntity>();
+
+                return new GetEventsGrpcCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata { Success = true },
+                    Events = _mapper.Map<EventDto[]>(events)
+                };
+            });
+        }
+
         public ValueTask<CreateEventGrpcCommandResult> CreateEvent(CreateEventGrpcCommandMessage message)
         {
             return TryAsync(async () =>
