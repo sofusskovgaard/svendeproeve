@@ -12,5 +12,8 @@ namespace App.Services.Billing.Infrastructure.Grpc
 
         [Operation]
         ValueTask<CreateBillingGrpcCommandResult> CreateBilling(CreateBillingGrpcCommandMessage message);
+
+        [Operation]
+        ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message);
     }
 }

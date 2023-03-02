@@ -10,7 +10,10 @@ services:
       - "27017:27017"
 
   rabbitmq:
-    image: rabbitmq:3.11-management-alpine
+    image: ${DOCKER_REGISTRY-}rabbitmq
+    build:
+      context: .
+      dockerfile: docker/RabbitMQ.Dockerfile
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq

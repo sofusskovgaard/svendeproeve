@@ -19,5 +19,11 @@ namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
 
         [ProtoMember(3)]
         public decimal Price { get; set; }
+
+        [ProtoMember(4)]
+        public string? ReferenceId { get; set; }
+
+        [ProtoMember(5)]
+        public string? ReferenceType { get; set; }
     }
 }

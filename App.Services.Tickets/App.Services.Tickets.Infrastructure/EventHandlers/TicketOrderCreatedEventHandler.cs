@@ -26,10 +26,9 @@ namespace App.Services.Tickets.Infrastructure.EventHandlers
             foreach (var orderLine in context.Message.OrderLines)
             {
                 await _entityDataService.Update<TicketEntity>(
-                    filter => filter.Eq(entity => entity.Id, orderLine.TicketId),
+                    filter => filter.Eq(entity => entity.Id, orderLine.ReferenceId),
                     builder => builder.Set(entity => entity.OrderId, context.Message.OrderId)
-                                      .Set(entity => entity.Status, "Ordered")
-                    );
+                );
             }
         }
     }
