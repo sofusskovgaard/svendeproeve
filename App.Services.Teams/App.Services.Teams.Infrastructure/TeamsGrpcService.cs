@@ -2,6 +2,7 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Teams.Common.Dtos;
 using App.Services.Teams.Data.Entities;
+using App.Services.Teams.Infrastructure.Commands;
 using App.Services.Teams.Infrastructure.Events;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
@@ -155,7 +156,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            TeamEntity team = new TeamEntity()
+            await _publishEndpoint.Publish(new CreateTeamCommandMessage
             {
                 Name = message.Name,
                 Bio = message.Bio,
@@ -165,30 +166,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 OrganizationId = message.OrganizationId,
                 MembersId = message.MembersId,
                 ManagerId = message.ManagerId,
-            };
-
-            team = await _entityDataService.Create<TeamEntity>(team);
-
-            TeamCreatedEventMessage eventMessage = new TeamCreatedEventMessage()
-            {
-                Id = team.Id,
-                OrganizationId = team.OrganizationId,
-                UsersId = team.MembersId
-            };
-
-            if (!team.MembersId.Contains(team.ManagerId) && !string.IsNullOrEmpty(team.ManagerId))
-            {
-                eventMessage.UsersId.Append(team.ManagerId);
-            }
-
-            await _publishEndpoint.Publish(eventMessage);
+            });
 
             return new CreateTeamGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
-                    Success = true,
-                    Message = "Team oprettet"
+                    Success = true
                 }
             };
         });
