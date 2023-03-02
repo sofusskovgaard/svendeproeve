@@ -2,10 +2,12 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Turnaments.Common.Dtos;
 using App.Services.Turnaments.Data.Entities;
+using App.Services.Turnaments.Infrastructure.Commands;
 using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Turnaments.Infrastructure.Grpc.CommandMessages;
 using App.Services.Turnaments.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
+using MassTransit;
 using MongoDB.Driver;
 using ProtoBuf.Grpc.Configuration;
 
@@ -15,21 +17,23 @@ namespace App.Services.Turnaments.Infrastructure
     {
         private readonly IEntityDataService _entityDataService;
         private readonly IMapper _mapper;
-        public TurnamentsGrpcService(IEntityDataService entityDataService, IMapper mapper)
+        private readonly IPublishEndpoint _publishEndpoint;
+        public TurnamentsGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _entityDataService = entityDataService;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         #region Turnaments
 
-        public ValueTask<GetAllTurnamentsCommandResult> GetAllTurnaments(GetAllTurnamentsCommandMessage message)
+        public ValueTask<GetAllTurnamentsGrpcCommandResult> GetAllTurnaments(GetAllTurnamentsGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var turnaments = await this._entityDataService.ListEntities<TurnamentEntity>();
 
-                return new GetAllTurnamentsCommandResult
+                return new GetAllTurnamentsGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -40,13 +44,13 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<GetTurnamentsByEventIdCommandResult> GetTurnamentsByEventId(GetTurnamentsByEventIdCommandMessage message)
+        public ValueTask<GetTurnamentsByEventIdGrpcCommandResult> GetTurnamentsByEventId(GetTurnamentsByEventIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var turnaments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<TurnamentEntity>(entity => entity.EventId == message.EventId));
 
-                return new GetTurnamentsByEventIdCommandResult
+                return new GetTurnamentsByEventIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -57,13 +61,13 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<GetTurnamentsByGameIdCommandResult> GetTurnamentsByGameId(GetTurnamentsByGameIdCommandMessage message)
+        public ValueTask<GetTurnamentsByGameIdGrpcCommandResult> GetTurnamentsByGameId(GetTurnamentsByGameIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var turnaments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<TurnamentEntity>(entity => entity.GameId == message.GameId));
 
-                return new GetTurnamentsByGameIdCommandResult
+                return new GetTurnamentsByGameIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -74,13 +78,13 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<GetTurnamentByMatchIdCommandResult> GetTurnamentByMatchId(GetTurnamentByMatchIdCommandMessage message)
+        public ValueTask<GetTurnamentByMatchIdGrpcCommandResult> GetTurnamentByMatchId(GetTurnamentByMatchIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var turnament = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<TurnamentEntity>(entity => entity.MatchesId.Contains(message.MatchId)));
 
-                return new GetTurnamentByMatchIdCommandResult
+                return new GetTurnamentByMatchIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -91,13 +95,13 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<GetTurnamentByIdCommandResult> GetTuenamentById(GetTurnamentByIdCommandMessage message)
+        public ValueTask<GetTurnamentByIdGrpcCommandResult> GetTuenamentById(GetTurnamentByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var turnament = await this._entityDataService.GetEntity<TurnamentEntity>(message.Id);
 
-                return new GetTurnamentByIdCommandResult
+                return new GetTurnamentByIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -108,21 +112,19 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentGrpcCommandMessage message)
+        public ValueTask<CreateTurnamentGrpcCommandResult> CreateTurnament(CreateTurnamentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                TurnamentEntity turnament = new TurnamentEntity
+                await _publishEndpoint.Publish(new CreateTurnamentCommandMessage
                 {
+
                     Name = message.Name,
                     GameId = message.GameId,
-                    MatchesId = message.MatchesId,
                     EventId = message.EventId
-                };
+                });
 
-                await this._entityDataService.Create<TurnamentEntity>(turnament);
-
-                return new CreateTurnamentCommandResult
+                return new CreateTurnamentGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -132,14 +134,14 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<UpdateTurnamentCommandResult> UpdateTurnament(UpdateTurnamentCommandMessage message)
+        public ValueTask<UpdateTurnamentGrpcCommandResult> UpdateTurnament(UpdateTurnamentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var turnament = this._mapper.Map<TurnamentEntity>(message.TurnamentDto);
                 await this._entityDataService.Update<TurnamentEntity>(turnament);
 
-                return new UpdateTurnamentCommandResult
+                return new UpdateTurnamentGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -149,7 +151,7 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<DeleteTurnamentByIdCommandResult> DeleteTurnamentById(DeleteTurnamentByIdCommandMessage message)
+        public ValueTask<DeleteTurnamentByIdGrpcCommandResult> DeleteTurnamentById(DeleteTurnamentByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -175,7 +177,7 @@ namespace App.Services.Turnaments.Infrastructure
                     };
                 }
 
-                return new DeleteTurnamentByIdCommandResult
+                return new DeleteTurnamentByIdGrpcCommandResult
                 {
                     Metadata = metadata
                 };
@@ -185,13 +187,13 @@ namespace App.Services.Turnaments.Infrastructure
 
         #region Matches
         
-        public ValueTask<GetMatchesByTurnamentIdCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdCommandMessage message)
+        public ValueTask<GetMatchesByTurnamentIdGrpcCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var matches = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<MatchEntity>(entity => entity.TurnamentId == message.TurnamentId));
 
-                return new GetMatchesByTurnamentIdCommandResult
+                return new GetMatchesByTurnamentIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -202,13 +204,13 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<GetMatchesByTeamIdCommandResult> GetMatchesByTeamId(GetMatchesByTeamIdCommandMessage message)
+        public ValueTask<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeamId(GetMatchesByTeamIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var matches = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<MatchEntity>(entity => entity.TeamsId.Contains(message.TeamId)));
 
-                return new GetMatchesByTeamIdCommandResult
+                return new GetMatchesByTeamIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -219,13 +221,13 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<GetMatchByIdCommandResult> GetMatchById(GetMatchByIdCommandMessage message)
+        public ValueTask<GetMatchByIdGrpcCommandResult> GetMatchById(GetMatchByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var match = await this._entityDataService.GetEntity<MatchEntity>(message.Id);
 
-                return new GetMatchByIdCommandResult
+                return new GetMatchByIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -236,7 +238,7 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchGrpcCommandMessage message)
+        public ValueTask<CreateMatchGrpcCommandResult> CreateMatch(CreateMatchGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -249,7 +251,7 @@ namespace App.Services.Turnaments.Infrastructure
 
                 match = await this._entityDataService.Create<MatchEntity>(match);
 
-                return new CreateMatchCommandResult
+                return new CreateMatchGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -260,14 +262,14 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<UpdateMatchCommandResult> UpdateMatch(UpdateMatchCommandMessage message)
+        public ValueTask<UpdateMatchGrpcCommandResult> UpdateMatch(UpdateMatchGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var match = this._mapper.Map<MatchEntity>(message.MatchDto);
                 await this._entityDataService.Update<MatchEntity>(match);
 
-                return new UpdateMatchCommandResult
+                return new UpdateMatchGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -277,7 +279,7 @@ namespace App.Services.Turnaments.Infrastructure
             });
         }
 
-        public ValueTask<DeleteMatchByIdCommandResult> DeleteMatchById(DeleteMatchByIdGrpcCommandMessage message)
+        public ValueTask<DeleteMatchByIdGrpcCommandResult> DeleteMatchById(DeleteMatchByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -303,7 +305,7 @@ namespace App.Services.Turnaments.Infrastructure
                     };
                 }
 
-                return new DeleteMatchByIdCommandResult
+                return new DeleteMatchByIdGrpcCommandResult
                 {
                     Metadata = metadata
                 };

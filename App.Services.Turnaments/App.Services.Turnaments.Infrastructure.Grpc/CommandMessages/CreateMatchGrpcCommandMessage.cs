@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateMatchCommandMessage : IGrpcCommandMessage
+    public class CreateMatchGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Name { get; set; }

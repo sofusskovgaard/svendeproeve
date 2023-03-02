@@ -106,7 +106,6 @@ namespace App.Services.Gateway.Controllers
                 {
                     Name = model.Name,
                     GameId = model.GameId,
-                    MatchesId = model.MatchesId,
                     EventId = model.EventId
                 };
 
@@ -277,9 +276,8 @@ namespace App.Services.Gateway.Controllers
     /// </summary>
     /// <param name="Name"></param>
     /// <param name="GameId"></param>
-    /// <param name="MatchesId"></param>
     /// <param name="EventId"></param>
-    public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
+    public record CreateTurnamentModel(string Name, string GameId, string EventId);
 
     /// <summary>
     /// Data required to update a turnament
