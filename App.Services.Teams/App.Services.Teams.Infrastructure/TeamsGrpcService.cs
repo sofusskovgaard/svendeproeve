@@ -26,13 +26,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         _publishEndpoint = publishEndpoint;
     }
 
-    public ValueTask<GetAllTeamsCommandResult> GetAllTeams(GetAllTeamsCommandMessage message)
+    public ValueTask<GetAllTeamsGrpcCommandResult> GetAllTeams(GetAllTeamsGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var teams = await _entityDataService.ListEntities<TeamEntity>();
 
-            return new GetAllTeamsCommandResult()
+            return new GetAllTeamsGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -44,12 +44,12 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message)
+    public ValueTask<GetTeamsByOrganizationIdGrpcCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.OrganizationId == message.OrganizationId));
-            return new GetTeamsByOrganizationIdCommandResult()
+            return new GetTeamsByOrganizationIdGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -61,13 +61,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message)
+    public ValueTask<GetTeamsByMemberIdGrpcCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.MembersId.Contains(message.MemberId)));
 
-            return new GetTeamsByMemberIdCommandResult()
+            return new GetTeamsByMemberIdGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -79,13 +79,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message)
+    public ValueTask<GetTeamsByNameGrpcCommandResult> GetTeamsByName(GetTeamsByNameGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.Name.Contains(message.Name)));
 
-            return new GetTeamsByNameCommandResult()
+            return new GetTeamsByNameGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -97,13 +97,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message)
+    public ValueTask<GetTeamsByGameIdGrpcCommandResult> GetTeamsByGameId(GetTeamsByGameIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.GameId == message.GameId));
 
-            return new GetTeamsByGameIdCommandResult()
+            return new GetTeamsByGameIdGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -115,13 +115,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message)
+    public ValueTask<GetTeamsByManagerIdGrpcCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.ManagerId == message.ManagerId));
 
-            return new GetTeamsByManagerIdCommandResult()
+            return new GetTeamsByManagerIdGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -133,13 +133,13 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message)
+    public ValueTask<GetTeamByIdGrpcCommandResult> GetTeamById(GetTeamByIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
             var team = await _entityDataService.GetEntity<TeamEntity>(message.Id);
 
-            return new GetTeamByIdCommandResult()
+            return new GetTeamByIdGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -151,7 +151,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message)
+    public ValueTask<CreateTeamGrpcCommandResult> CreateTeam(CreateTeamGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
@@ -183,7 +183,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 
             await _publishEndpoint.Publish(eventMessage);
 
-            return new CreateTeamCommandResult()
+            return new CreateTeamGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
@@ -194,7 +194,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<DeleteTeamByIdCommandResult> DeleteTeamById(DeleteTeamByIdCommandMessage message)
+    public ValueTask<DeleteTeamByIdGrpcCommandResult> DeleteTeamById(DeleteTeamByIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
@@ -223,14 +223,14 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 };
             }
 
-            return new DeleteTeamByIdCommandResult()
+            return new DeleteTeamByIdGrpcCommandResult()
             {
                 Metadata = metadata
             };
         });
     }
 
-    public ValueTask<UpdateTeamCommandResult> UpdateTeam(UpdateTeamCommandMessage message)
+    public ValueTask<UpdateTeamGrpcCommandResult> UpdateTeam(UpdateTeamGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
@@ -257,7 +257,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 
             var result = await _entityDataService.Update<TeamEntity>(filter => filter.Eq(entity => entity.Id, team.Id), _ => updateDefinition);
             
-            return new UpdateTeamCommandResult()
+            return new UpdateTeamGrpcCommandResult()
             {
                 Metadata = new GrpcCommandResultMetadata()
                 {
