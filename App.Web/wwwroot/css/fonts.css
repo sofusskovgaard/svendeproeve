@@ -1,0 +1,7 @@
+﻿* {
+    font-family: 'Inter', var(--bs-font-sans-serif);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', var(--bs-font-sans-serif);
+}
