@@ -14,7 +14,5 @@ namespace App.Services.Orders.Infrastructure.Grpc.CommandResults
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }
-        [ProtoMember(2)]
-        public ProductDto Product{ get; set; }
     }
 }
