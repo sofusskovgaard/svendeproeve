@@ -159,31 +159,17 @@ namespace App.Services.Turnaments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var turnament = await this._entityDataService.GetEntity<TurnamentEntity>(message.Id);
-
-                GrpcCommandResultMetadata metadata;
-
-                if (turnament != null)
+                await _publishEndpoint.Publish(new DeleteTurnamentCommandMessage
                 {
-                    await this._entityDataService.Delete<TurnamentEntity>(turnament);
-
-                    metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    };
-                }
-                else
-                {
-                    metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = false,
-                        Message = "Could not find any Turnaments with that id"
-                    };
-                }
+                    Id = message.Id
+                });
 
                 return new DeleteTurnamentByIdGrpcCommandResult
                 {
-                    Metadata = metadata
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    }
                 };
             });
         }
