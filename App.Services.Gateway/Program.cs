@@ -1,8 +1,27 @@
+using System.IdentityModel.Tokens.Jwt;
 using App.Infrastructure.Extensions;
+using App.Services.Organizations.Infrastructure.Grpc;
+using App.Services.Teams.Infrastructure.Grpc;
+using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using App.Infrastructure.Options;
+using App.Services.Tickets.Infrastructure.Grpc;
+using App.Services.Events.Infrastructure.Grpc;
+using App.Services.Games.Infrastructure.Grpc;
+using App.Services.Turnaments.Infrastructure.Grpc;
+using App.Services.Orders.Infrastructure.Grpc;
+using App.Services.Billing.Infrastructure.Grpc;
+using App.Services.Authentication.Infrastructure.Grpc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +34,49 @@ builder.Services.RegisterOptions();
 builder.Services.AddRabbitMq();
 
 builder.Services.AddGrpcServiceClient<IUsersGrpcService>();
+builder.Services.AddGrpcServiceClient<IDepartmentsGrpcService>();
+builder.Services.AddGrpcServiceClient<IOrganizationsGrpcService>();
+builder.Services.AddGrpcServiceClient<ITeamsGrpcService>();
+builder.Services.AddGrpcServiceClient<IEventsGrpcService>();
+builder.Services.AddGrpcServiceClient<IGamesGrpcService>();
+builder.Services.AddGrpcServiceClient<ITurnamentsGrpcService>();
+builder.Services.AddGrpcServiceClient<IOrdersGrpcService>();
+builder.Services.AddGrpcServiceClient<ITicketGrpcService>();
+builder.Services.AddGrpcServiceClient<IBillingGrpcService>();
+builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo()
+    {
+        Title = "EUC Syd ESport Association",
+        Version = "v1"
+    });
+
+    var jwtSecurityScheme = new OpenApiSecurityScheme()
+    {
+        BearerFormat = "JWT",
+        Name = "JWT Authentication",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "**ONLY** insert your token",
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme,
+        },
+    };
+
+    options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
@@ -30,6 +86,28 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidIssuer = JwtOptions.Issuer,
+            ValidAudience = JwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key))
+        };
+    });
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("SuperAdmin");
+//});
 
 var app = builder.Build();
 
@@ -60,6 +138,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

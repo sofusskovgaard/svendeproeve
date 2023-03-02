@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\App.Services.Users\App.Services.Users.Infrastructure.Commands\App.Services.Users.Infrastructure.Commands.csproj" />
+        <ProjectReference Include="..\App.Services.Authentication.Data\App.Services.Authentication.Data.csproj" />
+        <ProjectReference Include="..\App.Services.Authentication.Infrastructure.Commands\App.Services.Authentication.Infrastructure.Commands.csproj" />
+        <ProjectReference Include="..\App.Services.Authentication.Infrastructure.Events\App.Services.Authentication.Infrastructure.Events.csproj" />
+        <ProjectReference Include="..\App.Services.Authentication.Infrastructure.Grpc\App.Services.Authentication.Infrastructure.Grpc.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="EventHandlers\" />
+      <Folder Include="Validators\" />
+    </ItemGroup>
+
+</Project>

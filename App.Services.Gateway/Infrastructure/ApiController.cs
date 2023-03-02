@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using App.Infrastructure.Grpc;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,9 @@ namespace App.Services.Gateway.Infrastructure;
 
 public abstract class ApiController : ControllerBase
 {
+    public CurrentUser CurrentUser => new(this.User.FindFirst("id")!.Value,
+        this.User.FindFirst(ClaimTypes.NameIdentifier)!.Value, this.User.FindFirst(ClaimTypes.Email)!.Value);
+
     /// <summary>
     ///     Try running a piece of synchronous business logic in a task or create a proper error response and log error.
     /// </summary>
@@ -53,10 +57,11 @@ public abstract class ApiController : ControllerBase
         {
             var response = await func.Invoke();
 
-            return async switch
+            return (async, response) switch
             {
-                true => Accepted(response),
-                false => Ok(response)
+                (true, { Metadata.Success: true }) => Accepted(response),
+                (false, { Metadata.Success: true }) => Ok(response),
+                (_, { Metadata.Success: false }) => BadRequest(response)
             };
         }
         catch (Exception ex)
@@ -96,3 +101,5 @@ public abstract class ApiController : ControllerBase
         };
     }
 }
+
+public record CurrentUser(string Id, string Username, string Email);

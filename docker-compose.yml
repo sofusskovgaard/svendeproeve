@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   mongo:
-    image: mongo
+    image: mongo:6.0.4
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo
       - MONGO_INITDB_ROOT_PASSWORD=mongo
@@ -14,6 +14,13 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
+    ports:
+      - "15672:15672"
+
+  redis:
+    image: redis:7.0.8-alpine
+    ports:
+      - "6379:6379"
 
   app.services.gateway:
     image: ${DOCKER_REGISTRY-}appservicesgateway
@@ -26,3 +33,65 @@ services:
     build:
       context: .
       dockerfile: App.Services.Users/App.Services.Users/Dockerfile
+
+  app.services.departments:
+    image: ${DOCKER_REGISTRY-}appservicesdepartments
+    build:
+      context: .
+      dockerfile: App.Services.Departments/App.Services.Departments/Dockerfile
+
+  app.services.organizations:
+    image: ${DOCKER_REGISTRY-}appservicesorganizations
+    build:
+      context: .
+      dockerfile: App.Services.Organizations/App.Services.Organizations/Dockerfile
+
+  app.services.teams:
+    image: ${DOCKER_REGISTRY-}appservicesteams
+    build:
+      context: .
+      dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
+
+  app.services.billing:
+    image: ${DOCKER_REGISTRY-}appservicesbilling
+    build:
+      context: .
+      dockerfile: App.Services.Billing/App.Services.Billing/Dockerfile
+
+  app.services.events:
+    image: ${DOCKER_REGISTRY-}appservicesevents
+    build:
+      context: .
+      dockerfile: App.Services.Events/App.Services.Events/Dockerfile
+
+  app.services.orders:
+    image: ${DOCKER_REGISTRY-}appservicesorders
+    build:
+      context: .
+      dockerfile: App.Services.Orders/App.Services.Orders/Dockerfile
+
+  app.services.tickets:
+    image: ${DOCKER_REGISTRY-}appservicestickets
+    build:
+      context: .
+      dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
+
+
+  app.services.games:
+    image: ${DOCKER_REGISTRY-}appservicesgames
+    build:
+      context: .
+      dockerfile: App.Services.Games/App.Services.Games/Dockerfile
+
+
+  app.services.turnaments:
+    image: ${DOCKER_REGISTRY-}appservicesturnaments
+    build:
+      context: .
+      dockerfile: App.Services.Turnaments/App.Services.Turnaments/Dockerfile
+
+  app.services.authentication:
+    image: ${DOCKER_REGISTRY-}appservicesauthentication
+    build:
+      context: .
+      dockerfile: App.Services.Authentication/App.Services.Authentication/Dockerfile

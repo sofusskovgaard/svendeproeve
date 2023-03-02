@@ -1,5 +1,6 @@
 using System.Reflection;
 using App.Infrastructure.Commands;
+using App.Infrastructure.Events;
 using App.Infrastructure.Options;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,32 +11,41 @@ namespace App.Infrastructure.Extensions;
 public static class RabbitMqRegistrator
 {
     /// <summary>
-    /// Add RabbitMQ and it's command handlers to service collection. Uses the <see cref="TTypeAssemblyToSearch" /> generic type to choose a namespace to search in. 
+    ///     Add RabbitMQ and it's command handlers to service collection. Uses the <see cref="TTypeAssemblyToSearch" /> generic
+    ///     type to choose a namespace to search in.
     /// </summary>
-    /// <param name="services">The target <see cref="IServiceCollection"/></param>
+    /// <param name="services">The target <see cref="IServiceCollection" /></param>
     /// <param name="config">An optional configuration</param>
     /// <typeparam name="TTypeAssemblyToSearchT">The type assembly to search</typeparam>
-    public static void AddRabbitMq(this IServiceCollection services, Assembly assemblyToScan,
-        Action<IBusRegistrationContext, IRabbitMqBusFactoryConfigurator>? config = null)
-    {
-        var typeInAssembly = assemblyToScan.GetTypes().FirstOrDefault(type => type.GetInterfaces().Any(iface => iface == typeof(ICommandHandler)));
-        AddRabbitMq(services, typeInAssembly, config);
-    }
+    //public static void AddRabbitMq(this IServiceCollection services, Assembly assemblyToScan,
+    //    Action<IBusRegistrationContext, IRabbitMqBusFactoryConfigurator>? config = null)
+    //{
+    //    var typeInAssembly = assemblyToScan.GetTypes().FirstOrDefault(type => type.GetInterfaces().Any(iface =>
+    //        iface switch
+    //        {
+    //            ICommandHandler => true,
+    //            IEventHandler => true,
+    //            _ => false
+    //        }));
+
+    //    if ()
+    //    AddRabbitMq(services, typeInAssembly, config);
+    //}
 
     /// <summary>
-    /// Add RabbitMQ and it's command handlers to service collection. Uses the <see cref="Type" /> to choose a namespace to search in.
+    /// Add RabbitMQ and it's command handlers to service collection. Uses the <see cref="Assembly" /> to choose a namespace to search in.
     /// </summary>
     /// <param name="services">The target <see cref="IServiceCollection"/></param>
-    /// <param name="typeAssemblyToSearch">The type assembly to search</param>
+    /// <param name="assemblyToScan">The assembly to search</param>
     /// <param name="config">An optional configuration</param>
-    public static void AddRabbitMq(this IServiceCollection services, Type typeAssemblyToSearch,
+    public static void AddRabbitMq(this IServiceCollection services, Assembly assemblyToScan,
         Action<IBusRegistrationContext, IRabbitMqBusFactoryConfigurator>? config = null)
     {
         services.AddMassTransit(options =>
         {
-            options.SetKebabCaseEndpointNameFormatter();
+            options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(true));
 
-            options.AddConsumersFromNamespaceContaining(typeAssemblyToSearch);
+            options.AddConsumers(assemblyToScan);
 
             options.UsingRabbitMq((context, configure) =>
             {
@@ -60,7 +70,7 @@ public static class RabbitMqRegistrator
     {
         services.AddMassTransit(options =>
         {
-            options.SetKebabCaseEndpointNameFormatter();
+            options.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter(true));
 
             options.UsingRabbitMq((context, configure) =>
             {
