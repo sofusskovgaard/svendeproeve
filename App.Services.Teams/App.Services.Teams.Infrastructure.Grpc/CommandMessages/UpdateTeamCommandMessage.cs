@@ -8,6 +8,9 @@ namespace App.Services.Teams.Infrastructure.Grpc.CommandMessages
     public class UpdateTeamCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public TeamDto TeamDto { get; set; }
+        public string TeamId { get; set; }
+
+        [ProtoMember(2)]
+        public UpdateTeamDto TeamDto { get; set; }
     }
 }

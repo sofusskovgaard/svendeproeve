@@ -2,7 +2,8 @@
 
 namespace App.Services.Teams.Infrastructure.Events
 {
-    public class TestEventMessage : IEventMessage
+    public class TeamDeletedEventMessage : IEventMessage
     {
+        public string Id { get; set; }
     }
 }
