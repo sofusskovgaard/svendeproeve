@@ -12,8 +12,8 @@ namespace App.Services.Organizations.Data.Entities
         public string? ProfilePicture { get; set; }
         public string? CoverPicture { get; set; }
         public string[]? MemberIds { get; set; }
-        public string[]? GameIds { get; set; }
         public string[]? TeamIds { get; set; }
         public string? Address { get; set; }
+        public string? DepartmentId { get; set; }
     }
 }

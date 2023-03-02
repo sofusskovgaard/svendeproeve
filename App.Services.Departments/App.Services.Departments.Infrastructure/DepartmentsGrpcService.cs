@@ -2,11 +2,12 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Departments.Common.Dtos;
 using App.Services.Departments.Data.Entities;
+using App.Services.Departments.Infrastructure.Events;
 using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandMessages;
 using App.Services.Departments.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
-using Grpc.Core;
+using MassTransit;
 using MongoDB.Driver;
 
 namespace App.Services.Departments.Infrastructure
@@ -15,6 +16,7 @@ namespace App.Services.Departments.Infrastructure
     {
         private readonly IEntityDataService _entityDataService;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
         public DepartmentsGrpcService(IEntityDataService entityDataService, IMapper mapper)
         {
             _entityDataService = entityDataService;
@@ -145,12 +147,13 @@ namespace App.Services.Departments.Infrastructure
 
                 if (department != null)
                 {
-                    await this._entityDataService.Delete<DepartmentEntity>(department);
+                    var res = await _entityDataService.Delete<DepartmentEntity>(department);
+
+                    await _publishEndpoint.Publish(new DepartmentDeletedEventMessage() { Id = message.Id });
 
                     metadata = new GrpcCommandResultMetadata()
                     {
-                        Success = true,
-                        Message = "Department deleted"
+                        Success = res
                     };
                 }
                 else
