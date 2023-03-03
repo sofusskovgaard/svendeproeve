@@ -242,8 +242,6 @@ namespace App.Services.Gateway.Controllers
                     {
                         Id = model.Id,
                         Name = model.Name,
-                        TeamsId = model.TeamsId,
-                        TurnamentId = model.TurnamentId,
                         WinningTeamId = model.WinningTeamId
                     }
                 };
@@ -283,7 +281,6 @@ namespace App.Services.Gateway.Controllers
     /// <param name="Id"></param>
     /// <param name="Name"></param>
     /// <param name="GameId"></param>
-    /// <param name="MatchesId"></param>
     public record UpdateTurnamentModel(string Id, string Name, string GameId);
 
     /// <summary>
@@ -299,8 +296,6 @@ namespace App.Services.Gateway.Controllers
     /// </summary>
     /// <param name="Id"></param>
     /// <param name="Name"></param>
-    /// <param name="TeamsId"></param>
-    /// <param name="TurnamentId"></param>
     /// <param name="WinningTeamId"></param>
-    public record UpdateMatchModel(string Id, string Name, string[] TeamsId, string TurnamentId, string WinningTeamId);
+    public record UpdateMatchModel(string Id, string Name, string WinningTeamId);
 }
