@@ -76,6 +76,7 @@ public class OrganisationsController : ApiController
                 Bio = model.Bio,
                 CoverPicture = model.CoverPicture,
                 ProfilePicture = model.ProfilePicture,
+                DepartmentId = model.DepartmentId
             };
             return _organizationsGrpcService.CreateOrganization(command);
         });
@@ -101,6 +102,7 @@ public class OrganisationsController : ApiController
                 CoverPicture = model.CoverPicture,
                 Name = model.Name,
                 ProfilePicture = model.ProfilePicture,
+                DepartmentId = model.DepartmentId
             };
 
             return _organizationsGrpcService.UpdateOrganization(command);
@@ -128,5 +130,5 @@ public class OrganisationsController : ApiController
     }
 }
 
-public record CreateOrganizationModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address);
-public record UpdateOrganizaitonModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address);
+public record CreateOrganizationModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);
+public record UpdateOrganizaitonModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);

@@ -34,6 +34,7 @@ namespace App.Services.Organizations.Infrastructure.CommandHandlers
                 CoverPicture = message.CoverPicture,
                 Name = message.Name,
                 ProfilePicture = message.ProfilePicture,
+                DepartmentId = message.DepartmentId,
             };
 
             await _entityDataService.SaveEntity(entity);

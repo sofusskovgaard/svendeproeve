@@ -101,7 +101,8 @@ namespace App.Services.Organizations.Infrastructure
                     Bio = message.Bio,
                     CoverPicture = message.CoverPicture,
                     Name = message.Name,
-                    ProfilePicture = message.ProfilePicture
+                    ProfilePicture = message.ProfilePicture,
+                    DepartmentId = message.DepartmentId
                 };
 
                 await _publishEndpoint.Publish(createMessage);
@@ -124,7 +125,8 @@ namespace App.Services.Organizations.Infrastructure
                     Bio = message.Bio,
                     CoverPicture = message.CoverPicture,
                     Name = message.Name,
-                    ProfilePicture = message.ProfilePicture
+                    ProfilePicture = message.ProfilePicture,
+                    DepartmentId = message.DepartmentId,
                 };
 
                 await _publishEndpoint.Publish(updateMessage);
@@ -152,7 +154,6 @@ namespace App.Services.Organizations.Infrastructure
                     Metadata = new GrpcCommandResultMetadata { Success = true }
                 };
             });
-
         }
     }
 }

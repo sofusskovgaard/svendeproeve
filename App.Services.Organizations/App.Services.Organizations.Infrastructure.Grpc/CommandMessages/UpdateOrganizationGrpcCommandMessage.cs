@@ -28,5 +28,8 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
 
         [ProtoMember(6)]
         public string? Address { get; set; }
+
+        [ProtoMember(7)]
+        public string? DepartmentId { get; set; }
     }
 }

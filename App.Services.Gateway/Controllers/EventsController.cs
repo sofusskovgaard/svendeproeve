@@ -50,6 +50,33 @@ namespace App.Services.Gateway.Controllers
                 return _eventsGrpcService.CreateEvent(command);
             });
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public Task<IActionResult> UpdateEvent(string id, [FromBody] UpdateEventModel model)
+        {
+            return TryAsync(() =>
+            {
+                return _eventsGrpcService.UpdateEvent(new UpdateEventGrpcCommandMessage
+                {
+                    Id = id,
+                    EventName = model.Name,
+                    Location = model.Location,
+                    StartDate = model.StartDate,
+                    EndDate = model.EndDate
+                });
+            });
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public Task<IActionResult> DeleteEvent(string id)
+        {
+            return TryAsync(() =>
+            {
+                return _eventsGrpcService.DeleteEvent(new DeleteEventGrpcCommandMessage { Id = id });
+            });
+        }
     }
 
     /// <summary>
@@ -60,4 +87,7 @@ namespace App.Services.Gateway.Controllers
     /// <param name="StartDate">Start date of the event</param>
     /// <param name="EndDate">End date of the event</param>
     public record CreateEventModel(string EventName, string Location, DateTime StartDate, DateTime EndDate);
+
+    public record UpdateEventModel(string Name, string Location, DateTime StartDate, DateTime EndDate);
+
 }

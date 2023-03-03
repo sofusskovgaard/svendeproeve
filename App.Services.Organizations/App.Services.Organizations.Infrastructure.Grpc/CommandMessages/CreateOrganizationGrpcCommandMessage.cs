@@ -28,12 +28,11 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
         public string[]? MemberIds { get; set; }
 
         [ProtoMember(6)]
-        public string[]? GameIds { get; set; }
-
-        [ProtoMember(7)]
         public string[]? TeamIds { get; set; }
+        [ProtoMember(7)]
+        public string? Address { get; set; }
 
         [ProtoMember(8)]
-        public string? Address { get; set; }
+        public string? DepartmentId { get; set; }
     }
 }

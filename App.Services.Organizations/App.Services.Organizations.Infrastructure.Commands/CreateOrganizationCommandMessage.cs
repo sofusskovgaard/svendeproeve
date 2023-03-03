@@ -14,5 +14,6 @@ namespace App.Services.Organizations.Infrastructure.Commands
         public string? ProfilePicture { get; set; }
         public string? CoverPicture { get; set; }
         public string? Address { get; set; }
+        public string? DepartmentId { get; set; }
     }
 }

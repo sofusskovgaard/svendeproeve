@@ -32,6 +32,7 @@ namespace App.Services.Organizations.Infrastructure.CommandHandlers
                                   .Set(entity => entity.ProfilePicture, message.ProfilePicture)
                                   .Set(entity => entity.Address, message.Address)
                                   .Set(entity => entity.Bio, message.Bio)
+                                  .Set(entity => entity.DepartmentId, message.DepartmentId)
                 );
         }
     }

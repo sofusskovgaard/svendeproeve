@@ -28,5 +28,7 @@ namespace App.Services.Organizations.Common.Dtos
         public string[] TeamIds { get; set; }
         [ProtoMember(9)]
         public string? Address { get; set; }
+        [ProtoMember(10)]
+        public string? DepartmentId { get; set; }
     }
 }

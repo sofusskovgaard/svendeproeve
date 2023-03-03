@@ -1,5 +1,4 @@
 ﻿using App.Infrastructure.Grpc;
-using App.Services.Events.Common.Dtos;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 namespace App.Services.Events.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class CreateEventGrpcCommandResult : IGrpcCommandResult
+    public class DeleteEventGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }

@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Services.Teams.Infrastructure.Grpc.CommandResults
+namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateTeamCommandResult : IGrpcCommandResult
+    public class DeleteEventGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public GrpcCommandResultMetadata Metadata { get; set; }
+        public string Id { get; set; }
     }
 }

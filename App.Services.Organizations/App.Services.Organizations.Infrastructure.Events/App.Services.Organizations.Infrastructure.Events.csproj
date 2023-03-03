@@ -7,7 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\App.Data\App.Data.csproj" />
       <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\App.Services.Departments\App.Services.Departments.Infrastructure.Events\App.Services.Departments.Infrastructure.Events.csproj" />
+      <ProjectReference Include="..\App.Services.Organizations.Data\App.Services.Organizations.Data.csproj" />
     </ItemGroup>
 
 </Project>
