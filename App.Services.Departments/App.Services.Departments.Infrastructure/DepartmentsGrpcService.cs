@@ -3,6 +3,7 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Departments.Common.Dtos;
 using App.Services.Departments.Data.Entities;
+using App.Services.Departments.Infrastructure.Commands;
 using App.Services.Departments.Infrastructure.Events;
 using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandMessages;
@@ -101,21 +102,17 @@ namespace App.Services.Departments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                DepartmentEntity department = new DepartmentEntity()
+                await _publishEndpoint.Publish(new CreateDepartmentCommandMessage
                 {
                     Name = message.Name,
-                    Address = message.Address,
-                    OrganizationIds = message.OrganizationIds
-                };
-
-                await _entityDataService.Create<DepartmentEntity>(department);
+                    Address = message.Address
+                });
 
                 return new CreateDepartmentGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
-                        Success = true,
-                        Message = "Department created"
+                        Success = true
                     }
                 };
             });

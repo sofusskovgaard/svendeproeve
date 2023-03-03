@@ -87,7 +87,6 @@ namespace App.Services.Gateway.Controllers
                 {
                     Name = model.Name,
                     Address = model.Address,
-                    OrganizationIds = model.OrganizationIds
                 };
 
                 return this._departmentsGrpcService.CreateDepartment(command);
@@ -137,8 +136,7 @@ namespace App.Services.Gateway.Controllers
     /// </summary>
     /// <param name="Name"></param>
     /// <param name="Address"></param>
-    /// <param name="OrganizationIds"></param>
-    public record CreateDepartmentModel(string Name, string Address, string[] OrganizationIds);
+    public record CreateDepartmentModel(string Name, string Address);
 
     /// <summary>
     /// Data required to update a department
