@@ -8,33 +8,33 @@ namespace App.Services.Teams.Infrastructure.Grpc
     public interface ITeamsGrpcService
     {
         [Operation]
-        ValueTask<GetAllTeamsCommandResult> GetAllTeams(GetAllTeamsCommandMessage message);
+        ValueTask<GetAllTeamsGrpcCommandResult> GetAllTeams(GetAllTeamsGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTeamsByOrganizationIdCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdCommandMessage message);
+        ValueTask<GetTeamsByOrganizationIdGrpcCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTeamsByNameCommandResult> GetTeamsByName(GetTeamsByNameCommandMessage message);
+        ValueTask<GetTeamsByNameGrpcCommandResult> GetTeamsByName(GetTeamsByNameGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTeamsByMemberIdCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdCommandMessage message);
+        ValueTask<GetTeamsByMemberIdGrpcCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTeamsByGameIdCommandResult> GetTeamsByGameId(GetTeamsByGameIdCommandMessage message);
+        ValueTask<GetTeamsByGameIdGrpcCommandResult> GetTeamsByGameId(GetTeamsByGameIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTeamsByManagerIdCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdCommandMessage message);
+        ValueTask<GetTeamsByManagerIdGrpcCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTeamByIdCommandResult> GetTeamById(GetTeamByIdCommandMessage message);
+        ValueTask<GetTeamByIdGrpcCommandResult> GetTeamById(GetTeamByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<CreateTeamCommandResult> CreateTeam(CreateTeamCommandMessage message);
+        ValueTask<CreateTeamGrpcCommandResult> CreateTeam(CreateTeamGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<DeleteTeamByIdCommandResult> DeleteTeamById(DeleteTeamByIdCommandMessage message);
+        ValueTask<DeleteTeamByIdGrpcCommandResult> DeleteTeamById(DeleteTeamByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<UpdateTeamCommandResult> UpdateTeam(UpdateTeamCommandMessage message);
+        ValueTask<UpdateTeamGrpcCommandResult> UpdateTeam(UpdateTeamGrpcCommandMessage message);
     }
 }

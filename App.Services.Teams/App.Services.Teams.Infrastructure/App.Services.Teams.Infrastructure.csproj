@@ -15,4 +15,8 @@
         <ProjectReference Include="..\App.Services.Teams.Infrastructure.Grpc\App.Services.Teams.Infrastructure.Grpc.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="EventHandlers\" />
+    </ItemGroup>
+
 </Project>
