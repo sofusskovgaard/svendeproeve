@@ -1,6 +1,7 @@
-﻿using App.Services.Gateway.Common;
+﻿using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
+using App.Services.Gateway.Common;
+using App.Services.Users.Common.Dtos;
 using App.Web.Services;
-using Blazored.LocalStorage;
 
 namespace App.Web.Stores;
 
@@ -55,15 +56,15 @@ public class SessionStore : ISessionStore
 
     #region Methods
 
-    public async Task Login(string username, string email)
+    public async Task Login(string username, string password)
     {
-        var response = await _apiService.Login(new LoginModel(username, email));
+        var response = await _apiService.Login(new LoginGrpcCommandMessage() { Username = username, Password = password });
 
         if (response.Metadata.Success)
         {
             _tokenStore.WriteToken(response.AccessToken, response.RefreshToken, DateTime.UtcNow.AddSeconds(response.ExpiresIn - 30));
 
-            var currentUserResponse = await _apiService.Me();
+            var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
             this.CurrentUser = currentUserResponse.User;
 
             this.LoggedIn = true;
@@ -74,8 +75,15 @@ public class SessionStore : ISessionStore
         string confirmPassword)
     {
         var response =
-            await _apiService.Register(new RegisterModel(firstname, lastname, username, email, password,
-                confirmPassword));
+            await _apiService.Register(new RegisterGrpcCommandMessage()
+            {
+                Firstname = firstname,
+                Lastname = lastname,
+                Username = username,
+                Email = email,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            });
 
         if (response.Metadata.Success)
         {
@@ -136,7 +144,7 @@ public class SessionStore : ISessionStore
             {
                 Console.WriteLine("Found RefreshToken");
 
-                var response = await _apiService.Me();
+                var response = await _apiService.GetCurrentlyLoggedInUser();
                 this.CurrentUser = response.User;
 
                 this.LoggedIn = true;
@@ -157,7 +165,7 @@ public interface ISessionStore
 
     bool Loaded { get; }
 
-    Task Login(string username, string email);
+    Task Login(string username, string password);
 
     Task<bool> Register(string firstname, string lastname, string username, string email, string password,
         string confirmPassword);

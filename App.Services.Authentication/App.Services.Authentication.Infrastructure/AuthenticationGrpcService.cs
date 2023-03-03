@@ -9,10 +9,7 @@ using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
 using App.Services.Users.Infrastructure.Commands;
 using MassTransit;
-using MongoDB.Driver;
-using ProtoBuf.Grpc.Configuration;
-using RabbitMQ.Client;
-using System.Text.RegularExpressions;
+using App.Common.Grpc;
 using App.Services.Authentication.Infrastructure.Validators;
 
 namespace App.Services.Authentication.Infrastructure

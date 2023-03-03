@@ -7,7 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj"/>
+      <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

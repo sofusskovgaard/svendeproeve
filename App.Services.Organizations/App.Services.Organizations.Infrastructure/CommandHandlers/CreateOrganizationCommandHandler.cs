@@ -4,11 +4,6 @@ using App.Services.Organizations.Data.Entities;
 using App.Services.Organizations.Infrastructure.Commands;
 using App.Services.Organizations.Infrastructure.Events;
 using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Organizations.Infrastructure.CommandHandlers
 {

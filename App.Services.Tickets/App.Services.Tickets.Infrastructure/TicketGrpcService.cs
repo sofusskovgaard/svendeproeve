@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Tickets.Common.Dtos;
@@ -8,7 +9,6 @@ using App.Services.Tickets.Infrastructure.Grpc.CommandMessages;
 using App.Services.Tickets.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Tickets.Infrastructure
 {

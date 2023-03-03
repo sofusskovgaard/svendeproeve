@@ -4,11 +4,6 @@ using App.Services.Orders.Data.Entities;
 using App.Services.Orders.Infrastructure.Events;
 using App.Services.Tickets.Infrastructure.Events;
 using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Orders.Infrastructure.EventHandlers
 {

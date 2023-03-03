@@ -1,10 +1,8 @@
 using App.Data.Extensions;
 using App.Data.Utilities;
 using App.Infrastructure.Extensions;
-using App.Infrastructure.Options;
 using App.Services.Authentication.Infrastructure;
 using ProtoBuf.Grpc.Server;
-using ProtoBuf.Meta;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

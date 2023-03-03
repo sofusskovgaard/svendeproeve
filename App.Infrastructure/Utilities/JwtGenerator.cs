@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using App.Infrastructure.Options;
-using MassTransit.Caching.Internals;
 using Microsoft.IdentityModel.Tokens;
 
 namespace App.Infrastructure.Utilities;
