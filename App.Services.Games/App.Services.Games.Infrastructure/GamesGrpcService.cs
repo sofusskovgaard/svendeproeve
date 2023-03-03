@@ -143,31 +143,17 @@ namespace App.Services.Games.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
-
-                GrpcCommandResultMetadata metadata;
-
-                if (game != null)
+                await _publishEndpoint.Publish(new DeleteGameCommandMessage
                 {
-                    await this._entityDataService.Delete<GameEntity>(game);
-
-                    metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    };
-                }
-                else
-                {
-                    metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = false,
-                        Message = "Could not find any games with that id"
-                    };
-                }
+                    Id = message.Id
+                });
 
                 return new DeleteGameByIdGrpcCommandResult
                 {
-                    Metadata = metadata
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    }
                 };
             });
         }
