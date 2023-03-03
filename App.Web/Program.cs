@@ -1,5 +1,5 @@
 using App.Web.Config;
-using App.Web.Services;
+using App.Web.Services.ApiService;
 using App.Web.Stores;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;

@@ -16,7 +16,6 @@
     <Folder Include="Config\" />
     <Folder Include="Pages\Components\" />
     <Folder Include="Stores\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
