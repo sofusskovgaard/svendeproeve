@@ -4,7 +4,6 @@ using App.Services.Authentication.Data.Entities;
 using App.Services.Authentication.Infrastructure.Commands;
 using App.Services.Authentication.Infrastructure.Events;
 using MassTransit;
-using MongoDB.Driver;
 
 namespace App.Services.Authentication.Infrastructure.CommandHandlers
 {

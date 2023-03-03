@@ -1,10 +1,7 @@
 ﻿using App.Services.Gateway.Infrastructure;
-using App.Services.Organizations.Data.Entities;
 using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
-using App.Services.Organizations.Infrastructure.Grpc.CommandResults;
 using Microsoft.AspNetCore.Mvc;
-using ProtoBuf;
 
 namespace App.Services.Gateway.Controllers;
 

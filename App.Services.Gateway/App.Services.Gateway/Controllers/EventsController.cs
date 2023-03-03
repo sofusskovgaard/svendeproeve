@@ -1,9 +1,7 @@
 ﻿using App.Services.Events.Infrastructure.Grpc;
 using App.Services.Events.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ZstdSharp.Unsafe;
 
 namespace App.Services.Gateway.Controllers
 {

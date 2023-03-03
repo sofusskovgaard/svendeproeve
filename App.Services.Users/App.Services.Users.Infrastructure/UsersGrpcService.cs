@@ -1,6 +1,6 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
-using App.Infrastructure.Utilities;
 using App.Services.Users.Common.Dtos;
 using App.Services.Users.Data.Entities;
 using App.Services.Users.Infrastructure.Commands;
@@ -9,8 +9,6 @@ using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 
 namespace App.Services.Users.Infrastructure;
 

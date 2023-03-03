@@ -1,4 +1,4 @@
-namespace App.Infrastructure.Grpc;
+namespace App.Common.Grpc;
 
 public interface IGrpcCommandMessage
 {
