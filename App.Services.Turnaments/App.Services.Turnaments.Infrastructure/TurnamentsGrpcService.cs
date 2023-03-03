@@ -232,22 +232,19 @@ namespace App.Services.Turnaments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                MatchEntity match = new MatchEntity
+                await _publishEndpoint.Publish(new CreateMatchCommandMessage
                 {
                     Name = message.Name,
                     TeamsId = message.TeamsId,
                     TurnamentId = message.TurnamentId
-                };
-
-                match = await this._entityDataService.Create<MatchEntity>(match);
+                });
 
                 return new CreateMatchGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
                         Success = true
-                    },
-                    Id = match.Id
+                    }
                 };
             });
         }
