@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Departments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetDepartmentsByOrganizationIdCommandMessage : IGrpcCommandMessage
+    public class GetDepartmentsByOrganizationIdGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
             public string OrganizationId { get; set; }

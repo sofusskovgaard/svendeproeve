@@ -3,6 +3,7 @@ using App.Infrastructure.Events;
 using App.Services.Organizations.Data.Entities;
 using App.Services.Teams.Infrastructure.Events;
 using MassTransit;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
 namespace App.Services.Organizations.Infrastructure.EventHandlers
@@ -21,7 +22,10 @@ namespace App.Services.Organizations.Infrastructure.EventHandlers
             var organization = await _entityDataService.GetEntity<OrganizationEntity>(context.Message.OrganizationId);
 
             List<string> teamIds = new List<string>();
-            teamIds = organization.TeamIds.ToList();
+            if (!organization.TeamIds.IsNullOrEmpty())
+            {
+                teamIds = organization.TeamIds.ToList();
+            }
             teamIds.Add(context.Message.Id);
 
             var updateDefinition = new UpdateDefinitionBuilder<OrganizationEntity>().Set(entity => entity.TeamIds, teamIds.ToArray());
