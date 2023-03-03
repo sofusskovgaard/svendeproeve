@@ -26,7 +26,9 @@ services:
     image: ${DOCKER_REGISTRY-}appservicesgateway
     build:
       context: .
-      dockerfile: App.Services.Gateway/Dockerfile
+      dockerfile: App.Services.Gateway/App.Services.Gateway/Dockerfile
+    ports:
+      - "3000:443"
 
   app.services.users:
     image: ${DOCKER_REGISTRY-}appservicesusers
@@ -76,13 +78,11 @@ services:
       context: .
       dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
 
-
   app.services.games:
     image: ${DOCKER_REGISTRY-}appservicesgames
     build:
       context: .
       dockerfile: App.Services.Games/App.Services.Games/Dockerfile
-
 
   app.services.turnaments:
     image: ${DOCKER_REGISTRY-}appservicesturnaments

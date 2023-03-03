@@ -104,12 +104,17 @@ builder.Services
         };
     });
 
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 //builder.Services.AddAuthorization(options =>
 //{
 //    options.AddPolicy("SuperAdmin");
 //});
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseSerilogRequestLogging(options =>
 {

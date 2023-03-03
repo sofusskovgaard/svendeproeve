@@ -1,6 +1,7 @@
 ﻿using System.Net.Mime;
 using App.Services.Authentication.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
+using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
 using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
@@ -169,16 +170,3 @@ public class AuthenticationController : ApiController
             () => _authenticationGrpcService.KillSessions(new KillUserSessionsGrpcCommandMessage() { UserId = this.CurrentUser.Id }), true);
     }
 }
-
-public record LoginModel(string Username, string Password);
-
-public record RegisterModel(string Firstname, string Lastname, string Username, string Email, string Password,
-    string ConfirmPassword);
-
-public record RefreshTokenModel(string RefreshToken);
-
-public record ChangeUsernameModel(string Username);
-
-public record ChangeEmailModel(string Email);
-
-public record ChangePasswordModel(string Password, string ConfirmPassword);

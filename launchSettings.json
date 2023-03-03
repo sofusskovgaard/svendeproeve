@@ -10,7 +10,18 @@
         "app.services.gateway": "StartDebugging",
         "app.services.users": "StartDebugging",
         "mongo": "StartWithoutDebugging",
-        "rabbitmq": "StartWithoutDebugging"
+        "rabbitmq": "StartWithoutDebugging",
+        "app.services.authentication": "StartDebugging",
+        "app.services.billing": "StartDebugging",
+        "app.services.departments": "StartDebugging",
+        "app.services.events": "StartDebugging",
+        "app.services.games": "StartDebugging",
+        "app.services.orders": "StartDebugging",
+        "app.services.organizations": "StartDebugging",
+        "app.services.teams": "StartDebugging",
+        "app.services.tickets": "StartDebugging",
+        "app.services.turnaments": "StartDebugging",
+        "redis": "StartWithoutDebugging"
       }
     }
   }

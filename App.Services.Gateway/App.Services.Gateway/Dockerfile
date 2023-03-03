@@ -5,14 +5,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["App.Services.Gateway/App.Services.Gateway.csproj", "App.Services.Gateway/"]
+COPY ["App.Services.Gateway/App.Services.Gateway/App.Services.Gateway.csproj", "App.Services.Gateway/"]
 RUN dotnet restore "App.Services.Gateway/App.Services.Gateway.csproj"
 COPY . .
 WORKDIR "/src/App.Services.Gateway"
-RUN dotnet build "App.Services.Gateway.csproj" -c Release -o /app/build
+RUN dotnet build "App.Services.Gateway/App.Services.Gateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "App.Services.Gateway.csproj" -c Release -o /app/publish
+RUN dotnet publish "App.Services.Gateway/App.Services.Gateway.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Security.Claims;
 using App.Infrastructure.Grpc;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Services.Gateway.Infrastructure;
