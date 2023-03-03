@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
-using App.Services.Gateway.Common;
 using App.Services.Users.Common.Dtos;
 using App.Web.Services.ApiService;
 using Microsoft.IdentityModel.Tokens;
