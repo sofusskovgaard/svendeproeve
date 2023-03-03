@@ -102,7 +102,7 @@ builder.Services
         {
             ValidIssuer = JwtOptions.Issuer,
             ValidAudience = JwtOptions.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key)),
         };
     });
 

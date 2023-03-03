@@ -18,7 +18,7 @@ public class JwtGeneratorService : IJwtGeneratorService
 
     public async ValueTask<string> GenerateAccessToken(JwtPayload payload)
     {
-        var ecdsa = await _jwtKeyService.GetKey();
+        var key = await _jwtKeyService.GetKey();
 
         var descriptor = new SecurityTokenDescriptor()
         {
@@ -26,12 +26,12 @@ public class JwtGeneratorService : IJwtGeneratorService
             {
                 new Claim("id", payload.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, payload.Username),
-                new Claim(JwtRegisteredClaimNames.Email, payload.Email),
+                new Claim(JwtRegisteredClaimNames.Email, payload.Email)
             }),
             Expires = DateTime.UtcNow.AddSeconds(JwtOptions.TokenLifeTime),
             Issuer = JwtOptions.Issuer,
             Audience = JwtOptions.Audience,
-            SigningCredentials = new SigningCredentials(new ECDsaSecurityKey(ecdsa), SecurityAlgorithms.EcdsaSha256)
+            SigningCredentials = new SigningCredentials(new ECDsaSecurityKey(key.Item2) { KeyId = key.Item1 }, SecurityAlgorithms.EcdsaSha256)
         };
 
         if (payload.IsAdmin)

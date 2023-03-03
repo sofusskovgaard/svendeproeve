@@ -294,12 +294,13 @@ namespace App.Services.Authentication.Infrastructure
         {
             return this.TryAsync(async () =>
             {
-                var ecdsa = await _jwtKeyService.GetKey();
+                var key = await _jwtKeyService.GetKey();
 
                 return new GetPublicKeyGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata(),
-                    PublicKey = Convert.ToBase64String(ecdsa.ExportSubjectPublicKeyInfo())
+                    PublicKey = Convert.ToBase64String(key.Item2.ExportSubjectPublicKeyInfo()),
+                    KeyId = key.Item1
                 };
             });
         }

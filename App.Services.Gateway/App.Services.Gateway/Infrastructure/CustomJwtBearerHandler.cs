@@ -108,24 +108,29 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
 
                 validationParameters.IssuerSigningKeys = validationParameters.IssuerSigningKeys?.Concat(_configuration.SigningKeys)
                                                          ?? _configuration.SigningKeys;
-
-                // THIS IS THE IMPORTANT PART
-
-                ECDsa ecdsa;
-
-                if (!_issuerSigningKeyCache.Cache.TryGetValue("ECDSA", out ecdsa))
-                {
-                    var key = await _authenticationGrpcService.PublicKey(new GetPublicKeyGrpcCommandMessage());
-
-                    ecdsa = ECDsa.Create();
-                    ecdsa.ImportSubjectPublicKeyInfo(new ReadOnlySpan<byte>(Convert.FromBase64String(key.PublicKey)), out _);
-
-                    _issuerSigningKeyCache.Cache.Set("ECDSA", ecdsa);
-                }
-
-                validationParameters.IssuerSigningKeys =
-                    validationParameters.IssuerSigningKeys?.Concat(new[] { new ECDsaSecurityKey(ecdsa) });
             }
+
+            #region THIS IS THE IMPORTANT PART
+
+            ECDsa ecdsa;
+
+            if (!_issuerSigningKeyCache.Cache.TryGetValue("ECDSA", out ecdsa) || !this._issuerSigningKeyCache.Cache.TryGetValue("KEY_ID", out string? kid))
+            {
+                var key = await _authenticationGrpcService.PublicKey(new GetPublicKeyGrpcCommandMessage());
+
+                ecdsa = ECDsa.Create();
+                ecdsa.ImportSubjectPublicKeyInfo(new ReadOnlySpan<byte>(Convert.FromBase64String(key.PublicKey)), out _);
+
+                kid = key.KeyId;
+
+                _issuerSigningKeyCache.Cache.Set("ECDSA", ecdsa);
+                _issuerSigningKeyCache.Cache.Set("KEY_ID", kid);
+            }
+            
+            validationParameters.IssuerSigningKeys =
+                validationParameters.IssuerSigningKeys?.Concat(new[] { new ECDsaSecurityKey(ecdsa) { KeyId = kid } }) ?? new[] { new ECDsaSecurityKey(ecdsa) { KeyId = kid } };
+
+            #endregion
 
             List<Exception>? validationFailures = null;
             SecurityToken? validatedToken = null;

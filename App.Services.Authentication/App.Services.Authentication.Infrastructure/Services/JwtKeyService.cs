@@ -18,26 +18,29 @@ public class JwtKeyService : IJwtKeyService
 
     private MemoryCache _cache { get; } = new(new MemoryCacheOptions());
 
+    private const string ID_KEY = "KEY_ID";
     private const string ECDSA_PRIVATE_KEY = "ECDSA_PRIVATE";
     private const string ECDSA_PUBLIC_KEY = "ECDSA_PUBLIC";
 
-    public async ValueTask<ECDsa> GetKey()
+    public async ValueTask<Tuple<string, ECDsa>> GetKey()
     {
 
         if (_cache.TryGetValue(ECDSA_PUBLIC_KEY, out string? publicKey))
         {
-
             if (_cache.TryGetValue(ECDSA_PRIVATE_KEY, out string? privateKey))
             {
-                var ecdsa = ECDsa.Create();
+                if (_cache.TryGetValue(ID_KEY, out string? kid))
+                {
+                    var ecdsa = ECDsa.Create();
 
-                var publicKeyArr = Convert.FromBase64String(publicKey);
-                var privateKeyArr = Convert.FromBase64String(privateKey);
+                    var publicKeyArr = Convert.FromBase64String(publicKey);
+                    var privateKeyArr = Convert.FromBase64String(privateKey);
 
-                ecdsa.ImportSubjectPublicKeyInfo(publicKeyArr, out _);
-                ecdsa.ImportECPrivateKey(privateKeyArr, out _);
+                    ecdsa.ImportSubjectPublicKeyInfo(publicKeyArr, out _);
+                    ecdsa.ImportECPrivateKey(privateKeyArr, out _);
 
-                return ecdsa;
+                    return new Tuple<string, ECDsa>(kid, ecdsa);
+                }
             }
         }
 
@@ -63,6 +66,7 @@ public class JwtKeyService : IJwtKeyService
             await _entityDataService.SaveEntity(entity);
         }
 
+        _cache.Set(ID_KEY, entity.Id);
         _cache.Set(ECDSA_PRIVATE_KEY, entity.PrivateKey);
         _cache.Set(ECDSA_PUBLIC_KEY, entity.PublicKey);
 
@@ -72,5 +76,5 @@ public class JwtKeyService : IJwtKeyService
 
 public interface IJwtKeyService
 {
-    ValueTask<ECDsa> GetKey();
+    ValueTask<Tuple<string, ECDsa>> GetKey();
 }

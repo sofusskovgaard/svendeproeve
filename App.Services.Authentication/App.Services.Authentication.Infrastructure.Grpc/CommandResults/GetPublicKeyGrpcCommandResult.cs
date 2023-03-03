@@ -10,5 +10,8 @@ public class GetPublicKeyGrpcCommandResult : IGrpcCommandResult
     public GrpcCommandResultMetadata Metadata { get; set; }
 
     [ProtoMember(2)]
+    public string KeyId { get; set; }
+
+    [ProtoMember(3)]
     public string PublicKey { get; set; }
 }
