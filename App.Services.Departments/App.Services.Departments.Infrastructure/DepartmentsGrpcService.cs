@@ -25,79 +25,79 @@ namespace App.Services.Departments.Infrastructure
             _publishEndpoint = publishEndpoint;
         }
 
-        public ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsCommandMessage message)
+        public ValueTask<GetAllDepartmentsGrpcCommandResult> GetAllDepartments(GetAllDepartmentsGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var departments = await _entityDataService.ListEntities<DepartmentEntity>();
 
-                return new GetAllDepartmentsCommandResult()
+                return new GetAllDepartmentsGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
                         Success = true,
                         Message = "Getting departments"
                     },
-                    DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
                 };
             });
         }
 
-        public ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameCommandMessage message)
+        public ValueTask<GetDepartmentsByNameGrpcCommandResult> GetDepartmentsByName(GetDepartmentsByNameGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                var departments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.Name.Contains(message.Name)));
+                var departments = await _entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.Name.Contains(message.Name)));
 
-                return new GetDepartmentsByNameCommandResult()
+                return new GetDepartmentsByNameGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
                         Success = true,
                         Message = "Getting departments"
                     },
-                    DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
                 };
             });
         }
 
-        public ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdCommandMessage message)
+        public ValueTask<GetDepartmentsByOrganizationIdGrpcCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                var departments = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.OrganizationIds.Contains(message.OrganizationId)));
+                var departments = await _entityDataService.ListEntities(new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.OrganizationIds.Contains(message.OrganizationId)));
 
-                return new GetDepartmentsByOrganizationIdCommandResult()
+                return new GetDepartmentsByOrganizationIdGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
                         Success = true,
                         Message = "Getting departments"
                     },
-                    DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                    DepartmentDtos = _mapper.Map<IEnumerable<DepartmentDto>>(departments)
                 };
             });
         }
 
-        public ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdCommandMessage message)
+        public ValueTask<GetDepartmentByIdGrpcCommandResult> GetDepartmentById(GetDepartmentByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                var department = await this._entityDataService.GetEntity<DepartmentEntity>(message.Id);
+                var department = await _entityDataService.GetEntity<DepartmentEntity>(message.Id);
 
-                return new GetDepartmentByIdCommandResult()
+                return new GetDepartmentByIdGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
                         Success = true,
                         Message = "Getting department"
                     },
-                    DepartmentDto = this._mapper.Map<DepartmentDto>(department)
+                    DepartmentDto = _mapper.Map<DepartmentDto>(department)
                 };
             });
         }
 
-        public ValueTask<CreateDepartmentCommandResult> CreateDepartment(CreateDepartmentCommandMessage message)
+        public ValueTask<CreateDepartmentGrpcCommandResult> CreateDepartment(CreateDepartmentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -108,9 +108,9 @@ namespace App.Services.Departments.Infrastructure
                     OrganizationIds = message.OrganizationIds
                 };
 
-                await this._entityDataService.Create<DepartmentEntity>(department);
+                await _entityDataService.Create<DepartmentEntity>(department);
 
-                return new CreateDepartmentCommandResult()
+                return new CreateDepartmentGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -121,14 +121,14 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentCommandMessage message)
+        public ValueTask<UpdateDepartmentGrpcCommandResult> UpdateDepartment(UpdateDepartmentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                DepartmentEntity department = this._mapper.Map<DepartmentEntity>(message.DepartmentDto);
-                await this._entityDataService.Update<DepartmentEntity>(department);
+                DepartmentEntity department = _mapper.Map<DepartmentEntity>(message.DepartmentDto);
+                await _entityDataService.Update<DepartmentEntity>(department);
 
-                return new UpdateDepartmentCommandResult()
+                return new UpdateDepartmentGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
@@ -139,11 +139,11 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdCommandMessage message)
+        public ValueTask<DeleteDepartmentByIdGrpcCommandResult> DeleteDepartmentById(DeleteDepartmentByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                DepartmentEntity department = await this._entityDataService.GetEntity<DepartmentEntity>(message.Id);
+                DepartmentEntity department = await _entityDataService.GetEntity<DepartmentEntity>(message.Id);
 
                 GrpcCommandResultMetadata metadata;
 
@@ -167,7 +167,7 @@ namespace App.Services.Departments.Infrastructure
                     };
                 }
 
-                return new DeleteDepartmentByIdCommandResult()
+                return new DeleteDepartmentByIdGrpcCommandResult()
                 {
                     Metadata = metadata
                 };

@@ -25,7 +25,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetAllDepartments()
         {
-            return TryAsync(() => this._departmentsGrpcService.GetAllDepartments(new GetAllDepartmentsCommandMessage()));
+            return TryAsync(() => this._departmentsGrpcService.GetAllDepartments(new GetAllDepartmentsGrpcCommandMessage()));
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetDepartmentsByName(string name)
         {
-            return TryAsync(() => this._departmentsGrpcService.GetDepartmentsByName(new GetDepartmentsByNameCommandMessage() { Name = name }));
+            return TryAsync(() => this._departmentsGrpcService.GetDepartmentsByName(new GetDepartmentsByNameGrpcCommandMessage() { Name = name }));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetDepartmentsByOrganizationId(string organizationid)
         {
-            return TryAsync(() => this._departmentsGrpcService.GetDepartmentsByOrganizationId(new GetDepartmentsByOrganizationIdCommandMessage() { OrganizationId = organizationid }));
+            return TryAsync(() => this._departmentsGrpcService.GetDepartmentsByOrganizationId(new GetDepartmentsByOrganizationIdGrpcCommandMessage() { OrganizationId = organizationid }));
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetDepartmentById(string id)
         {
-            return TryAsync(() => this._departmentsGrpcService.GetDepartmentById(new GetDepartmentByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._departmentsGrpcService.GetDepartmentById(new GetDepartmentByIdGrpcCommandMessage() { Id = id }));
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new CreateDepartmentCommandMessage
+                var command = new CreateDepartmentGrpcCommandMessage
                 {
                     Name = model.Name,
                     Address = model.Address,
@@ -105,7 +105,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> UpdateDepartment([FromBody] UpdateDepartmentModel model)
         {
-            return TryAsync(() => this._departmentsGrpcService.UpdateDepartment(new UpdateDepartmentCommandMessage() 
+            return TryAsync(() => this._departmentsGrpcService.UpdateDepartment(new UpdateDepartmentGrpcCommandMessage() 
             { 
                 DepartmentDto = new DepartmentDto()
                 {
@@ -128,7 +128,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteDepartmentById(string id)
         {
-            return TryAsync(() => this._departmentsGrpcService.DeleteDepartmentById(new DeleteDepartmentByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._departmentsGrpcService.DeleteDepartmentById(new DeleteDepartmentByIdGrpcCommandMessage() { Id = id }));
         }
     }
 
