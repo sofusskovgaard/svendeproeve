@@ -5,7 +5,7 @@ using ProtoBuf;
 namespace App.Services.Departments.Infrastructure.Grpc.CommandResults
 {
     [ProtoContract]
-    public class GetDepartmentsByNameCommandResult : IGrpcCommandResult
+    public class GetDepartmentsByNameGrpcCommandResult : IGrpcCommandResult
     {
         [ProtoMember(1)]
         public GrpcCommandResultMetadata Metadata { get; set; }

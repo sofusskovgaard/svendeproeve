@@ -9,11 +9,9 @@ namespace App.Services.Departments.Infrastructure.CommandHandlers
     public class CreateDepartmentCommandHandler : ICommandHandler<CreateDepartmentCommandMessage>
     {
         private readonly IEntityDataService _entityDataService;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public CreateDepartmentCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        public CreateDepartmentCommandHandler(IEntityDataService entityDataService)
         {
             _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
         }
 
         public async Task Consume(ConsumeContext<CreateDepartmentCommandMessage> context)
@@ -26,8 +24,7 @@ namespace App.Services.Departments.Infrastructure.CommandHandlers
                 Address = message.Address,
             };
 
-            department = await _entityDataService.Create<DepartmentEntity>(department);
-
+            await _entityDataService.Create<DepartmentEntity>(department);
         }
     }
 }

@@ -122,8 +122,12 @@ namespace App.Services.Departments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                DepartmentEntity department = _mapper.Map<DepartmentEntity>(message.DepartmentDto);
-                await _entityDataService.Update<DepartmentEntity>(department);
+                await _publishEndpoint.Publish(new UpdateDepartmentCommandMessage
+                {
+                    Id = message.DepartmentDto.Id,
+                    Name = message.DepartmentDto.Name,
+                    Address = message.DepartmentDto.Address
+                });
 
                 return new UpdateDepartmentGrpcCommandResult()
                 {

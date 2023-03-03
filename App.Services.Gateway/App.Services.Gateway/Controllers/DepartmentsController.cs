@@ -111,7 +111,6 @@ namespace App.Services.Gateway.Controllers
                     Id = model.Id,
                     Name = model.Name,
                     Address = model.Address,
-                    OrganizationIds = model.OrganizationIds
                 }
             }));
         }
@@ -144,6 +143,5 @@ namespace App.Services.Gateway.Controllers
     /// <param name="Id"></param>
     /// <param name="Name"></param>
     /// <param name="Address"></param>
-    /// <param name="OrganizationIds"></param>
-    public record UpdateDepartmentModel(string Id, string Name, string Address, string[] OrganizationIds);
+    public record UpdateDepartmentModel(string Id, string Name, string Address);
 }
