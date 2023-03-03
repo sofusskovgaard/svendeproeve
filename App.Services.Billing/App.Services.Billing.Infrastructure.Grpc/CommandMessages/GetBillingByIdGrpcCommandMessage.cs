@@ -1,4 +1,4 @@
-using App.Infrastructure.Grpc;
+using App.Common.Grpc;
 using ProtoBuf;
 
 namespace App.Services.Billing.Infrastructure.Grpc.CommandMessages

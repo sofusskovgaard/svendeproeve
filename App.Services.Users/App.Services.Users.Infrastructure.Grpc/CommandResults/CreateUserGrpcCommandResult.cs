@@ -1,4 +1,4 @@
-﻿using App.Infrastructure.Grpc;
+﻿using App.Common.Grpc;
 using App.Services.Users.Common.Dtos;
 using ProtoBuf;
 

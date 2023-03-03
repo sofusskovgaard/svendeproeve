@@ -1,4 +1,5 @@
 using System.Reflection;
+using App.Common.Grpc;
 using App.Infrastructure.Grpc;
 using App.Infrastructure.Utilities;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Turnaments.Common.Dtos;
@@ -7,7 +8,6 @@ using App.Services.Turnaments.Infrastructure.Grpc.CommandMessages;
 using App.Services.Turnaments.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MongoDB.Driver;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Turnaments.Infrastructure
 {

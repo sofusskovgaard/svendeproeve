@@ -1,5 +1,4 @@
 using App.Infrastructure.Grpc;
-using ProtoBuf.Grpc.Configuration;
 using Template.Services.ServiceName.Infrastructure.Grpc;
 using Template.Services.ServiceName.Infrastructure.Grpc.CommandMessages;
 using Template.Services.ServiceName.Infrastructure.Grpc.CommandResults;

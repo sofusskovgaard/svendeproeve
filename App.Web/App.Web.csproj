@@ -20,7 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\App.Services.Authentication\App.Services.Authentication.Infrastructure.Grpc\App.Services.Authentication.Infrastructure.Grpc.csproj" />
     <ProjectReference Include="..\App.Services.Gateway\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj" />
+    <ProjectReference Include="..\App.Services.Users\App.Services.Users.Common\App.Services.Users.Common.csproj" />
+    <ProjectReference Include="..\App.Services.Users\App.Services.Users.Infrastructure.Grpc\App.Services.Users.Infrastructure.Grpc.csproj" />
   </ItemGroup>
 
 </Project>

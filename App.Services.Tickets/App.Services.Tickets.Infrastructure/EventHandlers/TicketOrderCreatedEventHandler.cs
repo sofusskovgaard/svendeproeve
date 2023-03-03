@@ -3,11 +3,6 @@ using App.Infrastructure.Events;
 using App.Services.Tickets.Data.Entities;
 using App.Services.Orders.Infrastructure.Events;
 using MassTransit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 
 namespace App.Services.Tickets.Infrastructure.EventHandlers

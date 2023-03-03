@@ -222,6 +222,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway", "App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway.Common", "App.Services.Gateway\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj", "{D9D966DE-1630-437E-A4D8-FCB6604DD95D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Common", "App.Common\App.Common.csproj", "{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -592,6 +594,10 @@ Global
 		{D9D966DE-1630-437E-A4D8-FCB6604DD95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9D966DE-1630-437E-A4D8-FCB6604DD95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9D966DE-1630-437E-A4D8-FCB6604DD95D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -700,6 +706,7 @@ Global
 		{10C1634E-2DB2-4168-B689-E1AF5AF28827} = {373AD218-9E4D-4AE6-83DF-4DC7250FFAC7}
 		{0BEF557F-B6C9-47E4-B71A-68D02EE8733E} = {08F96886-A3BE-4A14-97A5-15745A0B399C}
 		{D9D966DE-1630-437E-A4D8-FCB6604DD95D} = {08F96886-A3BE-4A14-97A5-15745A0B399C}
+		{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A} = {8B2E603C-C69C-42AB-AD6B-5E0C2F2D1A17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5151DEE-0817-484F-8977-6CD05FF9DCB1}

@@ -1,6 +1,5 @@
 ﻿using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
-using Google.Protobuf.WellKnownTypes;
 using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Orders.Infrastructure.Grpc

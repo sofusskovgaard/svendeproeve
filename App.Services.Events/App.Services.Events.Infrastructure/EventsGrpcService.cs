@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Events.Common.Dtos;
@@ -8,7 +9,6 @@ using App.Services.Events.Infrastructure.Grpc.CommandMessages;
 using App.Services.Events.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Events.Infrastructure
 {

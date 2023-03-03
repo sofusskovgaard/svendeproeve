@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Departments.Common.Dtos;

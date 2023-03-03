@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using App.Infrastructure.Extensions;
 using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc;
@@ -7,8 +6,6 @@ using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -20,7 +17,6 @@ using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Billing.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);

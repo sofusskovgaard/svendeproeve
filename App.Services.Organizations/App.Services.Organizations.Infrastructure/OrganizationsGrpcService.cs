@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Organizations.Common.Dtos;
@@ -8,8 +9,6 @@ using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
 using App.Services.Organizations.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using Microsoft.AspNetCore.Http.HttpResults;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Organizations.Infrastructure
 {

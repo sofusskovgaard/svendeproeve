@@ -1,9 +1,9 @@
 using ProtoBuf;
 
-namespace App.Infrastructure.Grpc;
+namespace App.Common.Grpc;
 
 [ProtoContract]
-public class GrpcCommandResultMetadata
+public class GrpcCommandResultMetadata : IGrpcCommandResultMetadata
 {
     [ProtoMember(1)] public bool Success { get; set; } = true;
 

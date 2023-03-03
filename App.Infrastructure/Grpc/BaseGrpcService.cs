@@ -1,4 +1,6 @@
-﻿namespace App.Infrastructure.Grpc;
+﻿using App.Common.Grpc;
+
+namespace App.Infrastructure.Grpc;
 
 public abstract class BaseGrpcService
 {
