@@ -1,12 +1,13 @@
 ﻿using App.Infrastructure.Grpc;
+using App.Services.Games.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Games.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetGamesByGenreCommandMessage : IGrpcCommandMessage
+    public class UpdateGameGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public string Genre { get; set; }
+        public GameDto GameDto { get; set; }
     }
 }

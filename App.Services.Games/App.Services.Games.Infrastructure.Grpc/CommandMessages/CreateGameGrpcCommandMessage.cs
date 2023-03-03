@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Games.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateGameCommandMessage : IGrpcCommandMessage
+    public class CreateGameGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Name { get; set; }

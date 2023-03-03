@@ -2,6 +2,7 @@ using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Games.Common.Dtos;
 using App.Services.Games.Data.Entities;
+using App.Services.Games.Infrastructure.Commands;
 using App.Services.Games.Infrastructure.Grpc;
 using App.Services.Games.Infrastructure.Grpc.CommandMessages;
 using App.Services.Games.Infrastructure.Grpc.CommandResults;
@@ -23,13 +24,13 @@ namespace App.Services.Games.Infrastructure
             _publishEndpoint = publishEndpoint;
         }
 
-        public ValueTask<GetAllGamesCommandResult> GetAllGames(GetAllGamesCommandMessage message)
+        public ValueTask<GetAllGamesGrpcCommandResult> GetAllGames(GetAllGamesGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var games = await this._entityDataService.ListEntities<GameEntity>();
 
-                return new GetAllGamesCommandResult()
+                return new GetAllGamesGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -40,13 +41,13 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
-        public ValueTask<GetGamesByNameCommandResult> GetGamesByName(GetGamesByNameCommandMessage message)
+        public ValueTask<GetGamesByNameGrpcCommandResult> GetGamesByName(GetGamesByNameGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var games = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<GameEntity>(entity => entity.Name.Contains(message.Name)));
 
-                return new GetGamesByNameCommandResult
+                return new GetGamesByNameGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -57,13 +58,13 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
-        public ValueTask<GetGamesByGenreCommandResult> GetGamesByGenre(GetGamesByGenreCommandMessage message)
+        public ValueTask<GetGamesByGenreGrpcCommandResult> GetGamesByGenre(GetGamesByGenreGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var games = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<GameEntity>(entity => entity.Genre.Contains(message.Genre)));
 
-                return new GetGamesByGenreCommandResult
+                return new GetGamesByGenreGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -74,13 +75,13 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
-        public ValueTask<GetGameByIdCommandResult> GetGameById(GetGameByIdCommandMessage message)
+        public ValueTask<GetGameByIdGrpcCommandResult> GetGameById(GetGameByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
 
-                return new GetGameByIdCommandResult
+                return new GetGameByIdGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -91,23 +92,20 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
-        public ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message)
+        public ValueTask<CreateGameGrpcCommandResult> CreateGame(CreateGameGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
-                //await _publishEndpoint.Publish(new CreateGame)
-                GameEntity game = new GameEntity
+                await _publishEndpoint.Publish(new CreateGameCommandMessage
                 {
                     Name = message.Name,
                     Discription = message.Discription,
                     ProfilePicture = message.ProfilePicture,
                     CoverPicture = message.CoverPicture,
                     Genre = message.Genre
-                };
+                });
 
-                await this._entityDataService.Create<GameEntity>(game);
-
-                return new CreateGameCommandResult()
+                return new CreateGameGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
                     {
@@ -117,14 +115,14 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
-        public ValueTask<UpdateGameCommandResult> updateGame(UpdateGameCommandMessage message)
+        public ValueTask<UpdateGameGrpcCommandResult> updateGame(UpdateGameGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
                 var game = this._mapper.Map<GameEntity>(message.GameDto);
                 await this._entityDataService.Update<GameEntity>(game);
 
-                return new UpdateGameCommandResult
+                return new UpdateGameGrpcCommandResult
                 {
                     Metadata = new GrpcCommandResultMetadata
                     {
@@ -134,7 +132,7 @@ namespace App.Services.Games.Infrastructure
             });
         }
 
-        public ValueTask<DeleteGameByIdCommandResult> DeleteGameById(DeleteGameByIdCommandMessage message)
+        public ValueTask<DeleteGameByIdGrpcCommandResult> DeleteGameById(DeleteGameByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -160,7 +158,7 @@ namespace App.Services.Games.Infrastructure
                     };
                 }
 
-                return new DeleteGameByIdCommandResult
+                return new DeleteGameByIdGrpcCommandResult
                 {
                     Metadata = metadata
                 };
