@@ -30,7 +30,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetAllTurnaments()
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetAllTurnaments(new GetAllTurnamentsCommandMessage()));
+            return TryAsync(() => this._turnamentsGrpcService.GetAllTurnaments(new GetAllTurnamentsGrpcCommandMessage()));
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentsByEventId(string eventid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByEventId(new GetTurnamentsByEventIdCommandMessage() { EventId = eventid }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByEventId(new GetTurnamentsByEventIdGrpcCommandMessage() { EventId = eventid }));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentsByGameId(string gameid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByGameId(new GetTurnamentsByGameIdCommandMessage() { GameId = gameid }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentsByGameId(new GetTurnamentsByGameIdGrpcCommandMessage() { GameId = gameid }));
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentByMatchId(string matchid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentByMatchId(new GetTurnamentByMatchIdCommandMessage() { MatchId = matchid }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTurnamentByMatchId(new GetTurnamentByMatchIdGrpcCommandMessage() { MatchId = matchid }));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetTurnamentById(string id)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetTuenamentById(new GetTurnamentByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._turnamentsGrpcService.GetTuenamentById(new GetTurnamentByIdGrpcCommandMessage() { Id = id }));
         }
 
         /// <summary>
@@ -102,11 +102,10 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new CreateTurnamentCommandMessage
+                var command = new CreateTurnamentGrpcCommandMessage
                 {
                     Name = model.Name,
                     GameId = model.GameId,
-                    MatchesId = model.MatchesId,
                     EventId = model.EventId
                 };
 
@@ -127,15 +126,13 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new UpdateTurnamentCommandMessage
+                var command = new UpdateTurnamentGrpcCommandMessage
                 {
                     TurnamentDto = new TurnamentDto
                     {
                         Id = model.Id,
                         Name = model.Name,
                         GameId = model.GameId,
-                        MatchesId = model.MatchesId,
-                        EventId = model.EventId
                     }
                 };
 
@@ -154,7 +151,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteTurnamentById(string id)
         {
-            return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._turnamentsGrpcService.DeleteTurnamentById(new DeleteTurnamentByIdGrpcCommandMessage() { Id = id }));
         }
 
         #endregion
@@ -171,7 +168,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetMatchesByTurnamentId(string turnamentid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTurnamentId(new GetMatchesByTurnamentIdCommandMessage() { TurnamentId = turnamentid }));
+            return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTurnamentId(new GetMatchesByTurnamentIdGrpcCommandMessage() { TurnamentId = turnamentid }));
         }
 
         /// <summary>
@@ -185,7 +182,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetMatchesByTeamId(string teamid)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTeamId(new GetMatchesByTeamIdCommandMessage() { TeamId = teamid }));
+            return TryAsync(() => this._turnamentsGrpcService.GetMatchesByTeamId(new GetMatchesByTeamIdGrpcCommandMessage() { TeamId = teamid }));
         }
 
         /// <summary>
@@ -199,7 +196,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetMatchById(string id)
         {
-            return TryAsync(() => this._turnamentsGrpcService.GetMatchById(new GetMatchByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._turnamentsGrpcService.GetMatchById(new GetMatchByIdGrpcCommandMessage() { Id = id }));
         }
 
         /// <summary>
@@ -215,7 +212,7 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new CreateMatchCommandMessage
+                var command = new CreateMatchGrpcCommandMessage
                 {
                     Name = model.Name,
                     TeamsId = model.TeamsId,
@@ -239,14 +236,12 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new UpdateMatchCommandMessage
+                var command = new UpdateMatchGrpcCommandMessage
                 {
                     MatchDto = new MatchDto
                     {
                         Id = model.Id,
                         Name = model.Name,
-                        TeamsId = model.TeamsId,
-                        TurnamentId = model.TurnamentId,
                         WinningTeamId = model.WinningTeamId
                     }
                 };
@@ -266,7 +261,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteMatchById(string id)
         {
-            return TryAsync(() => this._turnamentsGrpcService.DeleteMatchById(new DeleteMatchByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._turnamentsGrpcService.DeleteMatchById(new DeleteMatchByIdGrpcCommandMessage() { Id = id }));
         }
 
         #endregion
@@ -277,9 +272,8 @@ namespace App.Services.Gateway.Controllers
     /// </summary>
     /// <param name="Name"></param>
     /// <param name="GameId"></param>
-    /// <param name="MatchesId"></param>
     /// <param name="EventId"></param>
-    public record CreateTurnamentModel(string Name, string GameId, string[] MatchesId, string EventId);
+    public record CreateTurnamentModel(string Name, string GameId, string EventId);
 
     /// <summary>
     /// Data required to update a turnament
@@ -287,9 +281,7 @@ namespace App.Services.Gateway.Controllers
     /// <param name="Id"></param>
     /// <param name="Name"></param>
     /// <param name="GameId"></param>
-    /// <param name="MatchesId"></param>
-    /// <param name="EventId"></param>
-    public record UpdateTurnamentModel(string Id, string Name, string GameId, string[] MatchesId, string EventId);
+    public record UpdateTurnamentModel(string Id, string Name, string GameId);
 
     /// <summary>
     /// Data required to create a new match
@@ -304,8 +296,6 @@ namespace App.Services.Gateway.Controllers
     /// </summary>
     /// <param name="Id"></param>
     /// <param name="Name"></param>
-    /// <param name="TeamsId"></param>
-    /// <param name="TurnamentId"></param>
     /// <param name="WinningTeamId"></param>
-    public record UpdateMatchModel(string Id, string Name, string[] TeamsId, string TurnamentId, string WinningTeamId);
+    public record UpdateMatchModel(string Id, string Name, string WinningTeamId);
 }

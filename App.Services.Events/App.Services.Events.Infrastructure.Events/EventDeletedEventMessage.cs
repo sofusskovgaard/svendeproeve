@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using App.Infrastructure.Events;
 
 namespace App.Services.Events.Infrastructure.Events
 {
-    public class EventDeletedEventMessage
+    public class EventDeletedEventMessage : IEventMessage
     {
         public string Id { get; set; }
     }
