@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="EventHandlers\**" />
+      <EmbeddedResource Remove="EventHandlers\**" />
+      <None Remove="EventHandlers\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
         <ProjectReference Include="..\..\App.Services.Users\App.Services.Users.Infrastructure.Commands\App.Services.Users.Infrastructure.Commands.csproj" />
         <ProjectReference Include="..\App.Services.Authentication.Data\App.Services.Authentication.Data.csproj" />
@@ -16,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="EventHandlers\" />
       <Folder Include="Validators\" />
     </ItemGroup>
 

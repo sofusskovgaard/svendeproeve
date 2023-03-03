@@ -4,9 +4,12 @@ using App.Common.Grpc;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class DeleteOrganizationGrpcCommandMessage : IGrpcCommandMessage
+    public class DeleteOrganizationGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Id { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

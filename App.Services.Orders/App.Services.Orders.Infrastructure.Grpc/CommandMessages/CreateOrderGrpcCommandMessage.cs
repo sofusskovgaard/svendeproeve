@@ -4,7 +4,7 @@ using App.Common.Grpc;
 namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateOrderGrpcCommandMessage : IGrpcCommandMessage
+    public class CreateOrderGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string UserId { get; set; }
@@ -14,5 +14,8 @@ namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
 
         [ProtoMember(3)]
         public string[] TicketIds { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

@@ -5,12 +5,21 @@ using System.Text;
 using App.Infrastructure.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace App.Infrastructure.Utilities;
+namespace App.Services.Authentication.Infrastructure.Services;
 
-public static class JwtGenerator
+public class JwtGeneratorService : IJwtGeneratorService
 {
-    public static string GenerateAccessToken(JwtPayload payload)
+    private readonly IJwtKeyService _jwtKeyService;
+
+    public JwtGeneratorService(IJwtKeyService jwtKeyService)
     {
+        _jwtKeyService = jwtKeyService;
+    }
+
+    public async ValueTask<string> GenerateAccessToken(JwtPayload payload)
+    {
+        var ecdsa = await _jwtKeyService.GetKey();
+
         var descriptor = new SecurityTokenDescriptor()
         {
             Subject = new ClaimsIdentity(new[]
@@ -22,12 +31,12 @@ public static class JwtGenerator
             Expires = DateTime.UtcNow.AddSeconds(JwtOptions.TokenLifeTime),
             Issuer = JwtOptions.Issuer,
             Audience = JwtOptions.Audience,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key)), SecurityAlgorithms.HmacSha512Signature)
+            SigningCredentials = new SigningCredentials(new ECDsaSecurityKey(ecdsa), SecurityAlgorithms.EcdsaSha256)
         };
 
-        if (payload.Roles?.Length > 0)
+        if (payload.IsAdmin)
         {
-            descriptor.Subject.AddClaims(payload.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            descriptor.Subject.AddClaim(new Claim("isAdmin", "true", ClaimValueTypes.Boolean));
         }
 
         var handler = new JwtSecurityTokenHandler();
@@ -35,11 +44,18 @@ public static class JwtGenerator
         return handler.WriteToken(token);
     }
 
-    public static string GenerateRefreshToken()
+    public string GenerateRefreshToken()
     {
         var rnd = RandomNumberGenerator.GetBytes(32);
         return Convert.ToHexString(rnd);
     }
 }
 
-public record JwtPayload(string Id, string Username, string Email, params string[]? Roles);
+public interface IJwtGeneratorService
+{
+    ValueTask<string> GenerateAccessToken(JwtPayload payload);
+
+    string GenerateRefreshToken();
+}
+
+public record JwtPayload(string Id, string Username, string Email, bool IsAdmin = false);

@@ -4,8 +4,9 @@ using ProtoBuf;
 namespace App.Services.Teams.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetAllTeamsGrpcCommandMessage : IGrpcCommandMessage
+    public class GetAllTeamsGrpcCommandMessage : GrpcCommandMessage
     {
-
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

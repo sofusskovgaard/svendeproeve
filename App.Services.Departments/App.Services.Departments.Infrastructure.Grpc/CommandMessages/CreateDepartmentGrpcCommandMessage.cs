@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Departments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateDepartmentCommandMessage : IGrpcCommandMessage
+    public class CreateDepartmentGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Name { get; set; }
@@ -12,5 +12,8 @@ namespace App.Services.Departments.Infrastructure.Grpc.CommandMessages
         public string Address { get; set; }
         [ProtoMember(3)]
         public string[] OrganizationIds { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

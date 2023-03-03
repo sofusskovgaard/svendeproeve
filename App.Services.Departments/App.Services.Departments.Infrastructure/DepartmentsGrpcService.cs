@@ -25,7 +25,7 @@ namespace App.Services.Departments.Infrastructure
             _publishEndpoint = publishEndpoint;
         }
 
-        public ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsCommandMessage message)
+        public ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -43,7 +43,7 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameCommandMessage message)
+        public ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -61,7 +61,7 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdCommandMessage message)
+        public ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -79,7 +79,7 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdCommandMessage message)
+        public ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -97,7 +97,7 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<CreateDepartmentCommandResult> CreateDepartment(CreateDepartmentCommandMessage message)
+        public ValueTask<CreateDepartmentCommandResult> CreateDepartment(CreateDepartmentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -121,7 +121,7 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentCommandMessage message)
+        public ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {
@@ -139,7 +139,7 @@ namespace App.Services.Departments.Infrastructure
             });
         }
 
-        public ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdCommandMessage message)
+        public ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdGrpcCommandMessage message)
         {
             return TryAsync(async () =>
             {

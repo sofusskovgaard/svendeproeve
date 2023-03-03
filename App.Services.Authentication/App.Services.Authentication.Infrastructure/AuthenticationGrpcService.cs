@@ -1,7 +1,6 @@
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Infrastructure.Options;
-using App.Infrastructure.Utilities;
 using App.Services.Authentication.Data.Entities;
 using App.Services.Authentication.Infrastructure.Commands;
 using App.Services.Authentication.Infrastructure.Grpc;
@@ -10,6 +9,7 @@ using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
 using App.Services.Users.Infrastructure.Commands;
 using MassTransit;
 using App.Common.Grpc;
+using App.Services.Authentication.Infrastructure.Services;
 using App.Services.Authentication.Infrastructure.Validators;
 
 namespace App.Services.Authentication.Infrastructure
@@ -20,10 +20,16 @@ namespace App.Services.Authentication.Infrastructure
 
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuthenticationGrpcService(IPublishEndpoint publishEndpoint, IEntityDataService entityDataService)
+        private readonly IJwtGeneratorService _jwtGeneratorService;
+
+        private readonly IJwtKeyService _jwtKeyService;
+
+        public AuthenticationGrpcService(IPublishEndpoint publishEndpoint, IEntityDataService entityDataService, IJwtGeneratorService jwtGeneratorService, IJwtKeyService jwtKeyService)
         {
             _publishEndpoint = publishEndpoint;
             _entityDataService = entityDataService;
+            _jwtGeneratorService = jwtGeneratorService;
+            _jwtKeyService = jwtKeyService;
         }
 
         public ValueTask<RegisterGrpcCommandResult> Register(RegisterGrpcCommandMessage message)
@@ -96,8 +102,8 @@ namespace App.Services.Authentication.Infrastructure
                     throw new Exception("Username or password is incorrect");
                 }
 
-                var accessToken = JwtGenerator.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email));
-                var refreshToken = JwtGenerator.GenerateRefreshToken();
+                var accessToken = await _jwtGeneratorService.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email, login.IsAdmin ?? false));
+                var refreshToken = _jwtGeneratorService.GenerateRefreshToken();
 
                 var refreshTokenHashResponse = Hasher.Hash(refreshToken, false);
 
@@ -130,8 +136,8 @@ namespace App.Services.Authentication.Infrastructure
 
                 if (session != null)
                 {
-                    var user = await _entityDataService.GetEntity<UserLoginEntity>(session.UserId);
-                    var accessToken = JwtGenerator.GenerateAccessToken(new JwtPayload(user.Id, user.Username, user.Email));
+                    var login = await _entityDataService.GetEntity<UserLoginEntity>(session.UserId);
+                    var accessToken = await _jwtGeneratorService.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email, login.IsAdmin ?? false));
 
                     return new RefreshTokenGrpcCommandResult()
                     {
@@ -245,7 +251,7 @@ namespace App.Services.Authentication.Infrastructure
             });
         }
 
-        public ValueTask<ChangeEmailGrpcCommandResult> ChangeEmail(ChangeEmailGrpCommandMessage message)
+        public ValueTask<ChangeEmailGrpcCommandResult> ChangeEmail(ChangeEmailGrpcCommandMessage message)
         {
             return this.TryAsync(async () =>
             {
@@ -280,6 +286,20 @@ namespace App.Services.Authentication.Infrastructure
                 return new ChangePasswordGrpcCommandResult()
                 {
                     Metadata = new GrpcCommandResultMetadata()
+                };
+            });
+        }
+
+        public ValueTask<GetPublicKeyGrpcCommandResult> PublicKey(GetPublicKeyGrpcCommandMessage message)
+        {
+            return this.TryAsync(async () =>
+            {
+                var ecdsa = await _jwtKeyService.GetKey();
+
+                return new GetPublicKeyGrpcCommandResult()
+                {
+                    Metadata = new GrpcCommandResultMetadata(),
+                    PublicKey = Convert.ToBase64String(ecdsa.ExportSubjectPublicKeyInfo())
                 };
             });
         }

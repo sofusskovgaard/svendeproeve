@@ -1,7 +1,9 @@
-﻿using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
+﻿using System.IdentityModel.Tokens.Jwt;
+using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Common;
 using App.Services.Users.Common.Dtos;
 using App.Web.Services.ApiService;
+using Microsoft.IdentityModel.Tokens;
 
 namespace App.Web.Stores;
 
@@ -30,6 +32,8 @@ public class SessionStore : ISessionStore
     #region Properties
 
     public UserDto? CurrentUser { get; private set; }
+
+    public bool IsAdmin { get; private set; }
 
     public bool LoggedIn
     {
@@ -63,6 +67,24 @@ public class SessionStore : ISessionStore
         if (response.Metadata.Success)
         {
             _tokenStore.WriteToken(response.AccessToken, response.RefreshToken, DateTime.UtcNow.AddSeconds(response.ExpiresIn - 30));
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validation = await tokenHandler.ValidateTokenAsync(_tokenStore.AccessToken, new TokenValidationParameters()
+            {
+                ValidIssuer = "app",
+                ValidAudience = "app"
+            });
+
+            if (!validation.IsValid)
+            {
+                _tokenStore.ClearTokens();
+                throw validation.Exception;
+            }
+
+            if (validation.Claims.TryGetValue("isAdmin", out object? isAdminRaw) && bool.TryParse((string)isAdminRaw, out bool isAdmin) && isAdmin)
+            {
+                this.IsAdmin = true;
+            }
 
             var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
             this.CurrentUser = currentUserResponse.User;
@@ -144,6 +166,25 @@ public class SessionStore : ISessionStore
             {
                 Console.WriteLine("Found RefreshToken");
 
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var validation = await tokenHandler.ValidateTokenAsync(_tokenStore.AccessToken, new TokenValidationParameters()
+                {
+                    ValidIssuer = "app",
+                    ValidAudience = "app",
+                });
+
+                if (!validation.IsValid)
+                {
+                    _tokenStore.ClearTokens();
+                    this.Loaded = true;
+                    throw validation.Exception;
+                }
+
+                if (validation.Claims.TryGetValue("isAdmin", out object? isAdminRaw) && bool.TryParse((string)isAdminRaw, out bool isAdmin) && isAdmin)
+                {
+                    this.IsAdmin = true;
+                }
+
                 var response = await _apiService.GetCurrentlyLoggedInUser();
                 this.CurrentUser = response.User;
 
@@ -160,6 +201,8 @@ public class SessionStore : ISessionStore
 public interface ISessionStore
 {
     UserDto CurrentUser { get; }
+
+    bool IsAdmin { get; }
 
     bool LoggedIn { get; }
 

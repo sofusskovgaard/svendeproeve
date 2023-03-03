@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace App.Infrastructure.Utilities;
+namespace App.Services.Authentication.Infrastructure.Services;
 
 public static class Hasher
 {

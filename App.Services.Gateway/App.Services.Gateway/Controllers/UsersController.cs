@@ -30,7 +30,7 @@ public class UsersController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetAllUsers()
     {
-        return TryAsync(() => _usersGrpcService.GetUsers(new GetUsersGrpcCommandMessage()));
+        return TryAsync(() => _usersGrpcService.GetUsers(CreateCommandMessage<GetUsersGrpcCommandMessage>()));
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public class UsersController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetUserById(string id)
     {
-        return TryAsync(() => _usersGrpcService.GetUserById(new GetUserByIdGrpcCommandMessage { Id = id }));
+        return TryAsync(() => _usersGrpcService.GetUserById(CreateCommandMessage<GetUserByIdGrpcCommandMessage>(message => message.Id = id)));
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class UsersController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetTeamsForUser(string id)
     {
-        return TryAsync(() => _usersGrpcService.GetUsersInTeam(new GetUsersInTeamGrpcCommandMessage() { TeamId = id }));
+        return TryAsync(() => _usersGrpcService.GetUsersInTeam(CreateCommandMessage<GetUsersInTeamGrpcCommandMessage>(message => message.TeamId = id)));
     }
 
     /// <summary>
@@ -100,16 +100,6 @@ public class UsersController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetOrganizationsForUser(string id)
     {
-        return TryAsync(() => _usersGrpcService.GetUsersInOrganization(new GetUsersInOrganizationGrpcCommandMessage() { OrganizatioId = id }));
+        return TryAsync(() => _usersGrpcService.GetUsersInOrganization(CreateCommandMessage<GetUsersInOrganizationGrpcCommandMessage>(message => message.OrganizatioId = id)));
     }
 }
-
-/// <summary>
-/// Data required to create a new user
-/// </summary>
-/// <param name="Firstname">The firstname</param>
-/// <param name="Lastname">The lastname</param>
-/// <param name="Username">The username, is unique</param>
-/// <param name="Email">The email, is unique</param>
-/// <param name="Password">The password</param>
-public record CreateUserModel(string Firstname, string Lastname, string Username, string Email, string Password);

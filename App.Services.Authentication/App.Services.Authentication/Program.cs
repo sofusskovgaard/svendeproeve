@@ -4,6 +4,7 @@ using App.Infrastructure.Extensions;
 using App.Services.Authentication.Infrastructure;
 using ProtoBuf.Grpc.Server;
 using System.Reflection;
+using App.Services.Authentication.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,9 @@ builder.Services.AddRabbitMq(Assembly.Load("App.Services.Authentication.Infrastr
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();
+
+builder.Services.AddSingleton<IJwtKeyService, JwtKeyService>();
+builder.Services.AddTransient<IJwtGeneratorService, JwtGeneratorService>();
 
 var app = builder.Build();
 

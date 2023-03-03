@@ -121,7 +121,7 @@ public class AuthenticationController : ApiController
     public Task<IActionResult> ChangeEmail([FromBody] ChangeEmailModel model)
     {
         return TryAsync(
-            () => _authenticationGrpcService.ChangeEmail(new ChangeEmailGrpCommandMessage
+            () => _authenticationGrpcService.ChangeEmail(new ChangeEmailGrpcCommandMessage
                 { UserId = CurrentUser.Id, Email = model.Email }), true);
     }
 

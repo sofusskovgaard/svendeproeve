@@ -8,24 +8,24 @@ namespace App.Services.Departments.Infrastructure.Grpc
     public interface IDepartmentsGrpcService
     {
         [Operation]
-        ValueTask<CreateDepartmentCommandResult> CreateDepartment(CreateDepartmentCommandMessage message);
+        ValueTask<CreateDepartmentCommandResult> CreateDepartment(CreateDepartmentGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsCommandMessage message);
+        ValueTask<GetAllDepartmentsCommandResult> GetAllDepartments(GetAllDepartmentsGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameCommandMessage message);
+        ValueTask<GetDepartmentsByNameCommandResult> GetDepartmentsByName(GetDepartmentsByNameGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdCommandMessage message);
+        ValueTask<GetDepartmentsByOrganizationIdCommandResult> GetDepartmentsByOrganizationId(GetDepartmentsByOrganizationIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdCommandMessage message);
+        ValueTask<GetDepartmentByIdCommandResult> GetDepartmentById(GetDepartmentByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdCommandMessage message);
+        ValueTask<DeleteDepartmentByIdCommandResult> DeleteDepartmentById(DeleteDepartmentByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentCommandMessage message);
+        ValueTask<UpdateDepartmentCommandResult> UpdateDepartment(UpdateDepartmentGrpcCommandMessage message);
     }
 }

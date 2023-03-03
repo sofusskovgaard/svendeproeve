@@ -4,7 +4,7 @@ using App.Common.Grpc;
 namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateProductGrpcCommandMessage : IGrpcCommandMessage
+    public class CreateProductGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Name { get; set; }
@@ -14,5 +14,8 @@ namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
 
         [ProtoMember(3)]
         public decimal Price { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

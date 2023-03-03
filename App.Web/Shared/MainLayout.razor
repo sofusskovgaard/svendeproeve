@@ -20,6 +20,12 @@
                 else
                 {
                     <button class="btn btn-link" @onclick="() => SessionStore.Logout()">Logout</button>
+                    
+                    @if (SessionStore.IsAdmin)
+                    {
+                        <i class="fa-solid fa-shield mx-2"></i>
+                    }
+
                     <span>@SessionStore.CurrentUser.Firstname @SessionStore.CurrentUser.Lastname</span>
                 }
             </div>
