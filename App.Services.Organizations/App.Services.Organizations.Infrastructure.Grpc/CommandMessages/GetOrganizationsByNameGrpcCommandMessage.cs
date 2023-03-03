@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetOrganizationsByAddressCommandMessage : IGrpcCommandMessage
+    public class GetOrganizationsByNameGrpcCommandMessage : IGrpcCommandMessage
     {
         [ProtoMember(1)]
-        public string Address { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -19,26 +19,42 @@ public class OrganisationsController : ApiController
 
     [HttpGet]
     [Route("{id}")]
-    public async ValueTask<IActionResult> GetOrganizationById(string id)
+    public Task<IActionResult> GetOrganizationById(string id)
     {
-        var res = await this._organizationsGrpcService.GetOrganizationById(new GetOrganizationByIdCommandMessage() { Id = id });
-        return Ok(res);
+        return TryAsync(() =>
+        {
+            return _organizationsGrpcService.GetOrganizationById(new GetOrganizationByIdGrpcCommandMessage { Id = id });
+        });
     }
 
     [HttpGet]
-    [Route("{name}")]
-    public async ValueTask<IActionResult> GetOrganizationByName(string name)
+    [Route("{name}/name")]
+    public Task<IActionResult> GetOrganizationByName(string name)
     {
-        var res = await this._organizationsGrpcService.GetOrganizationsByName(new GetOrganizationsByNameCommandMessage() { Name = name });
-        return Ok(res);
+        return TryAsync(() =>
+        {
+            return _organizationsGrpcService.GetOrganizationsByName(new GetOrganizationsByNameGrpcCommandMessage { Name = name });
+        });
     }
 
     [HttpGet]
-    [Route("{address}")]
-    public async ValueTask<IActionResult> GetOrganizationsByAddress(string address)
+    [Route("{address}/address")]
+    public Task<IActionResult> GetOrganizationsByAddress(string address)
     {
-        var res = await this._organizationsGrpcService.GetOrganizationsByAddress(new GetOrganizationsByAddressCommandMessage() { Address = address });
-        return Ok(res);
+        return TryAsync(() =>
+        {
+            return _organizationsGrpcService.GetOrganizationsByAddress(new GetOrganizationsByAddressGrpcCommandMessage { Address = address });
+        });
+    }
+
+    [HttpGet]
+    [Route("")]
+    public Task<IActionResult> GetOrganizations()
+    {
+        return TryAsync(() =>
+        {
+            return _organizationsGrpcService.GetOrganizations(new GetOrganizationsGrpcCommandMessage { });
+        });
     }
 
     /// <summary>
@@ -53,7 +69,7 @@ public class OrganisationsController : ApiController
     {
         return TryAsync(() =>
         {
-            var command = new CreateOrganizationCommandMessage
+            var command = new CreateOrganizationGrpcCommandMessage
             {
                 Name = model.Name,
                 Address = model.Address,
@@ -65,6 +81,54 @@ public class OrganisationsController : ApiController
             return _organizationsGrpcService.CreateOrganization(command);
         });
     }
+
+    /// <summary>
+    /// Update organizations information
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("{id}")]
+    public Task<IActionResult> UpdateOrganization(string id, [FromBody] UpdateOrganizaitonModel model)
+    {
+        return TryAsync(() =>
+        {
+            var command = new UpdateOrganizationGrpcCommandMessage
+            {
+                Id = id,
+                Address = model.Address,
+                Bio = model.Bio,
+                CoverPicture = model.CoverPicture,
+                Name = model.Name,
+                ProfilePicture = model.ProfilePicture,
+                DepartmentId = model.DepartmentId
+            };
+
+            return _organizationsGrpcService.UpdateOrganization(command);
+        });
+    }
+
+    /// <summary>
+    /// Deleltes organization
+    /// </summary>
+    /// <param name="id">id of the organization to be deleted</param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("{id}")]
+    public Task<IActionResult> DeleteOrganization(string id)
+    {
+        return TryAsync(() =>
+        {
+            var command = new DeleteOrganizationGrpcCommandMessage
+            {
+                Id = id
+            };
+
+            return _organizationsGrpcService.DeleteOrganization(command);
+        });
+    }
 }
 
 public record CreateOrganizationModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);
+public record UpdateOrganizaitonModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);
