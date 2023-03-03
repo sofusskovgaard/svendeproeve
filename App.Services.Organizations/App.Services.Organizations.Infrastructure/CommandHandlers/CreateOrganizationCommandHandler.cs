@@ -34,7 +34,7 @@ namespace App.Services.Organizations.Infrastructure.CommandHandlers
 
             await _entityDataService.SaveEntity(entity);
 
-            await _publishEndpoint.Publish(new OrganizationCreatedEventMessage { Id = entity.Id });
+            await _publishEndpoint.Publish(new OrganizationCreatedEventMessage { Id = entity.Id, DepartmentId = entity.DepartmentId });
         }
     }
 }

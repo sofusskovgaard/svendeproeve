@@ -8,10 +8,9 @@ namespace App.Services.Departments.Infrastructure.Grpc.CommandMessages
     {
         [ProtoMember(1)]
         public string Name { get; set; }
+
         [ProtoMember(2)]
         public string Address { get; set; }
-        [ProtoMember(3)]
-        public string[] OrganizationIds { get; set; }
 
         [ProtoMember(100)]
         public override GrpcCommandMessageMetadata? Metadata { get; set; }
