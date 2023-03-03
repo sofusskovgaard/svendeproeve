@@ -8,24 +8,24 @@ namespace App.Services.Games.Infrastructure.Grpc
     public interface IGamesGrpcService
     {
         [Operation]
-        ValueTask<CreateGameCommandResult> CreateGame(CreateGameCommandMessage message);
+        ValueTask<CreateGameGrpcCommandResult> CreateGame(CreateGameGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetAllGamesCommandResult> GetAllGames(GetAllGamesCommandMessage message);
+        ValueTask<GetAllGamesGrpcCommandResult> GetAllGames(GetAllGamesGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetGamesByNameCommandResult> GetGamesByName(GetGamesByNameCommandMessage message);
+        ValueTask<GetGamesByNameGrpcCommandResult> GetGamesByName(GetGamesByNameGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetGamesByGenreCommandResult> GetGamesByGenre(GetGamesByGenreCommandMessage message);
+        ValueTask<GetGamesByGenreGrpcCommandResult> GetGamesByGenre(GetGamesByGenreGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetGameByIdCommandResult> GetGameById(GetGameByIdCommandMessage message);
+        ValueTask<GetGameByIdGrpcCommandResult> GetGameById(GetGameByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<UpdateGameCommandResult> updateGame(UpdateGameCommandMessage message);
+        ValueTask<UpdateGameGrpcCommandResult> updateGame(UpdateGameGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<DeleteGameByIdCommandResult> DeleteGameById(DeleteGameByIdCommandMessage message);
+        ValueTask<DeleteGameByIdGrpcCommandResult> DeleteGameById(DeleteGameByIdGrpcCommandMessage message);
     }
 }

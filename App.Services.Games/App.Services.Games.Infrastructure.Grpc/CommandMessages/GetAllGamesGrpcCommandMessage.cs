@@ -4,9 +4,8 @@ using ProtoBuf;
 namespace App.Services.Games.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetGamesByGenreCommandMessage : IGrpcCommandMessage
+    public class GetAllGamesGrpcCommandMessage : IGrpcCommandMessage
     {
-        [ProtoMember(1)]
-        public string Genre { get; set; }
+
     }
 }

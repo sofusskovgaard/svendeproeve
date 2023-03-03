@@ -28,7 +28,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetAllGames()
         {
-            return TryAsync(() => this._gamesGrpcService.GetAllGames(new GetAllGamesCommandMessage()));
+            return TryAsync(() => this._gamesGrpcService.GetAllGames(new GetAllGamesGrpcCommandMessage()));
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetGamesByName(string name)
         {
-            return TryAsync(() => this._gamesGrpcService.GetGamesByName(new GetGamesByNameCommandMessage() { Name = name }));
+            return TryAsync(() => this._gamesGrpcService.GetGamesByName(new GetGamesByNameGrpcCommandMessage() { Name = name }));
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetGamesByGenre(string genre)
         {
-            return TryAsync(() => this._gamesGrpcService.GetGamesByGenre(new GetGamesByGenreCommandMessage() { Genre = genre }));
+            return TryAsync(() => this._gamesGrpcService.GetGamesByGenre(new GetGamesByGenreGrpcCommandMessage() { Genre = genre }));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetGameById(string id)
         {
-            return TryAsync(() => this._gamesGrpcService.GetGameById(new GetGameByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._gamesGrpcService.GetGameById(new GetGameByIdGrpcCommandMessage() { Id = id }));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new CreateGameCommandMessage
+                var command = new CreateGameGrpcCommandMessage
                 {
                     Name = model.Name,
                     Discription = model.Discription,
@@ -112,7 +112,7 @@ namespace App.Services.Gateway.Controllers
         {
             return TryAsync(() =>
             {
-                var command = new UpdateGameCommandMessage()
+                var command = new UpdateGameGrpcCommandMessage()
                 {
                     GameDto = new GameDto
                     {
@@ -140,7 +140,7 @@ namespace App.Services.Gateway.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteGameById(string id)
         {
-            return TryAsync(() => this._gamesGrpcService.DeleteGameById(new DeleteGameByIdCommandMessage() { Id = id }));
+            return TryAsync(() => this._gamesGrpcService.DeleteGameById(new DeleteGameByIdGrpcCommandMessage() { Id = id }));
         }
     }
 
