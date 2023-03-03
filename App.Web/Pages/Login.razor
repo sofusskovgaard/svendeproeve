@@ -11,7 +11,7 @@
         <EditForm Model=@LoginModel OnSubmit=@OnSubmitLogin>
             <div class="mb-3">
                 <label for="email" class="form-label">Email / Username</label>
-                <InputText type="password" class="form-control" id="email" @bind-Value=LoginModel.Username/>
+                <InputText type="email" class="form-control" id="email" @bind-Value=LoginModel.Username/>
                 <div id="emailHelp" class="form-text">We'll never share your password with anyone else.</div>
             </div>
             <div class="mb-3">
@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
-                    <InputText type="password" class="form-control" id="email" @bind-Value=RegisterModel.Email/>
+                    <InputText type="email" class="form-control" id="email" @bind-Value=RegisterModel.Email/>
                     <div id="emailHelp" class="form-text">We'll never share your password with anyone else.</div>
                 </div>
                 <div class="col-md-6">
