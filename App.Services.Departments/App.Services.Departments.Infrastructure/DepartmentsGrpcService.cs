@@ -144,33 +144,17 @@ namespace App.Services.Departments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                DepartmentEntity department = await _entityDataService.GetEntity<DepartmentEntity>(message.Id);
-
-                GrpcCommandResultMetadata metadata;
-
-                if (department != null)
+                await _publishEndpoint.Publish(new DeleteDepartmentCommandMessage
                 {
-                    var res = await _entityDataService.Delete<DepartmentEntity>(department);
-
-                    await _publishEndpoint.Publish(new DepartmentDeletedEventMessage() { Id = message.Id });
-
-                    metadata = new GrpcCommandResultMetadata()
-                    {
-                        Success = res
-                    };
-                }
-                else
-                {
-                    metadata = new GrpcCommandResultMetadata()
-                    {
-                        Success = false,
-                        Message = "Could not find any departments with that id"
-                    };
-                }
-
+                    Id = message.Id
+                });
+                
                 return new DeleteDepartmentByIdGrpcCommandResult()
                 {
-                    Metadata = metadata
+                    Metadata = new GrpcCommandResultMetadata()
+                    {
+                        Success = true
+                    }
                 };
             });
         }
