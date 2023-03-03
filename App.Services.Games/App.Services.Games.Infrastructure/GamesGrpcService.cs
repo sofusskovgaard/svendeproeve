@@ -119,8 +119,15 @@ namespace App.Services.Games.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var game = this._mapper.Map<GameEntity>(message.GameDto);
-                await this._entityDataService.Update<GameEntity>(game);
+                await _publishEndpoint.Publish(new UpdateGameCommandMessage
+                {
+                    Id = message.GameDto.Id,
+                    Name = message.GameDto.Name,
+                    Discription = message.GameDto.Discription,
+                    ProfilePicture = message.GameDto.ProfilePicture,
+                    CoverPicture = message.GameDto.CoverPicture,
+                    Genre = message.GameDto.Genre
+                });
 
                 return new UpdateGameGrpcCommandResult
                 {
