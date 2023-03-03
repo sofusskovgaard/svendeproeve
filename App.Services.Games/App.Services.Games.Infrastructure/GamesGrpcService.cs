@@ -6,6 +6,7 @@ using App.Services.Games.Infrastructure.Grpc;
 using App.Services.Games.Infrastructure.Grpc.CommandMessages;
 using App.Services.Games.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
+using MassTransit;
 using MongoDB.Driver;
 
 namespace App.Services.Games.Infrastructure
@@ -14,10 +15,12 @@ namespace App.Services.Games.Infrastructure
     {
         private readonly IEntityDataService _entityDataService;
         private readonly IMapper _mapper;
-        public GamesGrpcService(IEntityDataService entityDataService, IMapper mapper)
+        private readonly IPublishEndpoint _publishEndpoint;
+        public GamesGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _entityDataService = entityDataService;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         public ValueTask<GetAllGamesCommandResult> GetAllGames(GetAllGamesCommandMessage message)
@@ -92,6 +95,7 @@ namespace App.Services.Games.Infrastructure
         {
             return TryAsync(async () =>
             {
+                //await _publishEndpoint.Publish(new CreateGame)
                 GameEntity game = new GameEntity
                 {
                     Name = message.Name,
