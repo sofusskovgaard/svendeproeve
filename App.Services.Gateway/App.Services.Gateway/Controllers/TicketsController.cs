@@ -1,4 +1,5 @@
-﻿using App.Services.Gateway.Infrastructure;
+﻿using App.Services.Gateway.Common;
+using App.Services.Gateway.Infrastructure;
 using App.Services.Tickets.Infrastructure.Grpc;
 using App.Services.Tickets.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -34,14 +35,12 @@ namespace App.Services.Gateway.Controllers
             {
                 var command = new BookTicketsGrpcCommandMessage
                 {
-                    UserId = model.UserId,
+                    UserId = CurrentUser.Id,
                     TicketOrders = model.TicketOrderModels.Select((x) => new BookTicketsGrpcCommandMessage.TicketOrder { ProductId = x.ProductId, Recipient = x.Recipient }).ToArray(),
                 };
 
                 return _ticketsGrpcService.BookTickets(command);
-            });
+            }, true);
         }
     }
-    public record BookTicketsModel(string UserId, TicketOrderModel[] TicketOrderModels);
-    public record TicketOrderModel(string ProductId, string Recipient);
 }

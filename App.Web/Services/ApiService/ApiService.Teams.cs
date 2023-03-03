@@ -1,6 +1,7 @@
 ﻿using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using App.Services.Teams.Infrastructure.Grpc.CommandResults;
 using System.Net.Http.Json;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService
 {
@@ -52,7 +53,7 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetTeamsByManagerIdGrpcCommandResult>();
         }
 
-        public async Task<CreateTeamGrpcCommandResult> CreateTeam(CreateTeamGrpcCommandMessage data)
+        public async Task<CreateTeamGrpcCommandResult> CreateTeam(CreateTeamModel data)
         {
             var request = _createRequestMessage(HttpMethod.Post, "api/teams");
             request.Content = JsonContent.Create(data);
@@ -61,7 +62,7 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<CreateTeamGrpcCommandResult>();
         }
 
-        public async Task<UpdateTeamGrpcCommandResult> Updateteam(UpdateTeamGrpcCommandMessage data)
+        public async Task<UpdateTeamGrpcCommandResult> Updateteam(string id, UpdateTeamModel data)
         {
             var request = _createRequestMessage(HttpMethod.Put, "api/teams");
             request.Content = JsonContent.Create(data);
@@ -93,9 +94,9 @@ namespace App.Web.Services.ApiService
 
         Task<GetTeamsByManagerIdGrpcCommandResult> GetTeamByManager(string manager);
 
-        Task<CreateTeamGrpcCommandResult> CreateTeam(CreateTeamGrpcCommandMessage data);
+        Task<CreateTeamGrpcCommandResult> CreateTeam(CreateTeamModel data);
 
-        Task<UpdateTeamGrpcCommandResult> Updateteam(UpdateTeamGrpcCommandMessage data);
+        Task<UpdateTeamGrpcCommandResult> Updateteam(string id, UpdateTeamModel data);
 
         Task<DeleteTeamByIdGrpcCommandResult> DeleteTeam(string id);
 

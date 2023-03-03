@@ -1,5 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
+using App.Services.Gateway.Common;
 using App.Services.Users.Common.Dtos;
 using App.Web.Services.ApiService;
 using Microsoft.IdentityModel.Tokens;
@@ -61,7 +61,7 @@ public class SessionStore : ISessionStore
 
     public async Task Login(string username, string password)
     {
-        var response = await _apiService.Login(new LoginGrpcCommandMessage() { Username = username, Password = password });
+        var response = await _apiService.Login(new LoginModel(username, password));
 
         if (response.Metadata.Success)
         {
@@ -96,15 +96,7 @@ public class SessionStore : ISessionStore
         string confirmPassword)
     {
         var response =
-            await _apiService.Register(new RegisterGrpcCommandMessage()
-            {
-                Firstname = firstname,
-                Lastname = lastname,
-                Username = username,
-                Email = email,
-                Password = password,
-                ConfirmPassword = confirmPassword
-            });
+            await _apiService.Register(new RegisterModel(firstname, lastname, username, email, password, confirmPassword));
 
         if (response.Metadata.Success)
         {

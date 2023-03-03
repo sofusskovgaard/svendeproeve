@@ -100,7 +100,7 @@ namespace App.Services.Games.Infrastructure
                 await _publishEndpoint.Publish(new CreateGameCommandMessage
                 {
                     Name = message.Name,
-                    Discription = message.Discription,
+                    Discription = message.Description,
                     ProfilePicture = message.ProfilePicture,
                     CoverPicture = message.CoverPicture,
                     Genre = message.Genre

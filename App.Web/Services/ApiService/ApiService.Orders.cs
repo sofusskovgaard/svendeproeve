@@ -2,6 +2,7 @@
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
 using System.Net.Http.Json;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService
 {
@@ -31,7 +32,7 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetProductByIdGrpcCommandResult>();
         }
 
-        public async Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage data)
+        public async Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductModel data)
         {
             var request = _createRequestMessage(HttpMethod.Post, $"api/orders/product");
             request.Content = JsonContent.Create(data);
@@ -49,6 +50,6 @@ namespace App.Web.Services.ApiService
 
         Task<GetProductByIdGrpcCommandResult> GetProductById(string id);
 
-        Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage data);
+        Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductModel data);
     }
 }

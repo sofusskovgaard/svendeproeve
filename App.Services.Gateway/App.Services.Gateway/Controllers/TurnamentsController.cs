@@ -4,6 +4,7 @@ using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Turnaments.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using App.Services.Gateway.Common;
 
 namespace App.Services.Gateway.Controllers
 {
@@ -13,6 +14,7 @@ namespace App.Services.Gateway.Controllers
     public class TurnamentsController : ApiController
     {
         private readonly ITurnamentsGrpcService _turnamentsGrpcService;
+
         public TurnamentsController(ITurnamentsGrpcService turnamentsGrpcService)
         {
             _turnamentsGrpcService = turnamentsGrpcService;
@@ -98,7 +100,7 @@ namespace App.Services.Gateway.Controllers
         [Route("")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> CreateTurnament([FromBody] CreateTurnamentModel model)
+        public Task<IActionResult> CreateTurnament([FromBody] CreateTournamentModel model)
         {
             return TryAsync(() =>
             {
@@ -119,10 +121,10 @@ namespace App.Services.Gateway.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> UpdateTurnament([FromBody] UpdateTurnamentModel model)
+        public Task<IActionResult> UpdateTurnament(string id, [FromBody] UpdateTournamentModel model)
         {
             return TryAsync(() =>
             {
@@ -130,7 +132,7 @@ namespace App.Services.Gateway.Controllers
                 {
                     TurnamentDto = new TurnamentDto
                     {
-                        Id = model.Id,
+                        Id = id,
                         Name = model.Name,
                         GameId = model.GameId,
                     }
@@ -229,10 +231,10 @@ namespace App.Services.Gateway.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("matches")]
+        [Route("matches/{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> UpdateMatch([FromBody] UpdateMatchModel model)
+        public Task<IActionResult> UpdateMatch(string id, [FromBody] UpdateMatchModel model)
         {
             return TryAsync(() =>
             {
@@ -240,7 +242,7 @@ namespace App.Services.Gateway.Controllers
                 {
                     MatchDto = new MatchDto
                     {
-                        Id = model.Id,
+                        Id = id,
                         Name = model.Name,
                         WinningTeamId = model.WinningTeamId
                     }
@@ -266,36 +268,4 @@ namespace App.Services.Gateway.Controllers
 
         #endregion
     }
-
-    /// <summary>
-    /// Data required to create a new turnament
-    /// </summary>
-    /// <param name="Name"></param>
-    /// <param name="GameId"></param>
-    /// <param name="EventId"></param>
-    public record CreateTurnamentModel(string Name, string GameId, string EventId);
-
-    /// <summary>
-    /// Data required to update a turnament
-    /// </summary>
-    /// <param name="Id"></param>
-    /// <param name="Name"></param>
-    /// <param name="GameId"></param>
-    public record UpdateTurnamentModel(string Id, string Name, string GameId);
-
-    /// <summary>
-    /// Data required to create a new match
-    /// </summary>
-    /// <param name="Name"></param>
-    /// <param name="TeamsId"></param>
-    /// <param name="TurnamentId"></param>
-    public record CreateMatchModel(string Name, string[] TeamsId, string TurnamentId);
-
-    /// <summary>
-    /// Data required to update a match
-    /// </summary>
-    /// <param name="Id"></param>
-    /// <param name="Name"></param>
-    /// <param name="WinningTeamId"></param>
-    public record UpdateMatchModel(string Id, string Name, string WinningTeamId);
 }

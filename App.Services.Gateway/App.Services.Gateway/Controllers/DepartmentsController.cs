@@ -1,6 +1,7 @@
 ﻿using App.Services.Departments.Common.Dtos;
 using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandMessages;
+using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -129,19 +130,4 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => this._departmentsGrpcService.DeleteDepartmentById(new DeleteDepartmentByIdGrpcCommandMessage() { Id = id }));
         }
     }
-
-    /// <summary>
-    /// Data required to create a department
-    /// </summary>
-    /// <param name="Name"></param>
-    /// <param name="Address"></param>
-    public record CreateDepartmentModel(string Name, string Address);
-
-    /// <summary>
-    /// Data required to update a department
-    /// </summary>
-    /// <param name="Id"></param>
-    /// <param name="Name"></param>
-    /// <param name="Address"></param>
-    public record UpdateDepartmentModel(string Id, string Name, string Address);
 }

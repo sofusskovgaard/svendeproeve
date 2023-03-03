@@ -1,14 +1,13 @@
-﻿using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
-using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
+﻿using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService;
 
 public partial class ApiService
 {
-    public async Task<LoginGrpcCommandResult> Login(LoginGrpcCommandMessage data)
+    public async Task<LoginGrpcCommandResult> Login(LoginModel data)
     {
         var request = _createRequestMessage(HttpMethod.Post, "api/auth/login");
         request.Content = JsonContent.Create(data);
@@ -17,7 +16,7 @@ public partial class ApiService
         return await response.Content.ReadFromJsonAsync<LoginGrpcCommandResult>();
     }
 
-    public async Task<RegisterGrpcCommandResult> Register(RegisterGrpcCommandMessage data)
+    public async Task<RegisterGrpcCommandResult> Register(RegisterModel data)
     {
         var request = _createRequestMessage(HttpMethod.Post, "api/auth/register");
         request.Content = JsonContent.Create(data);
@@ -28,7 +27,7 @@ public partial class ApiService
 
     public async Task<GetUserByIdGrpcCommandResult> GetCurrentlyLoggedInUser()
     {
-        var request = _createRequestMessage(HttpMethod.Get, "api/auth/me", true);
+        var request = _createRequestMessage(HttpMethod.Get, "api/auth/me");
 
         var response = await _client.SendAsync(request);
 
@@ -38,9 +37,9 @@ public partial class ApiService
 
 public partial interface IApiService
 {
-    Task<LoginGrpcCommandResult> Login(LoginGrpcCommandMessage data);
+    Task<LoginGrpcCommandResult> Login(LoginModel data);
 
-    Task<RegisterGrpcCommandResult> Register(RegisterGrpcCommandMessage data);
+    Task<RegisterGrpcCommandResult> Register(RegisterModel data);
 
     Task<GetUserByIdGrpcCommandResult> GetCurrentlyLoggedInUser();
 }

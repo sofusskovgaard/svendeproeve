@@ -1,4 +1,5 @@
-﻿using App.Services.Gateway.Infrastructure;
+﻿using App.Services.Gateway.Common;
+using App.Services.Gateway.Infrastructure;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +74,4 @@ namespace App.Services.Gateway.Controllers
             });
         }
     }
-    //public record CreateOrderModel(string UserId, decimal Total, string[] TicketIds);
-    public record CreateProductModel(string Name, string Description, decimal Price);
 }

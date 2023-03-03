@@ -2,6 +2,7 @@
 using App.Services.Tickets.Infrastructure.Grpc.CommandResults;
 using System.Net.Http.Json;
 using System.Security.Cryptography.X509Certificates;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService
 {
@@ -15,7 +16,7 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetTicketByIdGrpcCommandResult>();
         }
 
-        public async Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage data)
+        public async Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsModel data)
         {
             var request = _createRequestMessage(HttpMethod.Post, $"api/tickets");
             request.Content = JsonContent.Create(data);
@@ -30,7 +31,7 @@ namespace App.Web.Services.ApiService
     {
         Task<GetTicketByIdGrpcCommandResult> GetTicketById(string id);
 
-        Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage data);
+        Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsModel data);
 
     }
 }

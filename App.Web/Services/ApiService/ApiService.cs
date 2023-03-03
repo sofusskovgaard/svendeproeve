@@ -22,11 +22,11 @@ public partial class ApiService : IApiService
         _tokenStore = tokenStore;
     }
 
-    private HttpRequestMessage _createRequestMessage(HttpMethod method, [StringSyntax(StringSyntaxAttribute.Uri)] string requestUri, bool secure = false)
+    private HttpRequestMessage _createRequestMessage(HttpMethod method, [StringSyntax(StringSyntaxAttribute.Uri)] string requestUri)
     {
         var requestMessage = new HttpRequestMessage(method, requestUri);
 
-        if (secure)
+        if (!string.IsNullOrEmpty(_tokenStore.AccessToken))
         {
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _tokenStore.AccessToken);
         }
