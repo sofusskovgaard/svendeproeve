@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>7d1073b9-6b3e-4638-88e8-917b54196904</UserSecretsId>
+        <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+        <PackageReference Include="protobuf-net.BuildTools" Version="3.2.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\App.Services.Authentication\App.Services.Authentication.Infrastructure.Grpc\App.Services.Authentication.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Billing\App.Services.Billing.Infrastructure.Grpc\App.Services.Billing.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Departments\App.Services.Departments.Infrastructure.Grpc\App.Services.Departments.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Games\App.Services.Games.Infrastructure.Grpc\App.Services.Games.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Events\App.Services.Events.Infrastructure.Grpc\App.Services.Events.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Orders\App.Services.Orders.Infrastructure.Grpc\App.Services.Orders.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Organizations\App.Services.Organizations.Infrastructure.Grpc\App.Services.Organizations.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Teams\App.Services.Teams.Infrastructure.Grpc\App.Services.Teams.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Turnaments\App.Services.Turnaments.Infrastructure.Grpc\App.Services.Turnaments.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Tickets\App.Services.Tickets.Infrastructure.Grpc\App.Services.Tickets.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\..\App.Services.Users\App.Services.Users.Infrastructure.Grpc\App.Services.Users.Infrastructure.Grpc.csproj" />
+      <ProjectReference Include="..\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mappers\" />
+    </ItemGroup>
+
+</Project>
