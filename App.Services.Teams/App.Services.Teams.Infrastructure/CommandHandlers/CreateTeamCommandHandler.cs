@@ -4,6 +4,7 @@ using App.Services.Teams.Data.Entities;
 using App.Services.Teams.Infrastructure.Commands;
 using App.Services.Teams.Infrastructure.Events;
 using MassTransit;
+using Microsoft.IdentityModel.Tokens;
 
 namespace App.Services.Teams.Infrastructure.CommandHandlers
 {
@@ -36,17 +37,23 @@ namespace App.Services.Teams.Infrastructure.CommandHandlers
 
             team = await _entityDataService.Create<TeamEntity>(team);
 
+            List<string> users = new List<string>();
+
+            if (!team.MembersId.IsNullOrEmpty())
+            {
+                users = team.MembersId.ToList();
+            }
+            if (!team.MembersId.Contains(team.ManagerId) && !string.IsNullOrEmpty(team.ManagerId))
+            {
+                users.Add(team.ManagerId);
+            }
+
             TeamCreatedEventMessage eventMessage = new TeamCreatedEventMessage()
             {
                 Id = team.Id,
                 OrganizationId = team.OrganizationId,
-                UsersId = team.MembersId
+                UsersId = users.ToArray()
             };
-
-            if (!team.MembersId.Contains(team.ManagerId) && !string.IsNullOrEmpty(team.ManagerId))
-            {
-                eventMessage.UsersId.Append(team.ManagerId);
-            }
 
             await _publishEndpoint.Publish(eventMessage);
         }
