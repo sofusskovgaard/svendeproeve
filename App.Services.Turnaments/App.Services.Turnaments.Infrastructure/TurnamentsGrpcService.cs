@@ -274,31 +274,17 @@ namespace App.Services.Turnaments.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var match = await this._entityDataService.GetEntity<MatchEntity>(message.Id);
-
-                GrpcCommandResultMetadata metadata;
-
-                if (match != null)
+                await _publishEndpoint.Publish(new DeleteMatchCommandMessage
                 {
-                    await this._entityDataService.Delete<MatchEntity>(match);
-
-                    metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    };
-                }
-                else
-                {
-                    metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = false,
-                        Message = "Could not find any matches with that id"
-                    };
-                }
+                    Id = message.Id
+                });
 
                 return new DeleteMatchByIdGrpcCommandResult
                 {
-                    Metadata = metadata
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    }
                 };
             });
         }
