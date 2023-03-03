@@ -2,6 +2,7 @@
 using App.Infrastructure.Commands;
 using App.Services.Games.Data.Entities;
 using App.Services.Games.Infrastructure.Commands;
+using App.Services.Games.Infrastructure.Events;
 using MassTransit;
 
 namespace App.Services.Games.Infrastructure.CommandHandlers
@@ -24,6 +25,8 @@ namespace App.Services.Games.Infrastructure.CommandHandlers
             var game = await _entityDataService.GetEntity<GameEntity>(message.Id);
 
             await _entityDataService.Delete<GameEntity>(game);
+
+            await _publishEndpoint.Publish(new GameDeletedEventMessage { Id = message.Id });
         }
     }
 }
