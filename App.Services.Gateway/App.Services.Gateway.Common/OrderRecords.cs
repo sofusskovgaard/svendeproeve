@@ -2,4 +2,4 @@
 
 //public record CreateOrderModel(string UserId, decimal Total, string[] TicketIds);
 
-public record CreateProductModel(string Name, string Description, decimal Price);
+public record CreateProductModel(string Name, string Description, decimal Price, string? ReferenceType = null, string? ReferenceId = null);

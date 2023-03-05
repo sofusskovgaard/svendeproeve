@@ -53,16 +53,13 @@ namespace App.Services.Tickets.Infrastructure
             {
                 await _ticketService.CreateTickets(new BookTicketsCommandMessage
                 {
-                    UserId = message.UserId,
+                    UserId = message.Metadata.UserId,
                     TicketOrders = message.TicketOrders.Select((x) => new BookTicketsCommandMessage.TicketOrder { ProductId = x.ProductId, Recipient = x.Recipient }).ToArray()
                 });
 
                 return new BookTicketsGrpcCommandResult
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    }
+                    Metadata = new GrpcCommandResultMetadata{ Success = true }
                 };
             });
         }

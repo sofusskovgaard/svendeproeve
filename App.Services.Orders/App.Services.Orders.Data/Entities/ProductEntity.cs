@@ -12,5 +12,9 @@ namespace App.Services.Orders.Data.Entities
         public string Description { get; set; }
 
         public decimal Price { get; set; }
+
+        public string? ReferenceId { get; set; }
+
+        public string? ReferenceType { get; set; }
     }
 }

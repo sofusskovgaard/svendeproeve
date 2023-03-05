@@ -96,6 +96,8 @@ namespace App.Services.Orders.Infrastructure
                     Name = message.Name,
                     Description = message.Description,
                     Price = message.Price,
+                    ReferenceId = message.ReferenceId,
+                    ReferenceType = message.ReferenceType
                 };
 
                 await _publishEndpoint.Publish(createMessage);

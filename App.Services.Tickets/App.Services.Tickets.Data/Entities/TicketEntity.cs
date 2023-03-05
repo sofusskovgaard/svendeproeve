@@ -1,5 +1,11 @@
 ﻿using App.Data;
 using App.Data.Attributes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using App.Services.Tickets.Common;
 
 namespace App.Services.Tickets.Data.Entities
 {
@@ -9,10 +15,12 @@ namespace App.Services.Tickets.Data.Entities
     {
         public string ProductId { get; set; }
 
+        public string BuyerId { get; set; }
+
         public string Recipient { get; set; }
 
-        public string Status { get; set; }
+        public string Status { get; set; } = TicketStatus.Booked;
 
-        public string OrderId { get; set; }
+        public string? OrderId { get; set; }
     }
 }

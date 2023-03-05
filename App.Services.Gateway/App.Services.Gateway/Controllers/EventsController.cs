@@ -1,5 +1,6 @@
 ﻿using App.Services.Events.Infrastructure.Grpc;
 using App.Services.Events.Infrastructure.Grpc.CommandMessages;
+using App.Services.Events.Infrastructure.Grpc.CommandResults;
 using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Services.Gateway.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class EventsController : ApiController
     {
         private readonly IEventsGrpcService _eventsGrpcService;
@@ -24,7 +24,7 @@ namespace App.Services.Gateway.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetEventByIdGrpcCommandResult))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public Task<IActionResult> GetEventById(string id)
         {

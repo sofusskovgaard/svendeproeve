@@ -17,5 +17,11 @@ namespace App.Services.Orders.Common.Dtos
 
         [ProtoMember(4)]
         public double Price { get; set; }
+
+        [ProtoMember(5)]
+        public string? ReferenceId { get; set; }
+
+        [ProtoMember(6)]
+        public string? ReferenceType { get; set; }
     }
 }

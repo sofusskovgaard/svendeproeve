@@ -91,7 +91,7 @@ public class EntityDataService : IEntityDataService
 
         _definition = _definition.Set(entity => entity.UpdatedTs, DateTime.UtcNow);
 
-        var result = await collection.UpdateOneAsync(filter(new FilterDefinitionBuilder<T>()), _definition, options);
+        var result = await collection.UpdateManyAsync(filter(new FilterDefinitionBuilder<T>()), _definition, options);
         return result.IsAcknowledged && result.MatchedCount > 0 && result.ModifiedCount > 0;
     }
 

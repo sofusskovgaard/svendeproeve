@@ -23,6 +23,13 @@ namespace App.Services.Gateway.Controllers
             return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id}));
         }
 
+        [HttpGet]
+        [Route("{id}/pay")]
+        public Task<IActionResult> PayOrderById(string id)
+        {
+            return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id }));
+        }
+
         //[HttpPost]
         //public Task<IActionResult> CreateOrder([FromBody] CreateOrderModel model)
         //{
@@ -67,7 +74,9 @@ namespace App.Services.Gateway.Controllers
                 {
                     Name = model.Name,
                     Description = model.Description,
-                    Price = model.Price
+                    Price = model.Price,
+                    ReferenceId = model.ReferenceId,
+                    ReferenceType = model.ReferenceType
                 };
 
                 return _ordersGrpcService.CreateProduct(command);
