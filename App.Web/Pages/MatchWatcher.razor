@@ -1,0 +1,88 @@
+﻿@page "/matchwatcher"
+@inject IApiService _apiService;
+@using Microsoft.AspNetCore.SignalR.Client;
+@using global::App.Services.Turnaments.Common.Dtos;
+@using global::App.Web.Services.ApiService;
+
+<PageTitle>MatchWatcher</PageTitle>
+
+<h1>Match</h1>
+<input @bind="matchId" />
+<button @onclick="SelectMatch">Connect</button>
+<label>Connected: @IsConnected</label>
+
+<div>
+    <table style="min-width:1000px;">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Name</td>
+                <td>Teamids</td>
+                <td>Turnamentid</td>
+                <td>WinningTeam</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @if (match != null)
+                {
+                    <td>@match.Id</td>
+                    <td>@match.Name</td>
+                    <td>
+                        @foreach (var item in match.TeamsId)
+                        {
+                            <span>team: @item</span><br />
+                        }
+                    </td>
+                    <td>@match.TurnamentId</td>
+                    <td>@match.WinningTeamId</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string? userInput;
+    private string? messageInput;
+    private string? matchId;
+    private MatchDto? match;
+
+
+    protected async Task SelectMatch()
+    {
+        match = (await _apiService.GetMatchById(matchId)).MatchDto;
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:3001/matchhub")
+            .Build();
+
+        hubConnection.On<MatchDto>("match-" + matchId, (matchData) =>
+        {
+            match.Id = matchData.Id;
+            match.TeamsId = matchData.TeamsId ?? match.TeamsId;
+            match.TurnamentId = matchData.TurnamentId ?? match.TurnamentId;
+            match.Name = matchData.Name ?? match.Name;
+            match.WinningTeamId = matchData.WinningTeamId ?? match.WinningTeamId;
+
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
+
