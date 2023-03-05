@@ -6,5 +6,5 @@ public interface IEntity
 
     DateTime CreatedTs { get; set; }
 
-    DateTime UpdatedTs { get; set; }
+    DateTime? UpdatedTs { get; set; }
 }
