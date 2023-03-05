@@ -9,8 +9,10 @@ using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
 using App.Services.Users.Infrastructure.Commands;
 using MassTransit;
 using App.Common.Grpc;
+using App.Services.Authentication.Common.Dtos;
 using App.Services.Authentication.Infrastructure.Services;
 using App.Services.Authentication.Infrastructure.Validators;
+using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 
 namespace App.Services.Authentication.Infrastructure
@@ -25,12 +27,15 @@ namespace App.Services.Authentication.Infrastructure
 
         private readonly IJwtKeyService _jwtKeyService;
 
-        public AuthenticationGrpcService(IPublishEndpoint publishEndpoint, IEntityDataService entityDataService, IJwtGeneratorService jwtGeneratorService, IJwtKeyService jwtKeyService)
+        private readonly IMapper _mapper;
+
+        public AuthenticationGrpcService(IPublishEndpoint publishEndpoint, IEntityDataService entityDataService, IJwtGeneratorService jwtGeneratorService, IJwtKeyService jwtKeyService, IMapper mapper)
         {
             _publishEndpoint = publishEndpoint;
             _entityDataService = entityDataService;
             _jwtGeneratorService = jwtGeneratorService;
             _jwtKeyService = jwtKeyService;
+            this._mapper = mapper;
         }
 
         public ValueTask<RegisterGrpcCommandResult> Register(RegisterGrpcCommandMessage message)
@@ -113,7 +118,9 @@ namespace App.Services.Authentication.Infrastructure
                 var session = new UserSessionEntity()
                 {
                     TokenHash = refreshTokenHashResponse.Hash,
-                    UserId = login.Id
+                    UserId = login.Id,
+                    UserAgent = message.UserAgent,
+                    IP = message.IP
                 };
 
                 await _entityDataService.SaveEntity(session);
@@ -153,6 +160,20 @@ namespace App.Services.Authentication.Infrastructure
                 }
 
                 throw new Exception("There is no session with that refresh token");
+            });
+        }
+
+        public ValueTask<GetSessionsGrpcCommandResult> GetSessions(GetSessionsGrpcCommandMessage message)
+        {
+            return this.TryAsync(async () =>
+            {
+                var entities = await this._entityDataService.ListEntities<UserSessionEntity>(filter => filter.Eq(entity => entity.UserId, message.Metadata!.UserId));
+
+                return new GetSessionsGrpcCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata { Success = true },
+                    Sessions = this._mapper.Map<IEnumerable<UserSessionDto>>(entities).ToArray()
+                };
             });
         }
 
@@ -229,25 +250,17 @@ namespace App.Services.Authentication.Infrastructure
         {
             return this.TryAsync(async () =>
             {
-                var exists = await CheckUsernameAvailability(new CheckUsernameAvailabilityGrpcCommandMessage()
-                    { Username = message.Username });
+                await CheckUsernameAvailability(new CheckUsernameAvailabilityGrpcCommandMessage{ Metadata = message.Metadata, Username = message.Username });
 
-                if (!exists.Metadata.Success)
+                await _publishEndpoint.Publish(new ChangeUsernameCommandMessage
                 {
-                    return new ChangeUsernameGrpcCommandResult
-                    {
-                        Metadata = exists.Metadata
-                    };
-                }
-
-                await _publishEndpoint.Publish(new ChangeUsernameCommandMessage { UserId = message.UserId, Username = message.Username });
+                    UserId = message.Metadata!.UserId,
+                    Username = message.Username
+                });
 
                 return new ChangeUsernameGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
+                    Metadata = new GrpcCommandResultMetadata{ Success = true },
                 };
             });
         }
@@ -256,25 +269,16 @@ namespace App.Services.Authentication.Infrastructure
         {
             return this.TryAsync(async () =>
             {
-                var exists = await CheckEmailAvailability(new CheckEmailAvailabilityGrpcCommandMessage()
-                    { Email = message.Email });
+                await CheckEmailAvailability(new CheckEmailAvailabilityGrpcCommandMessage{ Metadata = message.Metadata, Email = message.Email });
 
-                if (!exists.Metadata.Success)
-                {
-                    return new ChangeEmailGrpcCommandResult
-                    {
-                        Metadata = exists.Metadata
-                    };
-                }
-
-                await _publishEndpoint.Publish(new ChangeEmailCommandMessage() { Email = message.Email });
+                await _publishEndpoint.Publish(new ChangeEmailCommandMessage{
+                    UserId = message.Metadata!.UserId,
+                    Email = message.Email
+                });
 
                 return new ChangeEmailGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
+                    Metadata = new GrpcCommandResultMetadata{ Success = true }
                 };
             });
         }
@@ -285,7 +289,11 @@ namespace App.Services.Authentication.Infrastructure
             {
                 PasswordValidator.Validate(message.Password, message.ConfirmPassword);
 
-                await _publishEndpoint.Publish(new ChangePasswordCommandMessage { Password = message.Password });
+                await _publishEndpoint.Publish(new ChangePasswordCommandMessage
+                {
+                    UserId = message.Metadata!.UserId,
+                    Password = message.Password
+                });
 
                 return new ChangePasswordGrpcCommandResult()
                 {
