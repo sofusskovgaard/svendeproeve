@@ -10,7 +10,7 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetTicketByIdGrpcCommandResult> GetTicketById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/tickets/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/tickets/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetTicketByIdGrpcCommandResult>();
@@ -18,7 +18,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Post, $"api/tickets");
+            var request = await _createRequestMessage(HttpMethod.Post, $"api/tickets");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);

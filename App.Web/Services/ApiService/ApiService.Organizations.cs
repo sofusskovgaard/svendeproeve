@@ -9,7 +9,7 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/organization/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/organization/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetOrganizationByIdGrpcCommandResult>();
@@ -17,7 +17,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(string name)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/organization/{name}/name");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/organization/{name}/name");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetOrganizationsByNameGrpcCommandResult>();
@@ -25,7 +25,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(string address)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/organization/{address}/address");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/organization/{address}/address");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetOrganizationsByAddressGrpcCommandResult>();
@@ -33,7 +33,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetOrganizationsGrpcCommandResult> GetOrganizations()
         {
-            var request = _createRequestMessage(HttpMethod.Get, "api/organizations");
+            var request = await _createRequestMessage(HttpMethod.Get, "api/organizations");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetOrganizationsGrpcCommandResult>();
@@ -41,7 +41,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<CreateOrganizationGrpcCommandResult> CreateOrganization(CreateOrganizationModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Post, "api/organizations");
+            var request = await _createRequestMessage(HttpMethod.Post, "api/organizations");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);
@@ -50,7 +50,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<UpdateOrganizationGrpcCommandResult> UpdateOrganization(string id, UpdateOrganizaitonModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Put, $"api/organizations/{id}");
+            var request = await _createRequestMessage(HttpMethod.Put, $"api/organizations/{id}");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);
@@ -59,7 +59,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<DeleteOrganizationGrpcCommandResult> DeleteOrganization(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Delete, $"api/organization/{id}");
+            var request = await _createRequestMessage(HttpMethod.Delete, $"api/organization/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<DeleteOrganizationGrpcCommandResult>();

@@ -9,7 +9,7 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetEventByIdGrpcCommandResult> GetEventById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/events/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/events/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetEventByIdGrpcCommandResult>();
@@ -17,7 +17,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<CreateEventGrpcCommandResult> CreateEvent(CreateEventModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Post, "api/events");
+            var request = await _createRequestMessage(HttpMethod.Post, "api/events");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);

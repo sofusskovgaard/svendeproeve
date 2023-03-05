@@ -2,6 +2,7 @@
 using App.Services.Gateway.Common;
 using App.Services.Users.Common.Dtos;
 using App.Web.Services.ApiService;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace App.Web.Stores;
@@ -53,7 +54,7 @@ public class SessionStore : ISessionStore
             _loaded = value;
             _notifySessionStoreLoaded();
         }
-    }
+    } 
 
     #endregion
 
@@ -65,30 +66,17 @@ public class SessionStore : ISessionStore
 
         if (response.Metadata.Success)
         {
-            _tokenStore.WriteToken(response.AccessToken, response.RefreshToken, DateTime.UtcNow.AddSeconds(response.ExpiresIn - 30));
+            var payload = await this._tokenStore.SetTokens(response.AccessToken, response.RefreshToken, response.ExpiresIn);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var validation = await tokenHandler.ValidateTokenAsync(_tokenStore.AccessToken, new TokenValidationParameters()
+            if (payload != null)
             {
-                ValidIssuer = "app",
-                ValidAudience = "app"
-            });
+                this.IsAdmin = payload?.isAdmin ?? false;
 
-            if (!validation.IsValid)
-            {
-                _tokenStore.ClearTokens();
-                throw validation.Exception;
+                var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
+                this.CurrentUser = currentUserResponse.User;
+
+                this.LoggedIn = true;
             }
-
-            if (validation.Claims.TryGetValue("isAdmin", out object? isAdminRaw) && bool.TryParse((string)isAdminRaw, out bool isAdmin) && isAdmin)
-            {
-                this.IsAdmin = true;
-            }
-
-            var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
-            this.CurrentUser = currentUserResponse.User;
-
-            this.LoggedIn = true;
         }
     }
 
@@ -106,19 +94,14 @@ public class SessionStore : ISessionStore
         return response.Metadata.Success;
     }
 
-    public async Task Logout()
+    public void Logout()
     {
-        _tokenStore.ClearTokens();
+        this._tokenStore.Clear();
 
         this.CurrentUser = null;
 
         this.LoggedIn = false;
     }
-
-    //public async Task Logout()
-    //{
-
-    //}
 
     #endregion
 
@@ -129,7 +112,7 @@ public class SessionStore : ISessionStore
     private void _notifySessionStoreLoaded()
     {
         Console.WriteLine("Notify session store loaded");
-        OnSessionStoreLoaded?.Invoke();
+        OnSessionStoreLoaded?.Invoke(); 
     }
 
     public event Action? OnSessionChanged;
@@ -148,39 +131,21 @@ public class SessionStore : ISessionStore
     {
         Console.WriteLine("Initializing");
 
-        
-        if (!string.IsNullOrEmpty(_tokenStore.AccessToken))
+        var payload = await this._tokenStore.GetPayload();
+        if (payload != null)
         {
-            Console.WriteLine("Found AccessToken");
+            Console.WriteLine("Found tokens");
 
-            if (!string.IsNullOrEmpty(_tokenStore.RefreshToken))
+            if (payload.isAdmin ?? false)
             {
-                Console.WriteLine("Found RefreshToken");
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var validation = await tokenHandler.ValidateTokenAsync(_tokenStore.AccessToken, new TokenValidationParameters()
-                {
-                    ValidIssuer = "app",
-                    ValidAudience = "app",
-                });
-
-                if (!validation.IsValid)
-                {
-                    _tokenStore.ClearTokens();
-                    this.Loaded = true;
-                    throw validation.Exception;
-                }
-
-                if (validation.Claims.TryGetValue("isAdmin", out object? isAdminRaw) && bool.TryParse((string)isAdminRaw, out bool isAdmin) && isAdmin)
-                {
-                    this.IsAdmin = true;
-                }
-
-                var response = await _apiService.GetCurrentlyLoggedInUser();
-                this.CurrentUser = response.User;
-
-                this.LoggedIn = true;
+                Console.WriteLine("User is administrator");
+                this.IsAdmin = true;
             }
+
+            var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
+            this.CurrentUser = currentUserResponse.User;
+
+            this.LoggedIn = true;
         }
 
         this.Loaded = true;
@@ -204,7 +169,7 @@ public interface ISessionStore
     Task<bool> Register(string firstname, string lastname, string username, string email, string password,
         string confirmPassword);
 
-    Task Logout();
+    void Logout();
 
     event Action? OnSessionChanged;
 

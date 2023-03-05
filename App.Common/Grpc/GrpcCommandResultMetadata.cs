@@ -5,7 +5,7 @@ namespace App.Common.Grpc;
 [ProtoContract]
 public class GrpcCommandResultMetadata : IGrpcCommandResultMetadata
 {
-    [ProtoMember(1)] public bool Success { get; set; } = true;
+    [ProtoMember(1)] public bool Success { get; set; }
 
     [ProtoMember(2)] public string? Message { get; set; }
 

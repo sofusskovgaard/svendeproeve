@@ -8,6 +8,7 @@ using Serilog.Events;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Infrastructure.Options;
@@ -45,7 +46,8 @@ builder.Services.AddGrpcServiceClient<ITicketGrpcService>();
 builder.Services.AddGrpcServiceClient<IBillingGrpcService>();
 builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

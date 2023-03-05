@@ -24,7 +24,8 @@ public class JwtGeneratorService : IJwtGeneratorService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("id", payload.Id),
+                new Claim("sessionId", payload.SessionId),
+                new Claim("id", payload.LoginId),
                 new Claim(JwtRegisteredClaimNames.Sub, payload.Username),
                 new Claim(JwtRegisteredClaimNames.Email, payload.Email)
             }),
@@ -58,4 +59,4 @@ public interface IJwtGeneratorService
     string GenerateRefreshToken();
 }
 
-public record JwtPayload(string Id, string Username, string Email, bool IsAdmin = false);
+public record JwtPayload(string SessionId, string LoginId, string Username, string Email, bool IsAdmin = false);

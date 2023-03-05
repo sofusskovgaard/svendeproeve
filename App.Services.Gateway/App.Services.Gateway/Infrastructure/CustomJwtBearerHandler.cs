@@ -118,7 +118,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
             {
                 var key = await _authenticationGrpcService.PublicKey(new GetPublicKeyGrpcCommandMessage());
 
-                ecdsa = ECDsa.Create();
+                ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
                 ecdsa.ImportSubjectPublicKeyInfo(new ReadOnlySpan<byte>(Convert.FromBase64String(key.PublicKey)), out _);
 
                 kid = key.KeyId;

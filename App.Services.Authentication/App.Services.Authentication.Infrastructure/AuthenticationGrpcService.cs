@@ -11,6 +11,7 @@ using MassTransit;
 using App.Common.Grpc;
 using App.Services.Authentication.Infrastructure.Services;
 using App.Services.Authentication.Infrastructure.Validators;
+using Microsoft.IdentityModel.Tokens;
 
 namespace App.Services.Authentication.Infrastructure
 {
@@ -62,7 +63,10 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new RegisterGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata(),
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
                     Id = login.Id,
                     Username = login.Username,
                     Email = login.Email
@@ -102,7 +106,6 @@ namespace App.Services.Authentication.Infrastructure
                     throw new Exception("Username or password is incorrect");
                 }
 
-                var accessToken = await _jwtGeneratorService.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email, login.IsAdmin ?? false));
                 var refreshToken = _jwtGeneratorService.GenerateRefreshToken();
 
                 var refreshTokenHashResponse = Hasher.Hash(refreshToken, false);
@@ -115,9 +118,14 @@ namespace App.Services.Authentication.Infrastructure
 
                 await _entityDataService.SaveEntity(session);
 
+                var accessToken = await _jwtGeneratorService.GenerateAccessToken(new JwtPayload(session.Id, login.Id, login.Username, login.Email, login.IsAdmin ?? false));
+
                 return new LoginGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata(),
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiresIn = JwtOptions.TokenLifeTime
@@ -137,9 +145,9 @@ namespace App.Services.Authentication.Infrastructure
                 if (session != null)
                 {
                     var login = await _entityDataService.GetEntity<UserLoginEntity>(session.UserId);
-                    var accessToken = await _jwtGeneratorService.GenerateAccessToken(new JwtPayload(login.Id, login.Username, login.Email, login.IsAdmin ?? false));
+                    var accessToken = await _jwtGeneratorService.GenerateAccessToken(new JwtPayload(session.Id, login.Id, login.Username, login.Email, login.IsAdmin ?? false));
 
-                    return new RefreshTokenGrpcCommandResult()
+                    return new RefreshTokenGrpcCommandResult
                     {
                         Metadata = new GrpcCommandResultMetadata(),
                         AccessToken = accessToken,
@@ -147,14 +155,7 @@ namespace App.Services.Authentication.Infrastructure
                     };
                 }
 
-                return new RefreshTokenGrpcCommandResult()
-                {
-                    Metadata = new GrpcCommandResultMetadata()
-                    {
-                        Success = false,
-                        Message = "There is no session with that refresh token"
-                    }
-                };
+                throw new Exception("There is no session with that refresh token");
             });
         }
 
@@ -177,7 +178,10 @@ namespace App.Services.Authentication.Infrastructure
 
                     return new KillUserSessionsGrpcCommandResult()
                     {
-                        Metadata = new GrpcCommandResultMetadata()
+                        Metadata = new GrpcCommandResultMetadata
+                        {
+                            Success = true
+                        },
                     };
                 }
 
@@ -186,7 +190,10 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new KillUserSessionsGrpcCommandResult
                 {
-                    Metadata = new GrpcCommandResultMetadata()
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
                 };
             });
         }
@@ -246,7 +253,10 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new ChangeUsernameGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata()
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
                 };
             });
         }
@@ -270,7 +280,10 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new ChangeEmailGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata()
+                    Metadata = new GrpcCommandResultMetadata
+                    {
+                        Success = true
+                    },
                 };
             });
         }
@@ -285,7 +298,7 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new ChangePasswordGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata()
+                    Metadata = new GrpcCommandResultMetadata{ Success = true }
                 };
             });
         }
@@ -298,7 +311,7 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new GetPublicKeyGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata(),
+                    Metadata = new GrpcCommandResultMetadata{ Success = true },
                     PublicKey = Convert.ToBase64String(key.Item2.ExportSubjectPublicKeyInfo()),
                     KeyId = key.Item1
                 };
