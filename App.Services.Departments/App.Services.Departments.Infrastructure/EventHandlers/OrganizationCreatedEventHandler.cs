@@ -6,33 +6,32 @@ using MassTransit;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
-namespace App.Services.Departments.Infrastructure.EventHandlers
+namespace App.Services.Departments.Infrastructure.EventHandlers;
+
+public class OrganizationCreatedEventHandler : IEventHandler<OrganizationCreatedEventMessage>
 {
-    public class OrganizationCreatedEventHandler : IEventHandler<OrganizationCreatedEventMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    public OrganizationCreatedEventHandler(IEntityDataService entityDataService)
     {
-        private readonly IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+    }
 
-        public OrganizationCreatedEventHandler(IEntityDataService entityDataService)
-        {
-            _entityDataService = entityDataService;
-        }
+    public async Task Consume(ConsumeContext<OrganizationCreatedEventMessage> context)
+    {
+        var message = context.Message;
 
-        public async Task Consume(ConsumeContext<OrganizationCreatedEventMessage> context)
-        {
-            var message = context.Message;
+        var department = await this._entityDataService.GetEntity<DepartmentEntity>(message.DepartmentId);
 
-            var department = await _entityDataService.GetEntity<DepartmentEntity>(message.DepartmentId);
+        var organizations = new List<string>();
+        if (!department.OrganizationIds.IsNullOrEmpty()) organizations = department.OrganizationIds.ToList();
+        organizations.Add(message.Id);
 
-            List<string> organizations = new List<string>();
-            if (!department.OrganizationIds.IsNullOrEmpty())
-            {
-                organizations = department.OrganizationIds.ToList();
-            }
-            organizations.Add(message.Id);
+        var updateDefinition =
+            new UpdateDefinitionBuilder<DepartmentEntity>().Set(entity => entity.OrganizationIds,
+                organizations.ToArray());
 
-            var updateDefinition = new UpdateDefinitionBuilder<DepartmentEntity>().Set(entity => entity.OrganizationIds, organizations.ToArray());
-
-            await _entityDataService.Update<DepartmentEntity>(filter => filter.Eq(entity => entity.Id, message.DepartmentId), _ => updateDefinition);
-        }
+        await this._entityDataService.Update<DepartmentEntity>(
+            filter => filter.Eq(entity => entity.Id, message.DepartmentId), _ => updateDefinition);
     }
 }
