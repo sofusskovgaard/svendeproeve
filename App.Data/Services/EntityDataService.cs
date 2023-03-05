@@ -85,7 +85,7 @@ public class EntityDataService : IEntityDataService
     public async Task<bool> Update<T>(Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter, Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> definition, UpdateOptions? options = null) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();
-        var result = await collection.UpdateOneAsync(filter(new FilterDefinitionBuilder<T>()), definition(new UpdateDefinitionBuilder<T>()), options);
+        var result = await collection.UpdateManyAsync(filter(new FilterDefinitionBuilder<T>()), definition(new UpdateDefinitionBuilder<T>()), options);
         return result.IsAcknowledged && result.MatchedCount > 0 && result.ModifiedCount > 0;
     }
 
