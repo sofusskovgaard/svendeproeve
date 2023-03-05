@@ -33,6 +33,7 @@ namespace App.Services.Tickets.Infrastructure
         {
             var tickets = message.TicketOrders.Select(ticket => new TicketEntity
             {
+                BuyerId = message.UserId,
                 ProductId = ticket.ProductId,
                 Recipient = ticket.Recipient
             }).ToList();

@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Stripe.net" Version="41.7.0" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
         <ProjectReference Include="..\..\App.Services.Orders\App.Services.Orders.Infrastructure.Events\App.Services.Orders.Infrastructure.Events.csproj" />
         <ProjectReference Include="..\App.Services.Billing.Data\App.Services.Billing.Data.csproj" />

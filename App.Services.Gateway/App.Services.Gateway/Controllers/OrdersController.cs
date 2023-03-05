@@ -75,8 +75,8 @@ namespace App.Services.Gateway.Controllers
                     Name = model.Name,
                     Description = model.Description,
                     Price = model.Price,
-                    //ReferenceId = model.ReferenceId,
-                    //ReferenceType = model.ReferenceType
+                    ReferenceId = model.ReferenceId,
+                    ReferenceType = model.ReferenceType
                 };
 
                 return _ordersGrpcService.CreateProduct(command);

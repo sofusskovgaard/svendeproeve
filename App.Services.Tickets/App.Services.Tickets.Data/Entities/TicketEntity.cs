@@ -15,6 +15,8 @@ namespace App.Services.Tickets.Data.Entities
     {
         public string ProductId { get; set; }
 
+        public string BuyerId { get; set; }
+
         public string Recipient { get; set; }
 
         public string Status { get; set; } = TicketStatus.Booked;

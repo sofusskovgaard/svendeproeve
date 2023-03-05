@@ -3,9 +3,7 @@ using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.Billing.Infrastructure;
 using ProtoBuf.Grpc.Server;
-using Stripe;
 using System.Reflection;
-using App.Services.Billing.Infrastructure.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +26,6 @@ await entityIndexGenerator.Generate(Assembly.Load("App.Services.Billing.Data"));
 
 app.MapGrpcService<BillingGrpcService>();
 app.MapCodeFirstGrpcReflectionService();
-
-StripeConfiguration.ApiKey = StripeOptions.ApiKey;
 
 await app.RunAsync();
 

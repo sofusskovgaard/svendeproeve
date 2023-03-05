@@ -7,8 +7,6 @@ namespace App.Services.Tickets.Infrastructure.Grpc.CommandMessages
     public class BookTicketsGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
-        public string UserId { get; set; }
-        [ProtoMember(2)]
         public TicketOrder[] TicketOrders { get; set; }
 
         [ProtoMember(100)]
