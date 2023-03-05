@@ -7,40 +7,50 @@
 <h3>Games</h3>
 
 <div class="grid">
-
-
-
-    @if (games != null)
+    @if (loaded)
     {
-        @foreach (var game in games)
+        @if (games != null && games.Count > 0)
         {
-            <div class="g-col-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@game.Name</h5>
-                        <p class="card-text">@game.Discription</p>
+            @foreach (var game in games)
+            {
+                <div class="g-col-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@game.Name</h5>
+                            <p class="card-text">@game.Discription</p>
 
-                        <ul>
-                            @foreach (var genre in game.Genre)
-                            {
-                                <li>@genre</li>
-                            }
-                        </ul>
+                            <ul>
+                                @foreach (var genre in game.Genre)
+                                {
+                                    <li>@genre</li>
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         }
+        else
+        {
+            <p>There are no games</p>
+        }
+    }
+    else
+    {
+        <App.Web.Shared.Components.Loader />
     }
 </div>
 
 
 @code
 {
+    bool loaded = false;
     List<GameDto> games;
 
     protected override async Task OnInitializedAsync()
     {
         var response = await ApiService.GetAllGames();
         games = response.GameDtos?.ToList() ?? new List<GameDto>();
+        loaded = true;
     }
 }

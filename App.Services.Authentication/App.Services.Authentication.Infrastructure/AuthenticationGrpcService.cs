@@ -122,10 +122,7 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new LoginGrpcCommandResult()
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
+                    Metadata = new GrpcCommandResultMetadata{ Success = true },
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiresIn = JwtOptions.TokenLifeTime
@@ -149,7 +146,7 @@ namespace App.Services.Authentication.Infrastructure
 
                     return new RefreshTokenGrpcCommandResult
                     {
-                        Metadata = new GrpcCommandResultMetadata(),
+                        Metadata = new GrpcCommandResultMetadata{ Success = true },
                         AccessToken = accessToken,
                         ExpiresIn = JwtOptions.TokenLifeTime
                     };
@@ -178,10 +175,7 @@ namespace App.Services.Authentication.Infrastructure
 
                     return new KillUserSessionsGrpcCommandResult()
                     {
-                        Metadata = new GrpcCommandResultMetadata
-                        {
-                            Success = true
-                        },
+                        Metadata = new GrpcCommandResultMetadata { Success = true },
                     };
                 }
 
@@ -190,10 +184,7 @@ namespace App.Services.Authentication.Infrastructure
 
                 return new KillUserSessionsGrpcCommandResult
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
+                    Metadata = new GrpcCommandResultMetadata { Success = true },
                 };
             });
         }
