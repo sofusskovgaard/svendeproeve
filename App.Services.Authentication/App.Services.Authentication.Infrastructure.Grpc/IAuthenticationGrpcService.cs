@@ -23,8 +23,21 @@ namespace App.Services.Authentication.Infrastructure.Grpc
         [Operation]
         ValueTask<LoginGrpcCommandResult> Login(LoginGrpcCommandMessage message);
 
+        /// <summary>
+        /// Get a new access token
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [Operation]
         ValueTask<RefreshTokenGrpcCommandResult> RefreshToken(RefreshTokenGrpcCommandMessage message);
+
+        /// <summary>
+        /// Get sessions for the currently logged in user
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        [Operation]
+        ValueTask<GetSessionsGrpcCommandResult> GetSessions(GetSessionsGrpcCommandMessage message);
 
         /// <summary>
         /// This command kills user sessions by removing refresh tokens from the database, effectively invalidating sessions when their current access token expires.
@@ -74,6 +87,11 @@ namespace App.Services.Authentication.Infrastructure.Grpc
         [Operation]
         ValueTask<ChangePasswordGrpcCommandResult> ChangePassword(ChangePasswordGrpcCommandMessage message);
 
+        /// <summary>
+        /// Get the current public ecdsa key for validation of access tokens
+        /// </summary>
+        /// <param name="message">the data required</param>
+        /// <returns></returns>
         [Operation]
         ValueTask<GetPublicKeyGrpcCommandResult> PublicKey(GetPublicKeyGrpcCommandMessage message);
     }
