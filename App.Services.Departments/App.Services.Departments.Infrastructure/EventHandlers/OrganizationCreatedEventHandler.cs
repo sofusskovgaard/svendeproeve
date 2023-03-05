@@ -31,6 +31,8 @@ namespace App.Services.Departments.Infrastructure.EventHandlers
             organizations.Add(message.Id);
 
             var updateDefinition = new UpdateDefinitionBuilder<DepartmentEntity>().Set(entity => entity.OrganizationIds, organizations.ToArray());
+
+            await _entityDataService.Update<DepartmentEntity>(filter => filter.Eq(entity => entity.Id, message.DepartmentId), _ => updateDefinition);
         }
     }
 }
