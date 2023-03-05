@@ -35,11 +35,8 @@ public class EventsGrpcService : BaseGrpcService, IEventsGrpcService
 
             return new GetEventByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                Event = this._mapper.Map<EventDto>(@event)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<EventDto>(@event)
             };
         });
     }
@@ -48,21 +45,15 @@ public class EventsGrpcService : BaseGrpcService, IEventsGrpcService
     {
         return this.TryAsync(async () =>
         {
-            var @event = new CreateEventCommandMessage
+            await this._publishEndpoint.Publish(new CreateEventCommandMessage
             {
                 EventName = message.EventName,
                 Location = message.Location,
                 StartDate = message.StartDate,
                 EndDate = message.EndDate
-            };
+            });
 
-            await this._publishEndpoint.Publish(@event);
-            ;
-
-            return new CreateEventGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata { Success = true }
-            };
+            return new CreateEventGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
@@ -70,21 +61,16 @@ public class EventsGrpcService : BaseGrpcService, IEventsGrpcService
     {
         return this.TryAsync(async () =>
         {
-            var updateMessage = new UpdateEventCommandMessage
+            await this._publishEndpoint.Publish(new UpdateEventCommandMessage
             {
                 Id = message.Id,
                 Location = message.Location,
                 StartDate = message.StartDate,
                 EndDate = message.EndDate,
                 EventName = message.EventName
-            };
+            });
 
-            await this._publishEndpoint.Publish(updateMessage);
-
-            return new UpdateEventGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata { Success = true }
-            };
+            return new UpdateEventGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
@@ -92,21 +78,13 @@ public class EventsGrpcService : BaseGrpcService, IEventsGrpcService
     {
         return this.TryAsync(async () =>
         {
-            var deleteMessage = new DeleteEventCommandMessage
-            {
-                Id = message.Id
-            };
+            await this._publishEndpoint.Publish(new DeleteEventCommandMessage{ Id = message.Id });
 
-            await this._publishEndpoint.Publish(deleteMessage);
-
-            return new DeleteEventGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata { Success = true }
-            };
+            return new DeleteEventGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
-    public ValueTask<GetEventsGrpcCommandResult> GetEvents(GetEventsGrpcCommandMessage mesage)
+    public ValueTask<GetEventsGrpcCommandResult> GetEvents(GetEventsGrpcCommandMessage message)
     {
         return this.TryAsync(async () =>
         {
@@ -114,8 +92,8 @@ public class EventsGrpcService : BaseGrpcService, IEventsGrpcService
 
             return new GetEventsGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata { Success = true },
-                Events = this._mapper.Map<EventDto[]>(events)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<EventDto[]>(events)
             };
         });
     }

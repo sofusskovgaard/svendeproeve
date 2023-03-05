@@ -8,7 +8,7 @@ namespace App.Services.Events.Infrastructure.Grpc.CommandResults;
 public class GetEventByIdGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public EventDto Event { get; set; }
+    public EventDto Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }

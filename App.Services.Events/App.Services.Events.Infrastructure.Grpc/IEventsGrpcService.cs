@@ -18,4 +18,7 @@ public interface IEventsGrpcService
 
     [Operation]
     ValueTask<DeleteEventGrpcCommandResult> DeleteEvent(DeleteEventGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<GetEventsGrpcCommandResult> GetEvents(GetEventsGrpcCommandMessage message);
 }
