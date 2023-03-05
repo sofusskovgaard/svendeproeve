@@ -5,26 +5,26 @@ using App.Services.Events.Infrastructure.Commands;
 using App.Services.Events.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Events.Infrastructure.CommandHandlers
+namespace App.Services.Events.Infrastructure.CommandHandlers;
+
+public class DeleteEventCommandHandler : ICommandHandler<DeleteEventCommandMessage>
 {
-    public class DeleteEventCommandHandler : ICommandHandler<DeleteEventCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public DeleteEventCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+        this._publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IPublishEndpoint _publishEndpoint;
+    public async Task Consume(ConsumeContext<DeleteEventCommandMessage> context)
+    {
+        var message = context.Message;
 
-        public DeleteEventCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
-        {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
-        public async Task Consume(ConsumeContext<DeleteEventCommandMessage> context)
-        {
-            var message = context.Message;
+        await this._entityDataService.Delete<EventEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
 
-            await _entityDataService.Delete<EventEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
-
-            await _publishEndpoint.Publish(new EventDeletedEventMessage { Id =  message.Id });
-        }
+        await this._publishEndpoint.Publish(new EventDeletedEventMessage { Id = message.Id });
     }
 }
