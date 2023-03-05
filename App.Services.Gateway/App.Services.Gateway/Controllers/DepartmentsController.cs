@@ -6,10 +6,15 @@ using App.Services.Gateway.Infrastructure;
 using App.Services.Organizations.Infrastructure.Grpc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
+using App.Common.Grpc;
+using App.Services.Departments.Infrastructure.Grpc.CommandResults;
 
 namespace App.Services.Gateway.Controllers;
 
 [Route("api/[controller]")]
+[Produces(MediaTypeNames.Application.Json)]
+[Consumes(MediaTypeNames.Application.Json)]
 public class DepartmentsController : ApiController
 {
     private readonly IDepartmentsGrpcService _departmentsGrpcService;
@@ -26,8 +31,7 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAllDepartmentsGrpcCommandResult))]
     public Task<IActionResult> GetAllDepartments([FromQuery] string? name = null)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -47,8 +51,8 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpGet]
     [Route("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetDepartmentByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> GetDepartmentById(string id)
     {
         return this.TryAsync(() =>
@@ -63,7 +67,6 @@ public class DepartmentsController : ApiController
     [HttpGet]
     [Route("{id}/organizations")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetOrganizationsByDepartment(string id)
     {
         throw new NotImplementedException();
@@ -77,7 +80,6 @@ public class DepartmentsController : ApiController
     [HttpGet]
     [Route("{id}/events")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetEventsByDepartment(string id)
     {
         throw new NotImplementedException();
@@ -90,8 +92,8 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpPost]
     [Route(""), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(CreateDepartmentGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> CreateDepartment([FromBody] CreateDepartmentModel model)
     {
         return this.TryAsync(() => this._departmentsGrpcService.CreateDepartment(this.CreateCommandMessage<CreateDepartmentGrpcCommandMessage>(
@@ -109,8 +111,9 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpPut]
     [Route("{id}"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(UpdateDepartmentGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> UpdateDepartment(string id, [FromBody] UpdateDepartmentModel model)
     {
         return this.TryAsync(() => this._departmentsGrpcService.UpdateDepartment(this.CreateCommandMessage<UpdateDepartmentGrpcCommandMessage>(
@@ -129,8 +132,8 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpDelete]
     [Route("{id}"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(DeleteDepartmentByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> DeleteDepartmentById(string id)
     {
         return this.TryAsync(() =>
