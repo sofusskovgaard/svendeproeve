@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using App.Services.Orders.Common.Constants;
 
 namespace App.Services.Orders.Infrastructure.EventHandlers
 {
@@ -31,7 +32,7 @@ namespace App.Services.Orders.Infrastructure.EventHandlers
             var entity = new OrderEntity
             {
                 UserId = context.Message.UserId,
-                OrderLines = context.Message.Tickets.Select((ticket) => new OrderEntity.OrderLine { TicketId = ticket.TicketId, Price = products.FirstOrDefault(x => x.Id == ticket.ProductId).Price, Quantity = 1 , ProductId = ticket.ProductId}).ToArray(),
+                OrderLines = context.Message.Tickets.Select((ticket) => new OrderEntity.OrderLine { ReferenceId = ticket.TicketId, ReferenceType = ProductReferenceType.Ticket, Price = products.FirstOrDefault(x => x.Id == ticket.ProductId).Price, Quantity = 1 , ProductId = ticket.ProductId}).ToArray(),
             };
             entity.Total = GetTotal(entity.OrderLines);
 
@@ -40,7 +41,7 @@ namespace App.Services.Orders.Infrastructure.EventHandlers
             TicketOrderCreatedEventMessage message = new TicketOrderCreatedEventMessage
             {
                 OrderId = entity.Id,
-                OrderLines = entity.OrderLines.Select((orderLine) => new TicketOrderCreatedEventMessage.OrderLine { TicketId = orderLine.TicketId, Price = orderLine.Price, ProductId = orderLine.ProductId, Quantity = orderLine.Quantity}).ToArray(),
+                OrderLines = entity.OrderLines.Select((orderLine) => new TicketOrderCreatedEventMessage.OrderLine { ReferenceId = orderLine.ReferenceId, ReferenceType = ProductReferenceType.Ticket, Price = orderLine.Price, ProductId = orderLine.ProductId, Quantity = orderLine.Quantity}).ToArray(),
                 Total = entity.Total,
                 UserId = entity.UserId,
             };

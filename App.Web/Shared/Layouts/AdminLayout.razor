@@ -1,0 +1,19 @@
+﻿@inject ISessionStore SessionStore
+@inherits LayoutComponentBase
+@layout _Layout
+
+@if (SessionStore.Loaded)
+{
+    <h1>Admin</h1>
+
+    <h2>IsAdmin: @SessionStore.IsAdmin</h2>
+
+    <main>
+        @Body
+    </main>
+}
+else
+{
+    <p>Admin</p>
+    <App.Web.Shared.Components.Loader />
+}

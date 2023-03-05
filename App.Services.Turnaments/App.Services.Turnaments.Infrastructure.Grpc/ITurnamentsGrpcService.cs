@@ -9,49 +9,49 @@ namespace App.Services.Turnaments.Infrastructure.Grpc
     {
         #region Turnaments
         [Operation]
-        ValueTask<GetAllTurnamentsCommandResult> GetAllTurnaments(GetAllTurnamentsCommandMessage message);
+        ValueTask<GetAllTurnamentsGrpcCommandResult> GetAllTurnaments(GetAllTurnamentsGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTurnamentsByEventIdCommandResult> GetTurnamentsByEventId(GetTurnamentsByEventIdCommandMessage message);
+        ValueTask<GetTurnamentsByEventIdGrpcCommandResult> GetTurnamentsByEventId(GetTurnamentsByEventIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTurnamentsByGameIdCommandResult> GetTurnamentsByGameId(GetTurnamentsByGameIdCommandMessage message);
+        ValueTask<GetTurnamentsByGameIdGrpcCommandResult> GetTurnamentsByGameId(GetTurnamentsByGameIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTurnamentByMatchIdCommandResult> GetTurnamentByMatchId(GetTurnamentByMatchIdCommandMessage message);
+        ValueTask<GetTurnamentByMatchIdGrpcCommandResult> GetTurnamentByMatchId(GetTurnamentByMatchIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetTurnamentByIdCommandResult> GetTuenamentById(GetTurnamentByIdCommandMessage message);
+        ValueTask<GetTurnamentByIdGrpcCommandResult> GetTuenamentById(GetTurnamentByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<CreateTurnamentCommandResult> CreateTurnament(CreateTurnamentCommandMessage message);
+        ValueTask<CreateTurnamentGrpcCommandResult> CreateTurnament(CreateTurnamentGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<UpdateTurnamentCommandResult> UpdateTurnament(UpdateTurnamentCommandMessage message);
+        ValueTask<UpdateTurnamentGrpcCommandResult> UpdateTurnament(UpdateTurnamentGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<DeleteTurnamentByIdCommandResult> DeleteTurnamentById(DeleteTurnamentByIdCommandMessage message);
+        ValueTask<DeleteTurnamentByIdGrpcCommandResult> DeleteTurnamentById(DeleteTurnamentByIdGrpcCommandMessage message);
 
         #endregion
         #region Mathes
 
         [Operation]
-        ValueTask<GetMatchesByTurnamentIdCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdCommandMessage message);
+        ValueTask<GetMatchesByTurnamentIdGrpcCommandResult> GetMatchesByTurnamentId(GetMatchesByTurnamentIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetMatchesByTeamIdCommandResult> GetMatchesByTeamId(GetMatchesByTeamIdCommandMessage message);
+        ValueTask<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeamId(GetMatchesByTeamIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<GetMatchByIdCommandResult> GetMatchById(GetMatchByIdCommandMessage message);
+        ValueTask<GetMatchByIdGrpcCommandResult> GetMatchById(GetMatchByIdGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<CreateMatchCommandResult> CreateMatch(CreateMatchCommandMessage message);
+        ValueTask<CreateMatchGrpcCommandResult> CreateMatch(CreateMatchGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<UpdateMatchCommandResult> UpdateMatch(UpdateMatchCommandMessage message);
+        ValueTask<UpdateMatchGrpcCommandResult> UpdateMatch(UpdateMatchGrpcCommandMessage message);
 
         [Operation]
-        ValueTask<DeleteMatchByIdCommandResult> DeleteMatchById(DeleteMatchByIdCommandMessage message);
+        ValueTask<DeleteMatchByIdGrpcCommandResult> DeleteMatchById(DeleteMatchByIdGrpcCommandMessage message);
 
         #endregion
     }

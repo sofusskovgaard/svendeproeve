@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Billing.Common.Dtos;
@@ -7,7 +8,6 @@ using App.Services.Billing.Infrastructure.Grpc.CommandMessages;
 using App.Services.Billing.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Billing.Infrastructure
 {
@@ -65,6 +65,23 @@ namespace App.Services.Billing.Infrastructure
                 };
 
             });
+        }
+
+        public ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message)
+        {
+            // check for pending order charge with order id
+
+            // if checkout session exists
+                // send checkout session url
+
+            // else
+                // publish ChargeOrderCommandMessage
+                    // get user card
+                    // charge user card
+                    // change OrderCharge Type = CHARGED
+                    // emit PendingOrderCharged
+
+            throw new NotImplementedException();
         }
     }
 }

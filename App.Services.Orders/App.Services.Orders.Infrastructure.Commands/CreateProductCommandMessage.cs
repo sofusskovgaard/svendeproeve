@@ -1,9 +1,5 @@
 ﻿using App.Infrastructure.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ProtoBuf;
 
 namespace App.Services.Orders.Infrastructure.Commands
 {
@@ -14,5 +10,9 @@ namespace App.Services.Orders.Infrastructure.Commands
         public string Description { get; set; }
 
         public decimal Price { get; set; }
+
+        public string? ReferenceId { get; set; }
+
+        public string? ReferenceType { get; set; }
     }
 }

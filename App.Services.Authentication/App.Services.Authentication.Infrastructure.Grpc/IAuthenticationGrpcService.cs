@@ -64,7 +64,7 @@ namespace App.Services.Authentication.Infrastructure.Grpc
         /// <param name="message"></param>
         /// <returns></returns>
         [Operation]
-        ValueTask<ChangeEmailGrpcCommandResult> ChangeEmail(ChangeEmailGrpCommandMessage message);
+        ValueTask<ChangeEmailGrpcCommandResult> ChangeEmail(ChangeEmailGrpcCommandMessage message);
 
         /// <summary>
         /// This command allows the user to change their password.
@@ -73,5 +73,8 @@ namespace App.Services.Authentication.Infrastructure.Grpc
         /// <returns></returns>
         [Operation]
         ValueTask<ChangePasswordGrpcCommandResult> ChangePassword(ChangePasswordGrpcCommandMessage message);
+
+        [Operation]
+        ValueTask<GetPublicKeyGrpcCommandResult> PublicKey(GetPublicKeyGrpcCommandMessage message);
     }
 }

@@ -1,6 +1,4 @@
 using System.Reflection;
-using App.Infrastructure.Commands;
-using App.Infrastructure.Events;
 using App.Infrastructure.Options;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;

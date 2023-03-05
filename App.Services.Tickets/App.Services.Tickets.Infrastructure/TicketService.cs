@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using App.Services.Tickets.Common;
 
 namespace App.Services.Tickets.Infrastructure
 {
@@ -30,28 +31,23 @@ namespace App.Services.Tickets.Infrastructure
 
         public async ValueTask CreateTickets(BookTicketsCommandMessage message)
         {
-            var orderOfTickets = new List<TicketEntity>();
-
-            foreach (var item in message.TicketOrders)
+            var tickets = message.TicketOrders.Select(ticket => new TicketEntity
             {
-                var ticket = new TicketEntity
-                {
-                    ProductId = item.ProductId,
-                    Recipient = item.Recipient,
-                    Status = "Created"
-                };
-                orderOfTickets.Add(ticket);
-            }
+                BuyerId = message.UserId,
+                ProductId = ticket.ProductId,
+                Recipient = ticket.Recipient
+            }).ToList();
 
-            await _entityDataService.SaveEntities(orderOfTickets);
+            await _entityDataService.SaveEntities(tickets);
 
-            var eventMessage = new TicketsBookedEventMessage
+            await _publishEndpoint.Publish(new TicketsBookedEventMessage
             {
                 UserId = message.UserId,
-                Tickets = orderOfTickets.Select((x) => new TicketsBookedEventMessage.Ticket { ProductId = x.ProductId, TicketId = x.Id }).ToArray()
-            };
+                Tickets = tickets.Select(x => new TicketsBookedEventMessage.Ticket { ProductId = x.ProductId, TicketId = x.Id! }).ToArray()
+            });
 
-            await _publishEndpoint.Publish(eventMessage);
+            await _publishEndpoint.Publish(new TicketStaleCheckCommandMessage{ Tickets = tickets.Select(t => t.Id).ToArray() },
+                context => context.Delay = TimeSpan.FromSeconds(15));
         }
     }
 }

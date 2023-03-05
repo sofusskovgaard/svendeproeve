@@ -1,5 +1,6 @@
 ﻿using App.Data;
 using App.Data.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace App.Services.Authentication.Data.Entities
 {
@@ -17,5 +18,8 @@ namespace App.Services.Authentication.Data.Entities
         public string PasswordHash { get; set; }
 
         public string PasswordSalt { get; set; }
+
+        [BsonIgnoreIfNull]
+        public bool? IsAdmin { get; set; } = null;
     }
 }

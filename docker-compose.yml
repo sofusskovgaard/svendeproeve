@@ -10,12 +10,13 @@ services:
       - "27017:27017"
 
   rabbitmq:
-    image: rabbitmq:3.11-management-alpine
+    image: masstransit/rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
     ports:
       - "15672:15672"
+      - "5672:5672"
 
   redis:
     image: redis:7.0.8-alpine
@@ -26,7 +27,11 @@ services:
     image: ${DOCKER_REGISTRY-}appservicesgateway
     build:
       context: .
-      dockerfile: App.Services.Gateway/Dockerfile
+      dockerfile: App.Services.Gateway/App.Services.Gateway/Dockerfile
+    ports:
+      - "3000:443"
+    depends_on:
+      - app.services.authentication
 
   app.services.users:
     image: ${DOCKER_REGISTRY-}appservicesusers
@@ -76,13 +81,11 @@ services:
       context: .
       dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
 
-
   app.services.games:
     image: ${DOCKER_REGISTRY-}appservicesgames
     build:
       context: .
       dockerfile: App.Services.Games/App.Services.Games/Dockerfile
-
 
   app.services.turnaments:
     image: ${DOCKER_REGISTRY-}appservicesturnaments
@@ -95,3 +98,12 @@ services:
     build:
       context: .
       dockerfile: App.Services.Authentication/App.Services.Authentication/Dockerfile
+
+  app.services.realtimeupdater:
+    image: ${DOCKER_REGISTRY-}appservicesrealtimeupdater
+    build:
+      context: .
+      dockerfile: App.Services.RealTimeUpdater/App.Services.RealTimeUpdater/Dockerfile
+    ports:
+    - "3001:443"
+

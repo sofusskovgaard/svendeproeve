@@ -1,10 +1,5 @@
 ﻿using App.Data;
 using App.Data.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Orders.Data.Entities
 {
@@ -17,5 +12,9 @@ namespace App.Services.Orders.Data.Entities
         public string Description { get; set; }
 
         public decimal Price { get; set; }
+
+        public string? ReferenceId { get; set; }
+
+        public string? ReferenceType { get; set; }
     }
 }

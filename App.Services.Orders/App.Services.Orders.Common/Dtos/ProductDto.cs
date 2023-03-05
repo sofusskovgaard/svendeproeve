@@ -1,9 +1,4 @@
 ﻿using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Orders.Common.Dtos
 {
@@ -22,5 +17,11 @@ namespace App.Services.Orders.Common.Dtos
 
         [ProtoMember(4)]
         public double Price { get; set; }
+
+        [ProtoMember(5)]
+        public string? ReferenceId { get; set; }
+
+        [ProtoMember(6)]
+        public string? ReferenceType { get; set; }
     }
 }
