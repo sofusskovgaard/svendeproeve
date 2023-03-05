@@ -50,7 +50,7 @@
     protected override async Task OnInitializedAsync()
     {
         var response = await ApiService.GetAllGames();
-        games = response.GameDtos?.ToList() ?? new List<GameDto>();
+        games = response.Data?.ToList() ?? new List<GameDto>();
         loaded = true;
     }
 }
