@@ -5,34 +5,34 @@ using App.Services.Turnaments.Infrastructure.Events;
 using MassTransit;
 using MongoDB.Driver;
 
-namespace App.Services.Events.Infrastructure.EventHandlers
+namespace App.Services.Events.Infrastructure.EventHandlers;
+
+public class TurnamentDeletedEventHandler : IEventHandler<TurnamentDeletedEventMessage>
 {
-    public class TurnamentDeletedEventHandler : IEventHandler<TurnamentDeletedEventMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    public TurnamentDeletedEventHandler(IEntityDataService entityDataService)
     {
-        private readonly IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+    }
 
-        public TurnamentDeletedEventHandler(IEntityDataService entityDataService)
-        {
-            _entityDataService = entityDataService;
-        }
+    public async Task Consume(ConsumeContext<TurnamentDeletedEventMessage> context)
+    {
+        var message = context.Message;
 
-        public async Task Consume(ConsumeContext<TurnamentDeletedEventMessage> context)
-        {
-            var message = context.Message;
+        var events = await this._entityDataService.ListEntities<EventEntity>(filter =>
+            filter.AnyStringIn(entity => entity.Tournaments, message.Id));
 
-            var events = await _entityDataService.ListEntities<EventEntity>(filter => filter.AnyStringIn(entity => entity.Tournaments, message.Id));
-
-            foreach (var @event in events)
+        foreach (var @event in events)
+            if (@event.Tournaments.Contains(message.Id))
             {
-                if (@event.Tournaments.Contains(message.Id))
-                {
-                    @event.Tournaments = @event.Tournaments.Where(t => t != message.Id).ToArray();
+                @event.Tournaments = @event.Tournaments.Where(t => t != message.Id).ToArray();
 
-                    var updateDefinition = new UpdateDefinitionBuilder<EventEntity>().Set(entity => entity.Tournaments, @event.Tournaments);
+                var updateDefinition =
+                    new UpdateDefinitionBuilder<EventEntity>().Set(entity => entity.Tournaments, @event.Tournaments);
 
-                    await _entityDataService.Update<EventEntity>(filter => filter.Eq(entity => entity.Id, @event.Id), _ => updateDefinition);
-                }
+                await this._entityDataService.Update<EventEntity>(filter => filter.Eq(entity => entity.Id, @event.Id),
+                    _ => updateDefinition);
             }
-        }
     }
 }

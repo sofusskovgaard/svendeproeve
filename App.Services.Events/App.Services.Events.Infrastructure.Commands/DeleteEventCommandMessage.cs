@@ -1,9 +1,8 @@
 ﻿using App.Infrastructure.Commands;
 
-namespace App.Services.Events.Infrastructure.Commands
+namespace App.Services.Events.Infrastructure.Commands;
+
+public class DeleteEventCommandMessage : ICommandMessage
 {
-    public class DeleteEventCommandMessage : ICommandMessage
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

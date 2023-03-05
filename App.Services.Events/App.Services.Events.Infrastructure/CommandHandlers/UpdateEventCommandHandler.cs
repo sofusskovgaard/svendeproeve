@@ -6,37 +6,36 @@ using App.Services.Events.Infrastructure.Events;
 using MassTransit;
 using MongoDB.Driver;
 
-namespace App.Services.Events.Infrastructure.CommandHandlers
+namespace App.Services.Events.Infrastructure.CommandHandlers;
+
+public class UpdateEventCommandHandler : ICommandHandler<UpdateEventCommandMessage>
 {
-    public class UpdateEventCommandHandler : ICommandHandler<UpdateEventCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public UpdateEventCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+        this._publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IPublishEndpoint _publishEndpoint;
+    public async Task Consume(ConsumeContext<UpdateEventCommandMessage> context)
+    {
+        var message = context.Message;
 
-        public UpdateEventCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        await this._entityDataService.Update<EventEntity>(
+            filter => filter.Eq(entity => entity.Id, message.Id),
+            builder => builder.Set(entity => entity.EventName, message.EventName)
+                .Set(entity => entity.Location, message.Location)
+                .Set(entity => entity.StartDate, message.StartDate)
+                .Set(entity => entity.EndDate, message.EndDate)
+        );
+
+        var updateEvent = new EventUpdatedEventMessage
         {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
-
-        public async Task Consume(ConsumeContext<UpdateEventCommandMessage> context)
-        {
-            var message = context.Message;
-
-            await _entityDataService.Update<EventEntity>(
-                filter => filter.Eq(entity => entity.Id, message.Id),
-                builder => builder.Set(entity => entity.EventName, message.EventName)
-                                  .Set(entity => entity.Location, message.Location)
-                                  .Set(entity => entity.StartDate, message.StartDate)
-                                  .Set(entity => entity.EndDate, message.EndDate)
-            );
-
-            var updateEvent = new EventUpdatedEventMessage
-            {
-                Id = message.Id
-            };
-            await _publishEndpoint.Publish(updateEvent);
-        }
+            Id = message.Id
+        };
+        await this._publishEndpoint.Publish(updateEvent);
     }
 }
