@@ -1,3 +1,5 @@
+using App.Common.Grpc;
+
 namespace App.Infrastructure.Grpc;
 
 public interface IGrpcCommandHandler<TGrpcCommandMessage, TGrpcCommandResult> : IGrpcCommandHandler

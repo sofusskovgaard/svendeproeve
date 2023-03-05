@@ -1,5 +1,4 @@
 ﻿using App.Infrastructure.Commands;
-using App.Infrastructure.Events;
 
 namespace App.Services.Authentication.Infrastructure.Commands;
 

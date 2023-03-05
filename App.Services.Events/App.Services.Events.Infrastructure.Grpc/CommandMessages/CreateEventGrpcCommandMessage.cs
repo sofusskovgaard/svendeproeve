@@ -1,15 +1,10 @@
-﻿using App.Infrastructure.Grpc;
-using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProtoBuf;
+using App.Common.Grpc;
 
 namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateEventGrpcCommandMessage : IGrpcCommandMessage
+    public class CreateEventGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string EventName { get; set; }
@@ -19,5 +14,8 @@ namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
         public DateTime StartDate { get; set; }
         [ProtoMember(4)]
         public DateTime EndDate { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

@@ -1,0 +1,82 @@
+﻿@inject ISessionStore SessionStore
+@inherits LayoutComponentBase
+@layout _Layout
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">ESport</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbarContent" aria-controls="mainNavbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <NavLink class="nav-link" ActiveClass="active" href="/">Home</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" ActiveClass="active" href="/organizations">Organizations</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" ActiveClass="active" href="/users">Users</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" ActiveClass="active" href="/games">Games</NavLink>
+                </li>
+
+                @*<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>*@
+            </ul>
+            
+            @if (SessionStore.Loaded)
+            {
+                <ul class="navbar-nav mb-2 mb-lg-0">
+
+                    @if (!SessionStore.LoggedIn)
+                    {
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/login">Login</NavLink>
+                        </li>
+                    }
+                    else
+                    {
+                        @if (SessionStore.IsAdmin)
+                        {
+                            <li class="nav-item">
+                                <NavLink class="nav-link" href="/admin">
+                                    <i class="fa-solid fa-shield mx-2"></i>
+                                </NavLink>
+                            </li>
+                        }
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" style="font-family: var(--custom-font)" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @SessionStore.CurrentUser.Firstname @SessionStore.CurrentUser.Lastname
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                                @*<li><a class="dropdown-item" href="#">Action</a></li>*@
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" @onclick="() => SessionStore.Logout()">Logout</a></li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</nav>
+
+<main class="m-5">
+        
+    @Body
+
+</main>
