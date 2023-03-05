@@ -3,6 +3,7 @@ using App.Services.Events.Infrastructure.Grpc.CommandMessages;
 using App.Services.Events.Infrastructure.Grpc.CommandResults;
 using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Services.Gateway.Controllers;
@@ -32,6 +33,11 @@ public class EventsController : ApiController
             this._eventsGrpcService.GetEventById(new GetEventByIdGrpcCommandMessage { Id = id }));
     }
 
+    /// <summary>
+    ///     Create an event
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpPost]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
@@ -52,6 +58,12 @@ public class EventsController : ApiController
         });
     }
 
+    /// <summary>
+    ///     Update an event by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpPut]
     [Route("{id}")]
     public Task<IActionResult> UpdateEvent(string id, [FromBody] UpdateEventModel model)
@@ -69,6 +81,11 @@ public class EventsController : ApiController
         });
     }
 
+    /// <summary>
+    ///     Delete an event by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete]
     [Route("{id}")]
     public Task<IActionResult> DeleteEvent(string id)
