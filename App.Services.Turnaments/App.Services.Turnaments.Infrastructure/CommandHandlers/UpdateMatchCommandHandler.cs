@@ -2,6 +2,7 @@
 using App.Infrastructure.Commands;
 using App.Services.Turnaments.Data.Entities;
 using App.Services.Turnaments.Infrastructure.Commands;
+using App.Services.Turnaments.Infrastructure.Events;
 using MassTransit;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
@@ -12,9 +13,12 @@ namespace App.Services.Turnaments.Infrastructure.CommandHandlers
     {
         private readonly IEntityDataService _entityDataService;
 
-        public UpdateMatchCommandHandler(IEntityDataService entityDataService)
+        private readonly IPublishEndpoint _publishEndpoint;
+
+        public UpdateMatchCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
         {
             _entityDataService = entityDataService;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task Consume(ConsumeContext<UpdateMatchCommandMessage> context)
@@ -34,6 +38,15 @@ namespace App.Services.Turnaments.Infrastructure.CommandHandlers
             }
 
             await _entityDataService.Update<MatchEntity>(filter => filter.Eq(entity => entity.Id, message.Id), _ => updateDefinition);
+
+            var updateMessage = new MatchUpdatedEventMessage
+            {
+                Id = message.Id,
+                Name = message.Name,
+                WinningTeamId = message.WinningTeamId
+            };
+
+            await _publishEndpoint.Publish(updateMessage);
         }
     }
 }

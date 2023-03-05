@@ -222,7 +222,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway", "App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Common", "App.Common\App.Common.csproj", "{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Common", "App.Common\App.Common.csproj", "{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}"
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway.Common", "App.Services.Gateway\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj", "{BFD6BB8E-A594-4114-A89C-D756FB04997C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RealTimeUpdater", "RealTimeUpdater", "{BA265070-A42F-41BD-8FA9-DFA065A11E41}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdater", "App.Services.RealTimeUpdater\App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.csproj", "{0A5237A3-7624-4073-9F73-0D5D53DB6895}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdater.Common", "App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.Common\App.Services.RealTimeUpdater.Common.csproj", "{B59A2242-72CC-4304-940E-0ABB66CE454D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdater.Infrastructure", "App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.Infrastructure\App.Services.RealTimeUpdater.Infrastructure.csproj", "{87386BE9-76DA-4E65-AB71-677CFB492A6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -598,6 +607,18 @@ Global
 		{BFD6BB8E-A594-4114-A89C-D756FB04997C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFD6BB8E-A594-4114-A89C-D756FB04997C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFD6BB8E-A594-4114-A89C-D756FB04997C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A5237A3-7624-4073-9F73-0D5D53DB6895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A5237A3-7624-4073-9F73-0D5D53DB6895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A5237A3-7624-4073-9F73-0D5D53DB6895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A5237A3-7624-4073-9F73-0D5D53DB6895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B59A2242-72CC-4304-940E-0ABB66CE454D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B59A2242-72CC-4304-940E-0ABB66CE454D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B59A2242-72CC-4304-940E-0ABB66CE454D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B59A2242-72CC-4304-940E-0ABB66CE454D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -707,6 +728,10 @@ Global
 		{0BEF557F-B6C9-47E4-B71A-68D02EE8733E} = {08F96886-A3BE-4A14-97A5-15745A0B399C}
 		{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A} = {8B2E603C-C69C-42AB-AD6B-5E0C2F2D1A17}
 		{BFD6BB8E-A594-4114-A89C-D756FB04997C} = {08F96886-A3BE-4A14-97A5-15745A0B399C}
+		{BA265070-A42F-41BD-8FA9-DFA065A11E41} = {6176B991-F8E7-4919-8F4E-4FD43A86D84D}
+		{0A5237A3-7624-4073-9F73-0D5D53DB6895} = {BA265070-A42F-41BD-8FA9-DFA065A11E41}
+		{B59A2242-72CC-4304-940E-0ABB66CE454D} = {BA265070-A42F-41BD-8FA9-DFA065A11E41}
+		{87386BE9-76DA-4E65-AB71-677CFB492A6F} = {BA265070-A42F-41BD-8FA9-DFA065A11E41}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5151DEE-0817-484F-8977-6CD05FF9DCB1}

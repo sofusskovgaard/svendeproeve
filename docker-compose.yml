@@ -97,3 +97,12 @@ services:
     build:
       context: .
       dockerfile: App.Services.Authentication/App.Services.Authentication/Dockerfile
+
+  app.services.realtimeupdater:
+    image: ${DOCKER_REGISTRY-}appservicesrealtimeupdater
+    build:
+      context: .
+      dockerfile: App.Services.RealTimeUpdater/App.Services.RealTimeUpdater/Dockerfile
+    ports:
+    - "3001:443"
+
