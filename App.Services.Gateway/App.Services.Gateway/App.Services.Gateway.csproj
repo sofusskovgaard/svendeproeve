@@ -42,10 +42,7 @@
       <ProjectReference Include="..\..\App.Services.Tickets\App.Services.Tickets.Infrastructure.Grpc\App.Services.Tickets.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\..\App.Services.Users\App.Services.Users.Infrastructure.Grpc\App.Services.Users.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Helpers\" />
+      <ProjectReference Include="..\App.Services.Gateway.Infrastructure\App.Services.Gateway.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

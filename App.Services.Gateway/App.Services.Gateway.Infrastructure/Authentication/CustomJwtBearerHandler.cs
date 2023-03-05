@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -8,34 +7,33 @@ using App.Services.Authentication.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 
-namespace App.Services.Gateway.Infrastructure;
+namespace App.Services.Gateway.Infrastructure.Authentication;
 
 /// <summary>
-/// An <see cref="AuthenticationHandler{TOptions}"/> that can perform JWT-bearer based authentication.
+/// An <see cref="Microsoft.AspNetCore.Authentication.AuthenticationHandler{TOptions}"/> that can perform JWT-bearer based authentication.
 /// </summary>
 public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
 {
     private OpenIdConnectConfiguration? _configuration;
 
-    private readonly IssuerSigningKeyCache _issuerSigningKeyCache;
-
-    private readonly IAuthenticationGrpcService _authenticationGrpcService;
+    private readonly IIssuerSigningKeyCache _issuerSigningKeyCache;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="JwtBearerHandler"/>.
+    /// Initializes a new instance of <see cref="Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler"/>.
     /// </summary>
     /// <inheritdoc />
-    public CustomJwtBearerHandler(IOptionsMonitor<JwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IssuerSigningKeyCache issuerSigningKeyCache, IAuthenticationGrpcService authenticationGrpcService)
+    public CustomJwtBearerHandler(IOptionsMonitor<JwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IIssuerSigningKeyCache issuerSigningKeyCache)
         : base(options, logger, encoder, clock)
     {
-        _issuerSigningKeyCache = issuerSigningKeyCache;
-        _authenticationGrpcService = authenticationGrpcService;
+        this._issuerSigningKeyCache = issuerSigningKeyCache;
     }
 
     /// <summary>
@@ -52,7 +50,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
     protected override Task<object> CreateEventsAsync() => Task.FromResult<object>(new JwtBearerEvents());
 
     /// <summary>
-    /// Searches the 'Authorization' header for a 'Bearer' token. If the 'Bearer' token is found, it is validated using <see cref="TokenValidationParameters"/> set in the options.
+    /// Searches the 'Authorization' header for a 'Bearer' token. If the 'Bearer' token is found, it is validated using <see cref="Microsoft.IdentityModel.Tokens.TokenValidationParameters"/> set in the options.
     /// </summary>
     /// <returns></returns>
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -64,7 +62,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
             var messageReceivedContext = new MessageReceivedContext(Context, Scheme, Options);
 
             // event can set the token
-            await Events.MessageReceived(messageReceivedContext);
+            await this.Events.MessageReceived(messageReceivedContext);
             if (messageReceivedContext.Result != null)
             {
                 return messageReceivedContext.Result;
@@ -95,40 +93,29 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
                 }
             }
 
-            if (_configuration == null && Options.ConfigurationManager != null)
+            if (this._configuration == null && Options.ConfigurationManager != null)
             {
-                _configuration = await Options.ConfigurationManager.GetConfigurationAsync(Context.RequestAborted);
+                this._configuration = await Options.ConfigurationManager.GetConfigurationAsync(Context.RequestAborted);
             }
 
             var validationParameters = Options.TokenValidationParameters.Clone();
-            if (_configuration != null)
+            if (this._configuration != null)
             {
-                var issuers = new[] { _configuration.Issuer };
+                var issuers = new[] { this._configuration.Issuer };
                 validationParameters.ValidIssuers = validationParameters.ValidIssuers?.Concat(issuers) ?? issuers;
 
-                validationParameters.IssuerSigningKeys = validationParameters.IssuerSigningKeys?.Concat(_configuration.SigningKeys)
-                                                         ?? _configuration.SigningKeys;
+                validationParameters.IssuerSigningKeys = validationParameters.IssuerSigningKeys?.Concat(this._configuration.SigningKeys)
+                                                         ?? this._configuration.SigningKeys;
             }
 
             #region THIS IS THE IMPORTANT PART
 
-            ECDsa ecdsa;
+            var key = await this._issuerSigningKeyCache.GetKey();
 
-            if (!_issuerSigningKeyCache.Cache.TryGetValue("ECDSA", out ecdsa) || !this._issuerSigningKeyCache.Cache.TryGetValue("KEY_ID", out string? kid))
-            {
-                var key = await _authenticationGrpcService.PublicKey(new GetPublicKeyGrpcCommandMessage());
+            var securityKey = new ECDsaSecurityKey(key.Item2) { KeyId = key.Item1 };
 
-                ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-                ecdsa.ImportSubjectPublicKeyInfo(new ReadOnlySpan<byte>(Convert.FromBase64String(key.PublicKey)), out _);
-
-                kid = key.KeyId;
-
-                _issuerSigningKeyCache.Cache.Set("ECDSA", ecdsa);
-                _issuerSigningKeyCache.Cache.Set("KEY_ID", kid);
-            }
-            
             validationParameters.IssuerSigningKeys =
-                validationParameters.IssuerSigningKeys?.Concat(new[] { new ECDsaSecurityKey(ecdsa) { KeyId = kid } }) ?? new[] { new ECDsaSecurityKey(ecdsa) { KeyId = kid } };
+                validationParameters.IssuerSigningKeys?.Concat(new[] { securityKey }) ?? new[] { securityKey };
 
             #endregion
 
@@ -170,10 +157,10 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
                         SecurityToken = validatedToken
                     };
 
-                    tokenValidatedContext.Properties.ExpiresUtc = GetSafeDateTime(validatedToken.ValidTo);
-                    tokenValidatedContext.Properties.IssuedUtc = GetSafeDateTime(validatedToken.ValidFrom);
+                    tokenValidatedContext.Properties.ExpiresUtc = CustomJwtBearerHandler.GetSafeDateTime(validatedToken.ValidTo);
+                    tokenValidatedContext.Properties.IssuedUtc = CustomJwtBearerHandler.GetSafeDateTime(validatedToken.ValidFrom);
 
-                    await Events.TokenValidated(tokenValidatedContext);
+                    await this.Events.TokenValidated(tokenValidatedContext);
                     if (tokenValidatedContext.Result != null)
                     {
                         return tokenValidatedContext.Result;
@@ -199,7 +186,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
                     Exception = (validationFailures.Count == 1) ? validationFailures[0] : new AggregateException(validationFailures)
                 };
 
-                await Events.AuthenticationFailed(authenticationFailedContext);
+                await this.Events.AuthenticationFailed(authenticationFailedContext);
                 if (authenticationFailedContext.Result != null)
                 {
                     return authenticationFailedContext.Result;
@@ -219,7 +206,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
                 Exception = ex
             };
 
-            await Events.AuthenticationFailed(authenticationFailedContext);
+            await this.Events.AuthenticationFailed(authenticationFailedContext);
             if (authenticationFailedContext.Result != null)
             {
                 return authenticationFailedContext.Result;
@@ -253,10 +240,10 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
         if (Options.IncludeErrorDetails && eventContext.AuthenticateFailure != null)
         {
             eventContext.Error = "invalid_token";
-            eventContext.ErrorDescription = CreateErrorDescription(eventContext.AuthenticateFailure);
+            eventContext.ErrorDescription = CustomJwtBearerHandler.CreateErrorDescription(eventContext.AuthenticateFailure);
         }
 
-        await Events.Challenge(eventContext);
+        await this.Events.Challenge(eventContext);
         if (eventContext.Handled)
         {
             return;
@@ -283,7 +270,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
             if (!string.IsNullOrEmpty(eventContext.Error))
             {
                 builder.Append(" error=\"");
-                builder.Append(eventContext.Error);
+                builder.Append((string?)eventContext.Error);
                 builder.Append('\"');
             }
             if (!string.IsNullOrEmpty(eventContext.ErrorDescription))
@@ -294,7 +281,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
                 }
 
                 builder.Append(" error_description=\"");
-                builder.Append(eventContext.ErrorDescription);
+                builder.Append((string?)eventContext.ErrorDescription);
                 builder.Append('\"');
             }
             if (!string.IsNullOrEmpty(eventContext.ErrorUri))
@@ -306,7 +293,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
                 }
 
                 builder.Append(" error_uri=\"");
-                builder.Append(eventContext.ErrorUri);
+                builder.Append((string?)eventContext.ErrorUri);
                 builder.Append('\"');
             }
 
@@ -319,7 +306,7 @@ public class CustomJwtBearerHandler : AuthenticationHandler<JwtBearerOptions>
     {
         var forbiddenContext = new ForbiddenContext(Context, Scheme, Options);
         Response.StatusCode = 403;
-        return Events.Forbidden(forbiddenContext);
+        return this.Events.Forbidden(forbiddenContext);
     }
 
     private static string CreateErrorDescription(Exception authFailure)

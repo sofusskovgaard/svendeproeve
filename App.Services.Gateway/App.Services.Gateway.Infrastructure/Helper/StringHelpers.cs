@@ -1,4 +1,4 @@
-﻿namespace App.Services.Gateway.Helpers;
+﻿namespace App.Services.Gateway.Infrastructure.Helper;
 
 public static class StringHelpers
 {

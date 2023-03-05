@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace App.Services.Gateway.Infrastructure;
+namespace App.Services.Gateway.Infrastructure.Authentication;
 
 public static class CustomJwtBearerExtensions
 {
     public static AuthenticationBuilder AddCustomJwtBearer(this AuthenticationBuilder builder, Action<JwtBearerOptions> configureOptions)
-        => builder.AddCustomJwtBearer(JwtBearerDefaults.AuthenticationScheme, configureOptions);
+        => CustomJwtBearerExtensions.AddCustomJwtBearer(builder, JwtBearerDefaults.AuthenticationScheme, configureOptions);
 
     public static AuthenticationBuilder AddCustomJwtBearer(this AuthenticationBuilder builder, string authenticationScheme, Action<JwtBearerOptions> configureOptions)
-        => builder.AddCustomJwtBearer(authenticationScheme, displayName: null, configureOptions: configureOptions);
+        => CustomJwtBearerExtensions.AddCustomJwtBearer(builder, authenticationScheme, displayName: null, configureOptions: configureOptions);
 
     public static AuthenticationBuilder AddCustomJwtBearer(this AuthenticationBuilder builder, string authenticationScheme, string? displayName, Action<JwtBearerOptions> configureOptions)
     {

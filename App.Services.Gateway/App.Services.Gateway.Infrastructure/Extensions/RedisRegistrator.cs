@@ -1,7 +1,7 @@
-﻿using App.Infrastructure.Services;
+﻿using App.Services.Gateway.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace App.Infrastructure.Extensions;
+namespace App.Services.Gateway.Infrastructure.Extensions;
 
 public static class RedisRegistrator
 {

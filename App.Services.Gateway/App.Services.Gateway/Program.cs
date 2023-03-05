@@ -6,7 +6,6 @@ using App.Services.Users.Infrastructure.Grpc;
 using Serilog;
 using Serilog.Events;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,9 +18,7 @@ using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Billing.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc;
-using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
-using App.Services.Gateway.Infrastructure;
-using Microsoft.Extensions.Options;
+using App.Services.Gateway.Infrastructure.Authentication;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,7 +86,7 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddSingleton<IssuerSigningKeyCache>();
+builder.Services.AddSingleton<IIssuerSigningKeyCache, IssuerSigningKeyCache>();
 
 builder.Services
     .AddAuthentication(options =>

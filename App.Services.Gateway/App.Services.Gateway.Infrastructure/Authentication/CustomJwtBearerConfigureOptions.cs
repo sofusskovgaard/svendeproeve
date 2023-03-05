@@ -1,11 +1,12 @@
 ﻿using System.Globalization;
-using App.Services.Gateway.Helpers;
+using App.Services.Gateway.Infrastructure.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace App.Services.Gateway.Infrastructure;
+namespace App.Services.Gateway.Infrastructure.Authentication;
 
 public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerOptions>
 {
@@ -13,13 +14,13 @@ public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerO
     private static readonly Func<string, TimeSpan> _invariantTimeSpanParse = (string timespanString) => TimeSpan.Parse(timespanString, CultureInfo.InvariantCulture);
 
     /// <summary>
-    /// Initializes a new <see cref="JwtBearerConfigureOptions"/> given the configuration
+    /// Initializes a new <see cref="Microsoft.AspNetCore.Authentication.JwtBearerConfigureOptions"/> given the configuration
     /// provided by the <paramref name="configurationProvider"/>.
     /// </summary>
-    /// <param name="configurationProvider">An <see cref="IAuthenticationConfigurationProvider"/> instance.</param>\
+    /// <param name="configurationProvider">An <see cref="Microsoft.AspNetCore.Authentication.IAuthenticationConfigurationProvider"/> instance.</param>\
     public CustomJwtBearerConfigureOptions(IAuthenticationConfigurationProvider configurationProvider)
     {
-        _authenticationConfigurationProvider = configurationProvider;
+        this._authenticationConfigurationProvider = configurationProvider;
     }
 
     /// <inheritdoc />
@@ -30,7 +31,7 @@ public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerO
             return;
         }
 
-        var configSection = _authenticationConfigurationProvider.GetSchemeConfiguration(name);
+        var configSection = this._authenticationConfigurationProvider.GetSchemeConfiguration(name);
 
         if (configSection is null || !configSection.GetChildren().Any())
         {
@@ -38,20 +39,20 @@ public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerO
         }
 
         var issuer = configSection[nameof(TokenValidationParameters.ValidIssuer)];
-        var issuers = configSection.GetSection(nameof(TokenValidationParameters.ValidIssuers)).GetChildren().Select(iss => iss.Value).ToList();
+        var issuers = Enumerable.ToList<string?>(configSection.GetSection(nameof(TokenValidationParameters.ValidIssuers)).GetChildren().Select(iss => iss.Value));
         if (issuer is not null)
         {
             issuers.Add(issuer);
         }
         var audience = configSection[nameof(TokenValidationParameters.ValidAudience)];
-        var audiences = configSection.GetSection(nameof(TokenValidationParameters.ValidAudiences)).GetChildren().Select(aud => aud.Value).ToList();
+        var audiences = Enumerable.ToList<string?>(configSection.GetSection(nameof(TokenValidationParameters.ValidAudiences)).GetChildren().Select(aud => aud.Value));
         if (audience is not null)
         {
             audiences.Add(audience);
         }
 
         options.Authority = configSection[nameof(options.Authority)] ?? options.Authority;
-        options.BackchannelTimeout = StringHelpers.ParseValueOrDefault(configSection[nameof(options.BackchannelTimeout)], _invariantTimeSpanParse, options.BackchannelTimeout);
+        options.BackchannelTimeout = StringHelpers.ParseValueOrDefault(configSection[nameof(options.BackchannelTimeout)], CustomJwtBearerConfigureOptions._invariantTimeSpanParse, options.BackchannelTimeout);
         options.Challenge = configSection[nameof(options.Challenge)] ?? options.Challenge;
         options.ForwardAuthenticate = configSection[nameof(options.ForwardAuthenticate)] ?? options.ForwardAuthenticate;
         options.ForwardChallenge = configSection[nameof(options.ForwardChallenge)] ?? options.ForwardChallenge;
@@ -62,7 +63,7 @@ public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerO
         options.IncludeErrorDetails = StringHelpers.ParseValueOrDefault(configSection[nameof(options.IncludeErrorDetails)], bool.Parse, options.IncludeErrorDetails);
         options.MapInboundClaims = StringHelpers.ParseValueOrDefault(configSection[nameof(options.MapInboundClaims)], bool.Parse, options.MapInboundClaims);
         options.MetadataAddress = configSection[nameof(options.MetadataAddress)] ?? options.MetadataAddress;
-        options.RefreshInterval = StringHelpers.ParseValueOrDefault(configSection[nameof(options.RefreshInterval)], _invariantTimeSpanParse, options.RefreshInterval);
+        options.RefreshInterval = StringHelpers.ParseValueOrDefault(configSection[nameof(options.RefreshInterval)], CustomJwtBearerConfigureOptions._invariantTimeSpanParse, options.RefreshInterval);
         options.RefreshOnIssuerKeyNotFound = StringHelpers.ParseValueOrDefault(configSection[nameof(options.RefreshOnIssuerKeyNotFound)], bool.Parse, options.RefreshOnIssuerKeyNotFound);
         options.RequireHttpsMetadata = StringHelpers.ParseValueOrDefault(configSection[nameof(options.RequireHttpsMetadata)], bool.Parse, options.RequireHttpsMetadata);
         options.SaveToken = StringHelpers.ParseValueOrDefault(configSection[nameof(options.SaveToken)], bool.Parse, options.SaveToken);
@@ -73,7 +74,7 @@ public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerO
             ValidateAudience = audiences.Count > 0,
             ValidAudiences = audiences,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKeys = GetIssuerSigningKeys(configSection, issuers),
+            IssuerSigningKeys = CustomJwtBearerConfigureOptions.GetIssuerSigningKeys(configSection, issuers),
         };
     }
 
@@ -94,6 +95,6 @@ public class CustomJwtBearerConfigureOptions : IConfigureNamedOptions<JwtBearerO
     /// <inheritdoc />
     public void Configure(JwtBearerOptions options)
     {
-        Configure(Options.DefaultName, options);
+        this.Configure(Microsoft.Extensions.Options.Options.DefaultName, options);
     }
 }

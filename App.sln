@@ -222,7 +222,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway", "App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Common", "App.Common\App.Common.csproj", "{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Common", "App.Common\App.Common.csproj", "{2D27E5AE-DB65-4BF6-A9BB-973FBAA9421A}"
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway.Common", "App.Services.Gateway\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj", "{BFD6BB8E-A594-4114-A89C-D756FB04997C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RealTimeUpdater", "RealTimeUpdater", "{BA265070-A42F-41BD-8FA9-DFA065A11E41}"
@@ -232,6 +231,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdater.Common", "App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.Common\App.Services.RealTimeUpdater.Common.csproj", "{B59A2242-72CC-4304-940E-0ABB66CE454D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdater.Infrastructure", "App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.Infrastructure\App.Services.RealTimeUpdater.Infrastructure.csproj", "{87386BE9-76DA-4E65-AB71-677CFB492A6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Gateway.Infrastructure", "App.Services.Gateway\App.Services.Gateway.Infrastructure\App.Services.Gateway.Infrastructure.csproj", "{C07E5D1A-62C9-4A06-A469-9E096CBD260E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -619,6 +620,10 @@ Global
 		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87386BE9-76DA-4E65-AB71-677CFB492A6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -732,6 +737,7 @@ Global
 		{0A5237A3-7624-4073-9F73-0D5D53DB6895} = {BA265070-A42F-41BD-8FA9-DFA065A11E41}
 		{B59A2242-72CC-4304-940E-0ABB66CE454D} = {BA265070-A42F-41BD-8FA9-DFA065A11E41}
 		{87386BE9-76DA-4E65-AB71-677CFB492A6F} = {BA265070-A42F-41BD-8FA9-DFA065A11E41}
+		{C07E5D1A-62C9-4A06-A469-9E096CBD260E} = {08F96886-A3BE-4A14-97A5-15745A0B399C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5151DEE-0817-484F-8977-6CD05FF9DCB1}
