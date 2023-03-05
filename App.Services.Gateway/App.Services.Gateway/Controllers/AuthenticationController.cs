@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Security.Cryptography;
 using App.Services.Authentication.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Common;
@@ -7,6 +8,7 @@ using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace App.Services.Gateway.Controllers;
 
@@ -121,7 +123,7 @@ public class AuthenticationController : ApiController
     public Task<IActionResult> ChangeEmail([FromBody] ChangeEmailModel model)
     {
         return TryAsync(
-            () => _authenticationGrpcService.ChangeEmail(new ChangeEmailGrpCommandMessage
+            () => _authenticationGrpcService.ChangeEmail(new ChangeEmailGrpcCommandMessage
                 { UserId = CurrentUser.Id, Email = model.Email }), true);
     }
 
@@ -168,5 +170,37 @@ public class AuthenticationController : ApiController
     {
         return TryAsync(
             () => _authenticationGrpcService.KillSessions(new KillUserSessionsGrpcCommandMessage() { UserId = this.CurrentUser.Id }), true);
+    }
+
+    [HttpGet]
+    [Route("public-key")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> PublicKey()
+    {
+        var response =
+            await this._authenticationGrpcService.PublicKey(
+                this.CreateCommandMessage<GetPublicKeyGrpcCommandMessage>());
+
+        var ecdsa = ECDsa.Create();
+        ecdsa.ImportSubjectPublicKeyInfo(new ReadOnlySpan<byte>(Convert.FromBase64String(response.PublicKey)), out _);
+
+        var jwk = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(new ECDsaSecurityKey(ecdsa)
+            { KeyId = response.KeyId });
+
+        jwk.KeyOps.Add("verify");
+        jwk.Use = "sig";
+        jwk.Alg = "ES256";
+
+        return this.Ok(new
+        {
+            alg = jwk.Alg,
+            crv = jwk.Crv,
+            kid = jwk.Kid,
+            kty = jwk.Kty,
+            x = jwk.X,
+            y = jwk.Y,
+            keyOps = jwk.KeyOps,
+            use = jwk.Use
+        });
     }
 }

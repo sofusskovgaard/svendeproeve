@@ -13,6 +13,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
         <PackageReference Include="protobuf-net.BuildTools" Version="3.2.8">
           <PrivateAssets>all</PrivateAssets>
@@ -41,10 +42,7 @@
       <ProjectReference Include="..\..\App.Services.Tickets\App.Services.Tickets.Infrastructure.Grpc\App.Services.Tickets.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\..\App.Services.Users\App.Services.Users.Infrastructure.Grpc\App.Services.Users.Infrastructure.Grpc.csproj" />
       <ProjectReference Include="..\App.Services.Gateway.Common\App.Services.Gateway.Common.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Mappers\" />
+      <ProjectReference Include="..\App.Services.Gateway.Infrastructure\App.Services.Gateway.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

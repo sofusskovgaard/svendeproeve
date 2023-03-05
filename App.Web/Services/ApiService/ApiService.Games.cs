@@ -1,6 +1,7 @@
 ﻿using App.Services.Games.Infrastructure.Grpc.CommandMessages;
 using App.Services.Games.Infrastructure.Grpc.CommandResults;
 using System.Net.Http.Json;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService
 {
@@ -8,7 +9,7 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetGameByIdGrpcCommandResult> GetGameById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/games/{id}", true);
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/games/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetGameByIdGrpcCommandResult>();
@@ -16,7 +17,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetAllGamesGrpcCommandResult> GetAllGames()
         {
-            var request = _createRequestMessage(HttpMethod.Get, "api/games", true);
+            var request = await _createRequestMessage(HttpMethod.Get, "api/games");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetAllGamesGrpcCommandResult>();
@@ -24,7 +25,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetGamesByNameGrpcCommandResult> GetGamesByName(string name)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/games/{name}/name", true);
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/games/{name}/name");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetGamesByNameGrpcCommandResult>();
@@ -32,35 +33,33 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetGamesByGenreGrpcCommandResult> GetGameByGenre(string genre)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/games/{genre}/genre", true);
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/games/{genre}/genre");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetGamesByGenreGrpcCommandResult>();
         }
 
-        public async Task<CreateGameGrpcCommandResult> CreateGame(CreateGameGrpcCommandMessage data)
+        public async Task<CreateGameGrpcCommandResult> CreateGame(CreateGameModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Post, "api/games");
+            var request = await _createRequestMessage(HttpMethod.Post, "api/games");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<CreateGameGrpcCommandResult>();
         }
 
-        public async Task<UpdateGameGrpcCommandResult> UpdateGame(UpdateGameGrpcCommandMessage data)
+        public async Task<UpdateGameGrpcCommandResult> UpdateGame(string id, UpdateGameModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Put, "api/games");
+            var request = await _createRequestMessage(HttpMethod.Put, $"api/games/{id}");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<UpdateGameGrpcCommandResult>();
         }
 
-        public async Task<DeleteGameByIdGrpcCommandResult> DeleteGameById(DeleteGameByIdGrpcCommandMessage data)
+        public async Task<DeleteGameByIdGrpcCommandResult> DeleteGameById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Delete, "api/games");
-            request.Content = JsonContent.Create(data);
-
+            var request = await _createRequestMessage(HttpMethod.Delete, $"api/games/{id}");
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<DeleteGameByIdGrpcCommandResult>();
         }
@@ -76,11 +75,11 @@ namespace App.Web.Services.ApiService
 
         Task<GetGamesByGenreGrpcCommandResult> GetGameByGenre(string genre);
 
-        Task<CreateGameGrpcCommandResult> CreateGame(CreateGameGrpcCommandMessage data);
+        Task<CreateGameGrpcCommandResult> CreateGame(CreateGameModel data);
 
-        Task<UpdateGameGrpcCommandResult> UpdateGame(UpdateGameGrpcCommandMessage data);
+        Task<UpdateGameGrpcCommandResult> UpdateGame(string id, UpdateGameModel data);
 
-        Task<DeleteGameByIdGrpcCommandResult> DeleteGameById(DeleteGameByIdGrpcCommandMessage data);
+        Task<DeleteGameByIdGrpcCommandResult> DeleteGameById(string id);
 
     }
 }

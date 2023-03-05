@@ -4,6 +4,7 @@ using App.Services.Games.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using App.Services.Gateway.Common;
 
 namespace App.Services.Gateway.Controllers
 {
@@ -13,6 +14,7 @@ namespace App.Services.Gateway.Controllers
     public class GamesController : ApiController
     {
         private readonly IGamesGrpcService _gamesGrpcService;
+
         public GamesController(IGamesGrpcService gamesGrpcService)
         {
             _gamesGrpcService = gamesGrpcService;
@@ -89,26 +91,27 @@ namespace App.Services.Gateway.Controllers
                 var command = new CreateGameGrpcCommandMessage
                 {
                     Name = model.Name,
-                    Discription = model.Discription,
+                    Description = model.Description,
                     ProfilePicture = model.ProfilePicture,
                     CoverPicture = model.CoverPicture,
                     Genre = model.Genre
                 };
 
                 return this._gamesGrpcService.CreateGame(command);
-            });
+            }, true);
         }
 
         /// <summary>
         /// Update a game
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> UpdateGame([FromBody] UpdateGameModel model)
+        public Task<IActionResult> UpdateGame(string id, [FromBody] UpdateGameModel model)
         {
             return TryAsync(() =>
             {
@@ -116,9 +119,9 @@ namespace App.Services.Gateway.Controllers
                 {
                     GameDto = new GameDto
                     {
-                        Id = model.Id,
+                        Id = id,
                         Name = model.Name,
-                        Discription = model.Discription,
+                        Discription = model.Description,
                         ProfilePicture = model.ProfilePicture,
                         CoverPicture = model.CoverPicture,
                         Genre = model.Genre
@@ -126,7 +129,7 @@ namespace App.Services.Gateway.Controllers
                 };
 
                 return this._gamesGrpcService.updateGame(command);
-            });
+            }, true);
         }
 
         /// <summary>
@@ -135,33 +138,12 @@ namespace App.Services.Gateway.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteGameById(string id)
         {
-            return TryAsync(() => this._gamesGrpcService.DeleteGameById(new DeleteGameByIdGrpcCommandMessage() { Id = id }));
+            return TryAsync(() => this._gamesGrpcService.DeleteGameById(new DeleteGameByIdGrpcCommandMessage() { Id = id }), true);
         }
     }
-
-    /// <summary>
-    /// Data required to create a game
-    /// </summary>
-    /// <param name="Name"></param>
-    /// <param name="Discription"></param>
-    /// <param name="ProfilePicture"></param>
-    /// <param name="CoverPicture"></param>
-    /// <param name="Genre"></param>
-    public record CreateGameModel(string Name, string Discription, string ProfilePicture, string CoverPicture, string[] Genre);
-
-    /// <summary>
-    /// Data required to update a game
-    /// </summary>
-    /// <param name="Id"></param>
-    /// <param name="Name"></param>
-    /// <param name="Discription"></param>
-    /// <param name="ProfilePicture"></param>
-    /// <param name="CoverPicture"></param>
-    /// <param name="Genre"></param>
-    public record UpdateGameModel(string Id, string Name, string Discription, string ProfilePicture, string CoverPicture, string[] Genre);
 }

@@ -4,7 +4,7 @@ using App.Common.Grpc;
 namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class UpdateEventGrpcCommandMessage : IGrpcCommandMessage
+    public class UpdateEventGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Id { get; set; }
@@ -20,5 +20,8 @@ namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
 
         [ProtoMember(5)]
         public DateTime EndDate { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using App.Services.Gateway.Infrastructure;
+﻿using App.Services.Gateway.Common;
+using App.Services.Gateway.Infrastructure;
 using App.Services.Organizations.Infrastructure.Grpc;
 using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -126,6 +127,3 @@ public class OrganisationsController : ApiController
         });
     }
 }
-
-public record CreateOrganizationModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);
-public record UpdateOrganizaitonModel(string Name, string Bio, string ProfilePicture, string CoverPicture, string Address, string DepartmentId);

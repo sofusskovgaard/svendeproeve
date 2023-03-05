@@ -7,7 +7,7 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetBillingByIdGrpcCommandResult> GetBillingById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/billing/{id}", true);
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/billing/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetBillingByIdGrpcCommandResult>();

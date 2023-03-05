@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace App.Services.Users.Infrastructure.Grpc.CommandMessages;
 
 [ProtoContract]
-public class GetUserByIdGrpcCommandMessage : IGrpcCommandMessage
+public class GetUserByIdGrpcCommandMessage : GrpcCommandMessage
 {
     public GetUserByIdGrpcCommandMessage() {}
 
@@ -15,4 +15,7 @@ public class GetUserByIdGrpcCommandMessage : IGrpcCommandMessage
 
     [ProtoMember(1)]
     public string Id { get; set; }
+
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

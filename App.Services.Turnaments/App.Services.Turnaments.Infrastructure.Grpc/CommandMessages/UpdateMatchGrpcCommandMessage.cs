@@ -5,9 +5,12 @@ using ProtoBuf;
 namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class UpdateMatchGrpcCommandMessage : IGrpcCommandMessage
+    public class UpdateMatchGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public MatchDto MatchDto { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

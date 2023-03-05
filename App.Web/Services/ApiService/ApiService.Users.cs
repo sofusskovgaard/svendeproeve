@@ -9,7 +9,7 @@ public partial class ApiService
 {
     public async Task<GetUserByIdGrpcCommandResult> GetUserById(string id)
     {
-        var request = _createRequestMessage(HttpMethod.Get, $"api/Users/{id}", true);
+        var request = await _createRequestMessage(HttpMethod.Get, $"api/users/{id}");
 
         var response = await _client.SendAsync(request);
         return await response.Content.ReadFromJsonAsync<GetUserByIdGrpcCommandResult>();

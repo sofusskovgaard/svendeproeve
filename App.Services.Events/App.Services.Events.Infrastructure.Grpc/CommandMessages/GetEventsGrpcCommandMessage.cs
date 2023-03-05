@@ -4,7 +4,9 @@ using App.Common.Grpc;
 namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetEventsGrpcCommandMessage : IGrpcCommandMessage
+    public class GetEventsGrpcCommandMessage : GrpcCommandMessage
     {
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

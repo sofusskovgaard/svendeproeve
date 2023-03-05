@@ -4,7 +4,9 @@ using ProtoBuf;
 namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class GetAllTurnamentsGrpcCommandMessage : IGrpcCommandMessage
+    public class GetAllTurnamentsGrpcCommandMessage : GrpcCommandMessage
     {
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }

@@ -1,0 +1,4 @@
+.navbar .navbar-brand,
+#mainNavbarContent .navbar-nav ::deep a.nav-link {
+    font-family: var(--custom-display-font) !important;
+}

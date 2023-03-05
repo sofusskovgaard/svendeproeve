@@ -2,6 +2,7 @@
 using App.Services.Tickets.Infrastructure.Grpc.CommandResults;
 using System.Net.Http.Json;
 using System.Security.Cryptography.X509Certificates;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService
 {
@@ -9,15 +10,15 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetTicketByIdGrpcCommandResult> GetTicketById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/tickets/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/tickets/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetTicketByIdGrpcCommandResult>();
         }
 
-        public async Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage data)
+        public async Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Post, $"api/tickets");
+            var request = await _createRequestMessage(HttpMethod.Post, $"api/tickets");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);
@@ -30,7 +31,7 @@ namespace App.Web.Services.ApiService
     {
         Task<GetTicketByIdGrpcCommandResult> GetTicketById(string id);
 
-        Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage data);
+        Task<BookTicketsGrpcCommandResult> BookTickets(BookTicketsModel data);
 
     }
 }

@@ -7,15 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Components\**" />
+    <Content Remove="Pages\Components\**" />
+    <EmbeddedResource Remove="Pages\Components\**" />
+    <None Remove="Pages\Components\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Pages\Components\" />
+    <Folder Include="Extensions\" />
     <Folder Include="Stores\" />
   </ItemGroup>
 

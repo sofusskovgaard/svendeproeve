@@ -4,6 +4,7 @@ using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using App.Services.Gateway.Common;
 
 namespace App.Services.Gateway.Controllers
 {
@@ -149,7 +150,7 @@ namespace App.Services.Gateway.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public Task<IActionResult> DeleteTeamById(string id)
@@ -160,19 +161,20 @@ namespace App.Services.Gateway.Controllers
         /// <summary>
         /// Update a team
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> UpdateTeam([FromBody] UpdateTeamModel model)
+        public Task<IActionResult> UpdateTeam(string id, [FromBody] UpdateTeamModel model)
         {
             return TryAsync(() =>
             {
                 var command = new UpdateTeamGrpcCommandMessage
                 {
-                    TeamId = model.Id,
+                    TeamId = id,
                     TeamDto = new UpdateTeamDto
                     {
                         Name = model.Name,
@@ -186,27 +188,4 @@ namespace App.Services.Gateway.Controllers
             });
         }
     }
-
-    /// <summary>
-    /// Data required to create a team
-    /// </summary>
-    /// <param name="Name"></param>
-    /// <param name="Bio"></param>
-    /// <param name="ProfilePicturePath"></param>
-    /// <param name="CoverPicturePath"></param>
-    /// <param name="GameId"></param>
-    /// <param name="MembersId"></param>
-    /// <param name="ManagerId"></param>
-    /// <param name="OrganizationId"></param>
-    public record CreateTeamModel(string Name, string Bio, string ProfilePicturePath, string CoverPicturePath, string GameId, string[] MembersId, string ManagerId, string OrganizationId);
-
-    /// <summary>
-    /// Data required to update a team
-    /// </summary>
-    /// <param name="Id"></param>
-    /// <param name="Name"></param>
-    /// <param name="Bio"></param>
-    /// <param name="ProfilePicturePath"></param>
-    /// <param name="CoverPicturePath"></param>
-    public record UpdateTeamModel(string Id, string Name, string Bio, string ProfilePicturePath, string CoverPicturePath);
 }

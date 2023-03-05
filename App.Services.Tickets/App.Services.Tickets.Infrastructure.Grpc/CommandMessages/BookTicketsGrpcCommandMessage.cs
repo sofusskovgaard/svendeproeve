@@ -4,12 +4,15 @@ using App.Common.Grpc;
 namespace App.Services.Tickets.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class BookTicketsGrpcCommandMessage : IGrpcCommandMessage
+    public class BookTicketsGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string UserId { get; set; }
         [ProtoMember(2)]
         public TicketOrder[] TicketOrders { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
 
         [ProtoContract]
         public class TicketOrder

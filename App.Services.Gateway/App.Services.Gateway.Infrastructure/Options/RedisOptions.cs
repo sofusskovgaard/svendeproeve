@@ -1,4 +1,4 @@
-﻿namespace App.Infrastructure.Options;
+﻿namespace App.Services.Gateway.Infrastructure.Options;
 
 public class RedisOptions
 {
