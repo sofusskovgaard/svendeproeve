@@ -8,7 +8,7 @@ namespace App.Services.Games.Infrastructure.Grpc.CommandResults;
 public class GetGameByIdGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public GameDto GameDto { get; set; }
+    public GameDto Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }

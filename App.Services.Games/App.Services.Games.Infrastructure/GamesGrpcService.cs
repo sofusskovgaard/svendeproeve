@@ -36,11 +36,8 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
 
             return new GetAllGamesGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
             };
         });
     }
@@ -49,16 +46,12 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
     {
         return this.TryAsync(async () =>
         {
-            var games = await this._entityDataService.ListEntities(
-                new ExpressionFilterDefinition<GameEntity>(entity => entity.Name.Contains(message.Name)));
+            var games = await this._entityDataService.ListEntities<GameEntity>(filter => filter.Text(message.Name));
 
             return new GetGamesByNameGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
             };
         });
     }
@@ -67,16 +60,12 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
     {
         return this.TryAsync(async () =>
         {
-            var games = await this._entityDataService.ListEntities(
-                new ExpressionFilterDefinition<GameEntity>(entity => entity.Genre.Contains(message.Genre)));
+            var games = await this._entityDataService.ListEntities<GameEntity>(filter => filter.Text(message.Genre));
 
             return new GetGamesByGenreGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
             };
         });
     }
@@ -89,11 +78,8 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
 
             return new GetGameByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                GameDto = this._mapper.Map<GameDto>(game)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<GameDto>(game)
             };
         });
     }
@@ -111,13 +97,7 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
                 Genre = message.Genre
             });
 
-            return new CreateGameGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new CreateGameGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 
@@ -127,21 +107,15 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
         {
             await this._publishEndpoint.Publish(new UpdateGameCommandMessage
             {
-                Id = message.GameDto.Id,
-                Name = message.GameDto.Name,
-                Discription = message.GameDto.Discription,
-                ProfilePicture = message.GameDto.ProfilePicture,
-                CoverPicture = message.GameDto.CoverPicture,
-                Genre = message.GameDto.Genre
+                Id = message.Id,
+                Name = message.Name,
+                Discription = message.Discription,
+                ProfilePicture = message.ProfilePicture,
+                CoverPicture = message.CoverPicture,
+                Genre = message.Genre
             });
 
-            return new UpdateGameGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new UpdateGameGrpcCommandResult { Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 
@@ -149,18 +123,9 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
     {
         return this.TryAsync(async () =>
         {
-            await this._publishEndpoint.Publish(new DeleteGameCommandMessage
-            {
-                Id = message.Id
-            });
+            await this._publishEndpoint.Publish(new DeleteGameCommandMessage { Id = message.Id });
 
-            return new DeleteGameByIdGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new DeleteGameByIdGrpcCommandResult { Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 }
