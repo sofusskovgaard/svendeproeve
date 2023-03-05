@@ -1,0 +1,85 @@
+﻿@page "/co2dashboard"
+@inject IApiService _apiService;
+@using Microsoft.AspNetCore.SignalR.Client;
+@using global::App.Services.RealTimeUpdater.Common.models;
+@using global::App.Web.Services.ApiService;
+
+<PageTitle>MatchWatcher</PageTitle>
+
+<h1>Match</h1>
+<input @bind="locationInput" />
+<button @onclick="SelectLocation">Connect</button>
+<label>Connected: @IsConnected</label>
+
+<div>
+    <table style="min-width:1000px;">
+        <thead>
+            <tr>
+                <td>location</td>
+                <td>gram CO2 pr kwh</td>
+                <td>country</td>
+                <td>timestamp</td>
+                <td>Wattage</td>
+                <td>CO2</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @if (emission != null)
+                {
+                    <td>@emission.Location</td>
+                    <td>@emission.CO2MeasurementModel.CO2g_pr_kwh</td>
+                    <td>@emission.CO2MeasurementModel.Country</td>
+                    <td>@emission.CO2MeasurementModel.TimeStamp.ToString("yyyy MM-dd hh:mm:ss")</td>
+                    <td>@emission.Wattage kw</td>
+                    <td>@emission.CO2Emission grams of CO2 if continued for an hour</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string locationInput;
+    private EmissionModel emission;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+    protected async Task SelectLocation()
+    {
+        emission = new EmissionModel();
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:3001/co2hub")
+            .Build();
+
+        hubConnection.On<EmissionModel>("location-" + locationInput, (emissionModel) =>
+        {
+            emission.CO2MeasurementModel = emissionModel.CO2MeasurementModel;
+            emission.Location = emissionModel.Location;
+            emission.Wattage = emissionModel.Wattage;
+
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
+
