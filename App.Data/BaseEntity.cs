@@ -16,5 +16,5 @@ public abstract class BaseEntity : IEntity
 
     public DateTime CreatedTs { get; set; }
 
-    public DateTime UpdatedTs { get; set; }
+    public DateTime? UpdatedTs { get; set; } = null;
 }
