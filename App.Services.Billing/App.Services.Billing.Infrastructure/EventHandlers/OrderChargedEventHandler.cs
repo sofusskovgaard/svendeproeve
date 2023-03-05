@@ -24,6 +24,11 @@ public class OrderChargedEventHandler : IEventHandler<OrderChargedEventMessage>
     {
         var message = context.Message;
 
+        if (RandomNumberGenerator.GetInt32(1000) >= 750)
+        {
+            return;
+        }
+
         var transactionNumber = Convert.ToHexString(RandomNumberGenerator.GetBytes(16)).ToLower();
 
         await _entityDataService.Update<OrderChargeEntity>(filter => filter.Eq(entity => entity.Id, message.OrderChargeId),

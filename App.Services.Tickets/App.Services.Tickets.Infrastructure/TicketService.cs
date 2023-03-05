@@ -45,8 +45,8 @@ namespace App.Services.Tickets.Infrastructure
                 Tickets = tickets.Select(x => new TicketsBookedEventMessage.Ticket { ProductId = x.ProductId, TicketId = x.Id! }).ToArray()
             });
 
-            await _publishEndpoint.Publish(new TicketStaleCheckCommandMessage(),
-                context => context.Delay = TimeSpan.FromMinutes(15));
+            await _publishEndpoint.Publish(new TicketStaleCheckCommandMessage{ Tickets = tickets.Select(t => t.Id).ToArray() },
+                context => context.Delay = TimeSpan.FromSeconds(15));
         }
     }
 }

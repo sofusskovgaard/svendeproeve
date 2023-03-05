@@ -30,22 +30,16 @@ public class OrderChargePaidEventHandler : IEventHandler<OrderChargePaidEventMes
 
         foreach (var orderLine in order.OrderLines)
         {
-            IEventMessage eventMessage = orderLine.ReferenceType switch
+            switch (orderLine.ReferenceType)
             {
-                ProductReferenceType.Event => new TicketOrderPaidEventMessage
-                {
-                    OrderId = message.OrderId,
-                    TicketId = orderLine.ReferenceId!
-                },
-                _ => new OrderPaidEventMessage
-                {
-                    OrderId = message.OrderId,
-                    ReferenceId = orderLine.ReferenceId,
-                    ReferenceType = orderLine.ReferenceType
-                }
-            };
-
-            await context.Publish(eventMessage);
+                case ProductReferenceType.Ticket:
+                    await context.Publish(new TicketOrderPaidEventMessage
+                    {
+                        OrderId = message.OrderId,
+                        TicketId = orderLine.ReferenceId!
+                    });
+                    break;
+            }
         }
     }
 }

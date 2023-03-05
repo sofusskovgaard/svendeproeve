@@ -1,8 +1,9 @@
-﻿using App.Infrastructure.Events;
+﻿using App.Infrastructure.Commands;
+using App.Infrastructure.Events;
 
 namespace App.Services.Tickets.Infrastructure.Commands;
 
-public class TicketStaleCheckCommandMessage : IEventMessage
+public class TicketStaleCheckCommandMessage : ICommandMessage
 {
-    public string TicketId { get; set; }
+    public string?[] Tickets { get; set; }
 }
