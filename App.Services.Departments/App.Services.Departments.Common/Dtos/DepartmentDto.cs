@@ -16,4 +16,10 @@ public class DepartmentDto
 
     [ProtoMember(4)]
     public string[] OrganizationIds { get; set; }
+
+    [ProtoMember(5)]
+    public DateTime CreateTs { get; set; }
+
+    [ProtoMember(6)]
+    public DateTime? UpdatedTs { get; set; }
 }

@@ -14,19 +14,13 @@ public interface IDepartmentsGrpcService
     ValueTask<GetAllDepartmentsGrpcCommandResult> GetAllDepartments(GetAllDepartmentsGrpcCommandMessage message);
 
     [Operation]
-    ValueTask<GetDepartmentsByNameGrpcCommandResult> GetDepartmentsByName(
-        GetDepartmentsByNameGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetDepartmentsByOrganizationIdGrpcCommandResult> GetDepartmentsByOrganizationId(
-        GetDepartmentsByOrganizationIdGrpcCommandMessage message);
+    ValueTask<GetDepartmentsByNameGrpcCommandResult> GetDepartmentsByName(GetDepartmentsByNameGrpcCommandMessage message);
 
     [Operation]
     ValueTask<GetDepartmentByIdGrpcCommandResult> GetDepartmentById(GetDepartmentByIdGrpcCommandMessage message);
 
     [Operation]
-    ValueTask<DeleteDepartmentByIdGrpcCommandResult> DeleteDepartmentById(
-        DeleteDepartmentByIdGrpcCommandMessage message);
+    ValueTask<DeleteDepartmentByIdGrpcCommandResult> DeleteDepartmentById(DeleteDepartmentByIdGrpcCommandMessage message);
 
     [Operation]
     ValueTask<UpdateDepartmentGrpcCommandResult> UpdateDepartment(UpdateDepartmentGrpcCommandMessage message);

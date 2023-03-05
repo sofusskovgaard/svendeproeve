@@ -8,7 +8,7 @@ namespace App.Services.Departments.Infrastructure.Grpc.CommandResults;
 public class GetDepartmentByIdGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public DepartmentDto DepartmentDto { get; set; }
+    public DepartmentDto Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }

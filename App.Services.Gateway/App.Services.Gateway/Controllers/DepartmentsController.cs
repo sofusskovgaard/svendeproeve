@@ -3,6 +3,8 @@ using App.Services.Departments.Infrastructure.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
+using App.Services.Organizations.Infrastructure.Grpc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Services.Gateway.Controllers;
@@ -20,47 +22,22 @@ public class DepartmentsController : ApiController
     /// <summary>
     ///     Get all departments
     /// </summary>
+    /// <param name="name">if specified will return department search by name</param>
     /// <returns></returns>
     [HttpGet]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> GetAllDepartments()
+    public Task<IActionResult> GetAllDepartments([FromQuery] string? name = null)
     {
-        return this.TryAsync(() =>
-            this._departmentsGrpcService.GetAllDepartments(new GetAllDepartmentsGrpcCommandMessage()));
-    }
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return this.TryAsync(() =>
+                this._departmentsGrpcService.GetAllDepartments(
+                    CreateCommandMessage<GetAllDepartmentsGrpcCommandMessage>()));
+        }
 
-    /// <summary>
-    ///     Get deparments with the same name as given
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("{name}/name")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> GetDepartmentsByName(string name)
-    {
-        return this.TryAsync(() =>
-            this._departmentsGrpcService.GetDepartmentsByName(
-                new GetDepartmentsByNameGrpcCommandMessage { Name = name }));
-    }
-
-    /// <summary>
-    ///     Get departments by organization id
-    /// </summary>
-    /// <param name="organizationid"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("{organizationid}/organization")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> GetDepartmentsByOrganizationId(string organizationid)
-    {
-        return this.TryAsync(() =>
-            this._departmentsGrpcService.GetDepartmentsByOrganizationId(
-                new GetDepartmentsByOrganizationIdGrpcCommandMessage { OrganizationId = organizationid }));
+        return this.TryAsync(() => this._departmentsGrpcService.GetDepartmentsByName(CreateCommandMessage<GetDepartmentsByNameGrpcCommandMessage>(message => message.Name = name)));
     }
 
     /// <summary>
@@ -75,7 +52,35 @@ public class DepartmentsController : ApiController
     public Task<IActionResult> GetDepartmentById(string id)
     {
         return this.TryAsync(() =>
-            this._departmentsGrpcService.GetDepartmentById(new GetDepartmentByIdGrpcCommandMessage { Id = id }));
+            this._departmentsGrpcService.GetDepartmentById(CreateCommandMessage<GetDepartmentByIdGrpcCommandMessage>(message => message.Id = id)));
+    }
+
+    /// <summary>
+    ///     Get organizations by department
+    /// </summary>
+    /// <param name="id">department id</param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("{id}/organizations")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public Task<IActionResult> GetOrganizationsByDepartment(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    ///     Get events by department
+    /// </summary>
+    /// <param name="id">department id</param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("{id}/events")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public Task<IActionResult> GetEventsByDepartment(string id)
+    {
+        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -84,21 +89,17 @@ public class DepartmentsController : ApiController
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("")]
+    [Route(""), Authorize]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public Task<IActionResult> CreateDepartment([FromBody] CreateDepartmentModel model)
     {
-        return this.TryAsync(() =>
-        {
-            var command = new CreateDepartmentGrpcCommandMessage
+        return this.TryAsync(() => this._departmentsGrpcService.CreateDepartment(this.CreateCommandMessage<CreateDepartmentGrpcCommandMessage>(
+            message =>
             {
-                Name = model.Name,
-                Address = model.Address
-            };
-
-            return this._departmentsGrpcService.CreateDepartment(command);
-        });
+                message.Name = model.Name;
+                message.Address = model.Address;
+            })), true);
     }
 
     /// <summary>
@@ -107,20 +108,18 @@ public class DepartmentsController : ApiController
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("")]
+    [Route("{id}"), Authorize]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> UpdateDepartment([FromBody] UpdateDepartmentModel model)
+    public Task<IActionResult> UpdateDepartment(string id, [FromBody] UpdateDepartmentModel model)
     {
-        return this.TryAsync(() => this._departmentsGrpcService.UpdateDepartment(new UpdateDepartmentGrpcCommandMessage
-        {
-            DepartmentDto = new DepartmentDto
+        return this.TryAsync(() => this._departmentsGrpcService.UpdateDepartment(this.CreateCommandMessage<UpdateDepartmentGrpcCommandMessage>(
+            message =>
             {
-                Id = model.Id,
-                Name = model.Name,
-                Address = model.Address
-            }
-        }));
+                message.Id = id;
+                message.Name = model.Name;
+                message.Address = model.Address;
+            })), true);
     }
 
     /// <summary>
@@ -129,12 +128,12 @@ public class DepartmentsController : ApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("")]
+    [Route("{id}"), Authorize]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public Task<IActionResult> DeleteDepartmentById(string id)
     {
         return this.TryAsync(() =>
-            this._departmentsGrpcService.DeleteDepartmentById(new DeleteDepartmentByIdGrpcCommandMessage { Id = id }));
+            this._departmentsGrpcService.DeleteDepartmentById(CreateCommandMessage<DeleteDepartmentByIdGrpcCommandMessage>(message => message.Id = id)), true);
     }
 }

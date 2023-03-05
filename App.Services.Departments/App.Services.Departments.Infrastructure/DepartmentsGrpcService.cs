@@ -37,53 +37,22 @@ public class DepartmentsGrpcService : BaseGrpcService, IDepartmentsGrpcService
 
             return new GetAllDepartmentsGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "Getting departments"
-                },
-                DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
             };
         });
     }
 
-    public ValueTask<GetDepartmentsByNameGrpcCommandResult> GetDepartmentsByName(
-        GetDepartmentsByNameGrpcCommandMessage message)
+    public ValueTask<GetDepartmentsByNameGrpcCommandResult> GetDepartmentsByName(GetDepartmentsByNameGrpcCommandMessage message)
     {
         return this.TryAsync(async () =>
         {
-            var departments = await this._entityDataService.ListEntities(
-                new ExpressionFilterDefinition<DepartmentEntity>(entity => entity.Name.Contains(message.Name)));
+            var departments = await this._entityDataService.ListEntities<DepartmentEntity>(filter => filter.Text(message.Name));
 
             return new GetDepartmentsByNameGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "Getting departments"
-                },
-                DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
-            };
-        });
-    }
-
-    public ValueTask<GetDepartmentsByOrganizationIdGrpcCommandResult> GetDepartmentsByOrganizationId(
-        GetDepartmentsByOrganizationIdGrpcCommandMessage message)
-    {
-        return this.TryAsync(async () =>
-        {
-            var departments = await this._entityDataService.ListEntities(
-                new ExpressionFilterDefinition<DepartmentEntity>(entity =>
-                    entity.OrganizationIds.Contains(message.OrganizationId)));
-
-            return new GetDepartmentsByOrganizationIdGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "Getting departments"
-                },
-                DepartmentDtos = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
             };
         });
     }
@@ -96,12 +65,8 @@ public class DepartmentsGrpcService : BaseGrpcService, IDepartmentsGrpcService
 
             return new GetDepartmentByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "Getting department"
-                },
-                DepartmentDto = this._mapper.Map<DepartmentDto>(department)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<DepartmentDto>(department)
             };
         });
     }
@@ -118,10 +83,7 @@ public class DepartmentsGrpcService : BaseGrpcService, IDepartmentsGrpcService
 
             return new CreateDepartmentGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
+                Metadata = new GrpcCommandResultMetadata{ Success = true }
             };
         });
     }
@@ -132,38 +94,27 @@ public class DepartmentsGrpcService : BaseGrpcService, IDepartmentsGrpcService
         {
             await this._publishEndpoint.Publish(new UpdateDepartmentCommandMessage
             {
-                Id = message.DepartmentDto.Id,
-                Name = message.DepartmentDto.Name,
-                Address = message.DepartmentDto.Address
+                Id = message.Id,
+                Name = message.Name,
+                Address = message.Address
             });
 
             return new UpdateDepartmentGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "Department updated"
-                }
+                Metadata = new GrpcCommandResultMetadata{ Success = true }
             };
         });
     }
 
-    public ValueTask<DeleteDepartmentByIdGrpcCommandResult> DeleteDepartmentById(
-        DeleteDepartmentByIdGrpcCommandMessage message)
+    public ValueTask<DeleteDepartmentByIdGrpcCommandResult> DeleteDepartmentById(DeleteDepartmentByIdGrpcCommandMessage message)
     {
         return this.TryAsync(async () =>
         {
-            await this._publishEndpoint.Publish(new DeleteDepartmentCommandMessage
-            {
-                Id = message.Id
-            });
+            await this._publishEndpoint.Publish(new DeleteDepartmentCommandMessage{ Id = message.Id });
 
             return new DeleteDepartmentByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
+                Metadata = new GrpcCommandResultMetadata{ Success = true }
             };
         });
     }
