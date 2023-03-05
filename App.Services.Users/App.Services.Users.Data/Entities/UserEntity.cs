@@ -1,11 +1,13 @@
 ﻿using App.Data;
 using App.Data.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace App.Services.Users.Data.Entities;
 
 [IndexDefinition("email_username")]
 [IndexDefinition("teams")]
 [IndexDefinition("organizations")]
+[IndexDefinition("games")]
 [CollectionDefinition(nameof(UserEntity))]
 public class UserEntity : BaseEntity
 {
@@ -26,18 +28,15 @@ public class UserEntity : BaseEntity
     public string? CoverPicture { get; set; }
 
     public string? Bio { get; set; }
-    
-    //public object[] Games { get; set; }
-    
+
     public bool IsInTeam { get; set; }
-    
-    //public object[] Intergrations { get; set; }
-    
-    //public byte[] Permissions { get; set; }
 
     [IndexedProperty("organizations")]
     public string[]? Organizations { get; set; }
 
     [IndexedProperty("teams")]
     public string[]? Teams { get; set; }
+
+    [IndexedProperty("games")]
+    public string[]? Games { get; set; }
 }

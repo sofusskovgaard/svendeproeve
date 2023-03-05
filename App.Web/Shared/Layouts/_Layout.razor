@@ -1,0 +1,39 @@
+﻿@inject ISessionStore SessionStore
+@inject NavigationManager NavigationManager
+@inherits LayoutComponentBase
+@using global::App.Web.Extensions
+@implements IDisposable
+
+@Body
+
+@code {
+    protected override void OnInitialized()
+    {
+        //NavigationManager.RegisterLocationChangingHandler(LocationChangingHandler);
+        SessionStore.OnSessionStoreLoaded += SessionStoreOnOnSessionStoreLoaded;
+
+        if (SessionStore.Loaded)
+        {
+            SessionStoreOnOnSessionStoreLoaded();
+        }
+    }
+
+    public void Dispose()
+    {
+        SessionStore.OnSessionStoreLoaded -= SessionStoreOnOnSessionStoreLoaded;
+        SessionStore.OnSessionChanged -= StateHasChanged;
+    }
+
+    private void SessionStoreOnOnSessionStoreLoaded()
+    {
+        var path = NavigationManager.Path();
+        if (path.StartsWith("/admin") && !SessionStore.IsAdmin)
+        {
+            NavigationManager.NavigateTo("/404");
+        }
+
+        SessionStore.OnSessionChanged += StateHasChanged;
+
+        StateHasChanged();
+    }
+}

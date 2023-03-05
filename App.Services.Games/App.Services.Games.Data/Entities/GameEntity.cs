@@ -1,6 +1,5 @@
 ﻿using App.Data;
 using App.Data.Attributes;
-using ProtoBuf;
 
 namespace App.Services.Games.Data.Entities
 {

@@ -1,18 +1,18 @@
-﻿using App.Infrastructure.Grpc;
+﻿
+
+using App.Common.Grpc;
 using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Billing.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class CreateBillingGrpcCommandMessage : IGrpcCommandMessage
+    public class CreateBillingGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string OrderId { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
 
     }
 }

@@ -1,3 +1,4 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Billing.Common.Dtos;
@@ -7,7 +8,6 @@ using App.Services.Billing.Infrastructure.Grpc.CommandMessages;
 using App.Services.Billing.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Billing.Infrastructure
 {

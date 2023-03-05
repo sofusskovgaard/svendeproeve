@@ -1,0 +1,139 @@
+﻿@page "/login"
+
+@implements IDisposable
+
+@inject NavigationManager NavigationManager
+@inject ISessionStore SessionStore
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Login</h3>
+
+        <EditForm Model=@LoginModel OnSubmit=@OnSubmitLogin>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email / Username</label>
+                <InputText type="email" class="form-control" id="email" @bind-Value=LoginModel.Username/>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <InputText type="password" class="form-control" id="password" @bind-Value=LoginModel.Password/>
+                <div id="passwordHelp" class="form-text">We'll never share your password with anyone else.</div>
+            </div>
+            @*<div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>*@
+            <button type="submit" class="btn btn-primary" value="Save">Submit</button>
+        </EditForm>
+    </div>
+    
+    
+    <div class="col-md-6">
+        <h3>Register</h3>
+
+        <EditForm Model=@RegisterModel OnSubmit=@OnSubmitRegister>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="firstname" class="form-label">Firstname</label>
+                    <InputText type="text" class="form-control" id="firstname" @bind-Value=RegisterModel.Firstname/>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="lastname" class="form-label">Lastname</label>
+                    <InputText type="text" class="form-control" id="lastname" @bind-Value=RegisterModel.Lastname/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    <InputText type="email" class="form-control" id="email" @bind-Value=RegisterModel.Email/>
+                </div>
+                <div class="col-md-6">
+                    <label for="username" class="form-label">Username</label>
+                    <InputText type="text" class="form-control" id="username" @bind-Value=RegisterModel.Username/>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="password" class="form-label">Password</label>
+                    <InputText type="password" class="form-control" id="password" @bind-Value=RegisterModel.Password/>
+                    <div id="passwordHelp" class="form-text">We'll never share your password with anyone else.</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <InputText type="password" class="form-control" id="confirmPassword" @bind-Value=RegisterModel.ConfirmPassword/>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3" value="Save">Submit</button>
+        </EditForm>
+    </div>
+
+</div>
+
+
+@code {
+    LoginFormModel LoginModel = new();
+
+    async Task OnSubmitLogin(EditContext context)
+    {
+        await SessionStore.Login(LoginModel.Username, LoginModel.Password);
+    }
+
+    internal class LoginFormModel
+    {
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+    }
+}
+
+@code {
+    RegisterFormModel RegisterModel = new();
+
+    async Task OnSubmitRegister(EditContext context)
+    {
+        await SessionStore.Register(RegisterModel.Firstname, RegisterModel.Lastname, RegisterModel.Username, RegisterModel.Email, RegisterModel.Password, RegisterModel.ConfirmPassword);
+    }
+
+    internal class RegisterFormModel
+    {
+        public string Firstname { get; set; }
+        
+        public string Lastname { get; set; }
+
+        public string Username { get; set; }
+
+        public string Email { get; set; }
+
+        public string Password { get; set; }
+
+        public string ConfirmPassword { get; set; }
+    }
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        SessionStore.OnSessionChanged += SessionStoreOnOnSessionChanged;
+
+        if (SessionStore.LoggedIn)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    private void SessionStoreOnOnSessionChanged()
+    {
+        if (SessionStore.LoggedIn)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    public void Dispose()
+    {
+        SessionStore.OnSessionChanged -= SessionStoreOnOnSessionChanged;
+    }
+}

@@ -19,23 +19,20 @@ public class UserDto
     public string Username { get; set; }
 
     [ProtoMember(5)]
-    public string Email { get; set; }
+    public string? ProfilePicture { get; set; }
 
     [ProtoMember(6)]
-    public DateTime DateOfBirth { get; set; }
+    public string? CoverPicture { get; set; }
 
     [ProtoMember(7)]
-    public string ProfilePicture { get; set; }
+    public string? Bio { get; set; }
 
     [ProtoMember(8)]
-    public string CoverPicture { get; set; }
+    public string[]? Games { get; set; }
 
     [ProtoMember(9)]
-    public string Bio { get; set; }
+    public string[]? Teams { get; set; }
 
-    //[ProtoMember(10)]
-    //public object[] Games { get; set; }
-
-    [ProtoMember(11)]
-    public bool IsInTeam { get; set; }
+    [ProtoMember(10)]
+    public string[]? Organizations { get; set; }
 }

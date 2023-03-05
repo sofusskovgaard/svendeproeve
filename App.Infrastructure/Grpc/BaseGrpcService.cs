@@ -1,4 +1,6 @@
-﻿namespace App.Infrastructure.Grpc;
+﻿using App.Common.Grpc;
+
+namespace App.Infrastructure.Grpc;
 
 public abstract class BaseGrpcService
 {
@@ -23,7 +25,8 @@ public abstract class BaseGrpcService
     {
         try
         {
-            return await func.Invoke();
+            var response = await func();
+            return response;
         }
         catch (AggregateException ex)
         {

@@ -1,10 +1,10 @@
-﻿using App.Infrastructure.Grpc;
+﻿using App.Common.Grpc;
 using ProtoBuf;
 
 namespace App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 
 [ProtoContract]
-public class RegisterGrpcCommandMessage : IGrpcCommandMessage
+public class RegisterGrpcCommandMessage : GrpcCommandMessage
 {
     [ProtoMember(1)]
     public string Firstname { get; set; }
@@ -23,4 +23,7 @@ public class RegisterGrpcCommandMessage : IGrpcCommandMessage
 
     [ProtoMember(6)]
     public string ConfirmPassword { get; set; }
+
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

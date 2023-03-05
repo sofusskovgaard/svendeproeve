@@ -1,13 +1,14 @@
+using App.Common.Grpc;
 using App.Data.Services;
 using App.Infrastructure.Grpc;
 using App.Services.Orders.Common.Dtos;
 using App.Services.Orders.Data.Entities;
+using App.Services.Orders.Infrastructure.Commands;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
-using ProtoBuf.Grpc.Configuration;
 
 namespace App.Services.Orders.Infrastructure
 {
@@ -55,7 +56,7 @@ namespace App.Services.Orders.Infrastructure
         //        };
 
         //        await _entityDataService.SaveEntity(order);
-                
+
         //        var dto = _mapper.Map<OrderDto>(order);
 
         //        return new CreateOrderGrpcCommandResult
@@ -90,18 +91,16 @@ namespace App.Services.Orders.Infrastructure
         {
             return TryAsync(async () =>
             {
-                var product = new ProductEntity
+                var createMessage = new CreateProductCommandMessage
                 {
                     Name = message.Name,
                     Description = message.Description,
                     Price = message.Price,
-                    ReferenceId = message.ReferenceId,
-                    ReferenceType = message.ReferenceType
+                    //ReferenceId = message.ReferenceId,
+                    //ReferenceType = message.ReferenceType
                 };
 
-                await _entityDataService.SaveEntity(product);
-
-                var dto = _mapper.Map<ProductDto>(product);
+                await _publishEndpoint.Publish(createMessage);
 
                 return new CreateProductGrpcCommandResult
                 {
@@ -109,7 +108,19 @@ namespace App.Services.Orders.Infrastructure
                     {
                         Success = true
                     },
-                    Product = dto
+                };
+            });
+        }
+
+        public ValueTask<GetProductsGrpcCommandResult> GetProducts(GetProductsGrpcCommandMessage message)
+        {
+            return TryAsync(async () =>
+            {
+                var entities = await _entityDataService.ListEntities<ProductEntity>();
+                return new GetProductsGrpcCommandResult
+                {
+                    Metadata = new GrpcCommandResultMetadata { Success = true },
+                    Products = _mapper.Map<ProductDto[]>(entities)
                 };
             });
         }
