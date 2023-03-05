@@ -2,13 +2,12 @@
 using App.Services.Games.Infrastructure.Commands;
 using MassTransit;
 
-namespace App.Services.Games.Infrastructure.CommandHandlers
+namespace App.Services.Games.Infrastructure.CommandHandlers;
+
+public class TestCommandHandler : ICommandHandler<TestCommandMessage>
 {
-    public class TestCommandHandler : ICommandHandler<TestCommandMessage>
+    public Task Consume(ConsumeContext<TestCommandMessage> context)
     {
-        public Task Consume(ConsumeContext<TestCommandMessage> context)
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
     }
 }
