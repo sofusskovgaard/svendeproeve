@@ -8,6 +8,9 @@ namespace App.Services.Tickets.Infrastructure.Grpc;
 public interface ITicketGrpcService
 {
     [Operation]
+    public ValueTask<GetTicketsGrpcCommandResult> GetTickets(GetTicketsGrpcCommandMessage message);
+
+    [Operation]
     public ValueTask<GetTicketByIdGrpcCommandResult> GetTicketById(GetTicketByIdGrpcCommandMessage message);
 
     [Operation]
