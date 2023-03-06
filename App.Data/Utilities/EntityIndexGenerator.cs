@@ -14,12 +14,16 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 {
     private readonly IMongoDatabase _database;
 
+    private readonly IMongoDatabase _adminDatabase;
+
     private readonly ILogger<EntityIndexGenerator> _logger;
 
     public EntityIndexGenerator(IOptions<DatabaseOptions> options, IMongoClient client, ILogger<EntityIndexGenerator> logger)
     {
         this._logger = logger;
+
         this._database = client.GetDatabase(options.Value.DatabaseName);
+        this._adminDatabase = client.GetDatabase("admin");
     }
 
     public ValueTask Generate(Assembly? assemblyToSearch = null)
@@ -138,10 +142,33 @@ public class EntityIndexGenerator : IEntityIndexGenerator
             try
             {
                 await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
-                this._logger.LogInformation(
-                    keys.Document.Any(element => element.Value == "hashed")
-                        ? "Created shard index for {entity}"
-                        : "Created index for {entity}", entityType.Name);
+
+                if (keys.Document.FirstOrDefault(element => element.Value == "hashed") is var hashedElement && hashedElement.Value != null)
+                {
+                    _logger.LogInformation("Created shard index for {entity}", entityType.Name);
+
+#if !DEBUG
+                    // sharding of data is only possible in a big mongodb cluster with multiple replica sets
+                    // and because we don't want to run a whole mongodb cluster on our dev machines this is a prod thang
+
+                    await _adminDatabase.RunCommandAsync(new BsonDocumentCommand<BsonDocument>(
+                        new()
+                        {
+                            {
+                                "shardCollection",
+                                string.Join(".", _database.DatabaseNamespace.DatabaseName,
+                                    collection.CollectionNamespace.CollectionName)
+                            },
+                            { "key", new BsonDocument{ { hashedElement.Name, "hashed" } } }
+                        }));
+
+                    _logger.LogInformation("Sharded collection for {entity}", entityType.Name);
+#endif
+                }
+                else
+                {
+                    this._logger.LogInformation("Created index for {entity}", entityType.Name);
+                }
             }
             catch (Exception ex)
             {
