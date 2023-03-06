@@ -1,4 +1,5 @@
-﻿using App.Services.Gateway.Infrastructure;
+﻿using App.Services.Gateway.Common;
+using App.Services.Gateway.Infrastructure;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,13 @@ namespace App.Services.Gateway.Controllers
         public Task<IActionResult> GetOrderById(string id)
         {
             return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id}));
+        }
+
+        [HttpGet]
+        [Route("{id}/pay")]
+        public Task<IActionResult> PayOrderById(string id)
+        {
+            return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id }));
         }
 
         //[HttpPost]
@@ -66,13 +74,13 @@ namespace App.Services.Gateway.Controllers
                 {
                     Name = model.Name,
                     Description = model.Description,
-                    Price = model.Price
+                    Price = model.Price,
+                    ReferenceId = model.ReferenceId,
+                    ReferenceType = model.ReferenceType
                 };
 
                 return _ordersGrpcService.CreateProduct(command);
             });
         }
     }
-    //public record CreateOrderModel(string UserId, decimal Total, string[] TicketIds);
-    public record CreateProductModel(string Name, string Description, decimal Price);
 }

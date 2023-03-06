@@ -25,7 +25,8 @@ public abstract class BaseGrpcService
     {
         try
         {
-            return await func.Invoke();
+            var response = await func();
+            return response;
         }
         catch (AggregateException ex)
         {

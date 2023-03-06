@@ -10,12 +10,13 @@ services:
       - "27017:27017"
 
   rabbitmq:
-    image: rabbitmq:3.11-management-alpine
+    image: masstransit/rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
     ports:
       - "15672:15672"
+      - "5672:5672"
 
   redis:
     image: redis:7.0.8-alpine
@@ -29,6 +30,8 @@ services:
       dockerfile: App.Services.Gateway/App.Services.Gateway/Dockerfile
     ports:
       - "3000:443"
+    depends_on:
+      - app.services.authentication
 
   app.services.users:
     image: ${DOCKER_REGISTRY-}appservicesusers

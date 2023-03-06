@@ -28,13 +28,18 @@ namespace App.Services.Orders.Infrastructure.CommandHandlers
                 Description = message.Description,
                 Name = message.Name,
                 Price = message.Price,
+                ReferenceId = message.ReferenceId,
+                ReferenceType = message.ReferenceType,
             };
 
             await _entityDataService.SaveEntity(entity);
 
             var eventMessage = new ProductCreatedEventMessage
             {
-                Id = entity.Id
+                ProductId = entity.Id,
+                Description = message.Description,
+                Price = message.Price,
+                Name = message.Name
             };
 
             await _publishEndpoint.Publish(eventMessage);

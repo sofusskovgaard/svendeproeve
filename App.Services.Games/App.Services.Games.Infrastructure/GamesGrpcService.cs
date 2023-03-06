@@ -11,152 +11,121 @@ using AutoMapper;
 using MassTransit;
 using MongoDB.Driver;
 
-namespace App.Services.Games.Infrastructure
+namespace App.Services.Games.Infrastructure;
+
+public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
 {
-    public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IMapper _mapper;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public GamesGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
-        private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public GamesGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
-        {
-            _entityDataService = entityDataService;
-            _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
-        }
+        this._entityDataService = entityDataService;
+        this._mapper = mapper;
+        this._publishEndpoint = publishEndpoint;
+    }
 
-        public ValueTask<GetAllGamesGrpcCommandResult> GetAllGames(GetAllGamesGrpcCommandMessage message)
+    public ValueTask<GetAllGamesGrpcCommandResult> GetAllGames(GetAllGamesGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var games = await this._entityDataService.ListEntities<GameEntity>();
+
+            return new GetAllGamesGrpcCommandResult
             {
-                var games = await this._entityDataService.ListEntities<GameEntity>();
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
+            };
+        });
+    }
 
-                return new GetAllGamesGrpcCommandResult()
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
-                };
-            });
-        }
-
-        public ValueTask<GetGamesByNameGrpcCommandResult> GetGamesByName(GetGamesByNameGrpcCommandMessage message)
+    public ValueTask<GetGamesByNameGrpcCommandResult> GetGamesByName(GetGamesByNameGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var games = await this._entityDataService.ListEntities<GameEntity>(filter => filter.Text(message.Name));
+
+            return new GetGamesByNameGrpcCommandResult
             {
-                var games = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<GameEntity>(entity => entity.Name.Contains(message.Name)));
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
+            };
+        });
+    }
 
-                return new GetGamesByNameGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
-                };
-            });
-        }
-
-        public ValueTask<GetGamesByGenreGrpcCommandResult> GetGamesByGenre(GetGamesByGenreGrpcCommandMessage message)
+    public ValueTask<GetGamesByGenreGrpcCommandResult> GetGamesByGenre(GetGamesByGenreGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var games = await this._entityDataService.ListEntities<GameEntity>(filter => filter.Text(message.Genre));
+
+            return new GetGamesByGenreGrpcCommandResult
             {
-                var games = await this._entityDataService.ListEntities(new ExpressionFilterDefinition<GameEntity>(entity => entity.Genre.Contains(message.Genre)));
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
+            };
+        });
+    }
 
-                return new GetGamesByGenreGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    GameDtos = this._mapper.Map<IEnumerable<GameDto>>(games)
-                };
-            });
-        }
-
-        public ValueTask<GetGameByIdGrpcCommandResult> GetGameById(GetGameByIdGrpcCommandMessage message)
+    public ValueTask<GetGameByIdGrpcCommandResult> GetGameById(GetGameByIdGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
+
+            return new GetGameByIdGrpcCommandResult
             {
-                var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = this._mapper.Map<GameDto>(game)
+            };
+        });
+    }
 
-                return new GetGameByIdGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    GameDto = this._mapper.Map<GameDto>(game)
-                };
-            });
-        }
-
-        public ValueTask<CreateGameGrpcCommandResult> CreateGame(CreateGameGrpcCommandMessage message)
+    public ValueTask<CreateGameGrpcCommandResult> CreateGame(CreateGameGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            await this._publishEndpoint.Publish(new CreateGameCommandMessage
             {
-                await _publishEndpoint.Publish(new CreateGameCommandMessage
-                {
-                    Name = message.Name,
-                    Discription = message.Discription,
-                    ProfilePicture = message.ProfilePicture,
-                    CoverPicture = message.CoverPicture,
-                    Genre = message.Genre
-                });
-
-                return new CreateGameGrpcCommandResult()
-                {
-                    Metadata = new GrpcCommandResultMetadata()
-                    {
-                        Success = true
-                    }
-                };
+                Name = message.Name,
+                Discription = message.Description,
+                ProfilePicture = message.ProfilePicture,
+                CoverPicture = message.CoverPicture,
+                Genre = message.Genre
             });
-        }
 
-        public ValueTask<UpdateGameGrpcCommandResult> updateGame(UpdateGameGrpcCommandMessage message)
+            return new CreateGameGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
+        });
+    }
+
+    public ValueTask<UpdateGameGrpcCommandResult> updateGame(UpdateGameGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            await this._publishEndpoint.Publish(new UpdateGameCommandMessage
             {
-                await _publishEndpoint.Publish(new UpdateGameCommandMessage
-                {
-                    Id = message.GameDto.Id,
-                    Name = message.GameDto.Name,
-                    Discription = message.GameDto.Discription,
-                    ProfilePicture = message.GameDto.ProfilePicture,
-                    CoverPicture = message.GameDto.CoverPicture,
-                    Genre = message.GameDto.Genre
-                });
-
-                return new UpdateGameGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    }
-                };
+                Id = message.Id,
+                Name = message.Name,
+                Discription = message.Discription,
+                ProfilePicture = message.ProfilePicture,
+                CoverPicture = message.CoverPicture,
+                Genre = message.Genre
             });
-        }
 
-        public ValueTask<DeleteGameByIdGrpcCommandResult> DeleteGameById(DeleteGameByIdGrpcCommandMessage message)
+            return new UpdateGameGrpcCommandResult { Metadata = new GrpcCommandResultMetadata { Success = true } };
+        });
+    }
+
+    public ValueTask<DeleteGameByIdGrpcCommandResult> DeleteGameById(DeleteGameByIdGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
-            {
-                await _publishEndpoint.Publish(new DeleteGameCommandMessage
-                {
-                    Id = message.Id
-                });
+            await this._publishEndpoint.Publish(new DeleteGameCommandMessage { Id = message.Id });
 
-                return new DeleteGameByIdGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    }
-                };
-            });
-        }
+            return new DeleteGameByIdGrpcCommandResult { Metadata = new GrpcCommandResultMetadata { Success = true } };
+        });
     }
 }

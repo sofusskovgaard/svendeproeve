@@ -1,4 +1,10 @@
 ﻿using App.Infrastructure.Events;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using App.Infrastructure.Events;
 
 namespace App.Services.Orders.Infrastructure.Events
 {
@@ -14,9 +20,14 @@ namespace App.Services.Orders.Infrastructure.Events
 
         public class OrderLine
         {
-            public string TicketId { get; set; }
+            public string? ReferenceId { get; set; }
+
+            public string? ReferenceType { get; set; }
+
             public string ProductId { get; set; }
+
             public int Quantity { get; set; }
+
             public decimal Price { get; set; }
         }
     }

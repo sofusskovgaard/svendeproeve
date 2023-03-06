@@ -9,9 +9,8 @@ namespace App.Services.Tickets.Infrastructure.Grpc
     {
         [Operation]
         public ValueTask<GetTicketByIdGrpcCommandResult> GetTicketById(GetTicketByIdGrpcCommandMessage message);
+
         [Operation]
         public ValueTask<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage message);
-
-
     }
 }

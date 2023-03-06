@@ -3,6 +3,7 @@ using App.Services.Billing.Infrastructure.Grpc.CommandMessages;
 using App.Services.Gateway.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using App.Services.Gateway.Common;
 
 namespace App.Services.Gateway.Controllers
 {
@@ -40,5 +41,4 @@ namespace App.Services.Gateway.Controllers
             });
         }
     }
-    public record CreateBillingModel(string OrderId);
 }

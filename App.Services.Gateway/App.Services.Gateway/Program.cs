@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Events;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Infrastructure.Options;
@@ -17,6 +18,7 @@ using App.Services.Turnaments.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Billing.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc;
+using App.Services.Gateway.Infrastructure.Authentication;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +43,8 @@ builder.Services.AddGrpcServiceClient<ITicketGrpcService>();
 builder.Services.AddGrpcServiceClient<IBillingGrpcService>();
 builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -83,6 +86,8 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseQueryStrings = true;
 });
 
+builder.Services.AddSingleton<IIssuerSigningKeyCache, IssuerSigningKeyCache>();
+
 builder.Services
     .AddAuthentication(options =>
     {
@@ -90,13 +95,13 @@ builder.Services
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearer(options =>
+    .AddCustomJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidIssuer = JwtOptions.Issuer,
             ValidAudience = JwtOptions.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Key)),
         };
     });
 

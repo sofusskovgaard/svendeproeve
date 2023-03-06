@@ -3,6 +3,7 @@ using App.Data.Attributes;
 using App.Data.Extensions;
 using App.Infrastructure.Options;
 using App.Infrastructure.Utilities;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -13,53 +14,130 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 {
     private readonly IMongoDatabase _database;
 
-    public EntityIndexGenerator(IOptions<DatabaseOptions> options, IMongoClient client)
+    private readonly ILogger<EntityIndexGenerator> _logger;
+
+    public EntityIndexGenerator(IOptions<DatabaseOptions> options, IMongoClient client, ILogger<EntityIndexGenerator> logger)
     {
+        this._logger = logger;
         this._database = client.GetDatabase(options.Value.DatabaseName);
     }
 
-    public Task Generate(Assembly? assemblyToSearch = null)
+    public ValueTask Generate(Assembly? assemblyToSearch = null)
     {
         var types = DiscoveryHelper.Discover<IEntity>(assemblyToSearch);
         return this.Generate(types);
     }
 
-    public async Task Generate(Type[] entityTypes)
+    public async ValueTask Generate(Type[] entityTypes)
     {
         foreach (var entityType in entityTypes)
         {
             var indexDefinitions = entityType.GetCustomAttributes<IndexDefinitionAttribute>().ToList();
 
-            if (!indexDefinitions.Any()) continue;
+            var searchIndexDefinition = entityType.GetCustomAttribute<SearchIndexDefinitionAttribute>();
+
+            if (!indexDefinitions.Any() && searchIndexDefinition == null) continue;
 
             var collection = this._database.GetCollection(entityType);
 
-            foreach (var indexDefinition in indexDefinitions)
+            if (indexDefinitions.Any())
             {
-                var cursor = await collection.Indexes.ListAsync();
-
-                var foundIndex = false;
-
-                while (!foundIndex && await cursor.MoveNextAsync())
-                    if (cursor.Current.Any(x => x.GetElement("name").Value.AsString.Equals(indexDefinition.Name)))
-                        foundIndex = true;
-
-                if (!foundIndex)
+                foreach (var indexDefinition in indexDefinitions)
                 {
-                    var properties = entityType.GetProperties().Where(x =>
-                        x.GetCustomAttributes<IndexedPropertyAttribute>().Any(y => y.IndexName.Equals(indexDefinition.Name)));
+                    await _generateIndex(indexDefinition, entityType, collection);
+                }
+            }
 
-                    var keys = new BsonDocumentIndexKeysDefinition<IEntity>(new { }.ToBsonDocument());
+            if (searchIndexDefinition != null)
+            {
+                await _generateSearchIndex(searchIndexDefinition, entityType, collection);
+            }
+        }
+    }
 
-                    foreach (var propertyInfo in properties)
+    private async ValueTask _generateSearchIndex(SearchIndexDefinitionAttribute indexDefinition, Type entityType, IMongoCollection<IEntity> collection)
+    {
+        var existingIndexes = await (await collection.Indexes.ListAsync()).ToListAsync();
+
+        var existingIndex =
+            existingIndexes.FirstOrDefault(index => index.GetElement("name").Value.AsString == indexDefinition.Name);
+
+        if (existingIndex == null)
+        {
+            var keys = new BsonDocumentIndexKeysDefinition<IEntity>(new BsonDocument());
+            var options = new CreateIndexOptions();
+
+            foreach (var property in entityType.GetProperties())
+            {
+                var attributes = property.GetCustomAttributes<IndexedPropertyAttribute>();
+
+                if (attributes.FirstOrDefault(attr => attr.IndexName == indexDefinition.Name) is IndexedPropertyAttribute attr)
+                {
+                    keys.Document.Add(new BsonElement(property.Name, "text"));
+
+                    if (attr.Weight != 1)
                     {
-                        var propertyAttr = propertyInfo.GetCustomAttributes<IndexedPropertyAttribute>().FirstOrDefault(x => x.IndexName.Equals(indexDefinition.Name))!;
-                        keys.Document.Add(new BsonElement(propertyInfo.Name, (int)propertyAttr.Order));
+                        if (options.Weights == null)
+                        {
+                            options.Weights = new BsonDocument();
+                        }
+
+                        options.Weights.Add(new BsonElement(property.Name, attr.Weight));
+                    }
+                }
+            }
+
+            try
+            {
+                await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
+                this._logger.LogInformation("Created search index for {entity}", entityType.Name);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, "Could not create search index for {entity}", entityType.Name);
+            }
+        }
+    }
+
+    private async ValueTask _generateIndex(IndexDefinitionAttribute indexDefinition, Type entityType, IMongoCollection<IEntity> collection)
+    {
+        var existingIndexes = await (await collection.Indexes.ListAsync()).ToListAsync();
+
+        var existingIndex =
+            existingIndexes.FirstOrDefault(index => index.GetElement("name").Value.AsString == indexDefinition.Name);
+
+        if (existingIndex == null)
+        {
+            var keys = new BsonDocumentIndexKeysDefinition<IEntity>(new BsonDocument());
+            var options = new CreateIndexOptions();
+
+            foreach (var property in entityType.GetProperties())
+            {
+                var attributes = property.GetCustomAttributes<IndexedPropertyAttribute>();
+
+                if (attributes.FirstOrDefault(attr => attr.IndexName == indexDefinition.Name) is IndexedPropertyAttribute attr)
+                {
+                    if (attr.Hashed)
+                    {
+                        keys.Document.Add(new BsonElement(property.Name, "hashed"));
+                        continue;
                     }
 
-                    await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys,
-                        new CreateIndexOptions { Name = indexDefinition.Name, Unique = indexDefinition.IsUnique }));
+                    keys.Document.Add(new BsonElement(property.Name, (int)attr.Order));
                 }
+            }
+
+            try
+            {
+                await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
+                this._logger.LogInformation(
+                    keys.Document.Any(element => element.Value == "hashed")
+                        ? "Created shard index for {entity}"
+                        : "Created index for {entity}", entityType.Name);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, "Could not create index for {entity}", entityType.Name);
             }
         }
     }
@@ -67,7 +145,7 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 
 public interface IEntityIndexGenerator
 {
-    Task Generate(Assembly? assemblyToSearch = null);
+    ValueTask Generate(Assembly? assemblyToSearch = null);
 
-    Task Generate(Type[] entityTypes);
+    ValueTask Generate(Type[] entityTypes);
 }

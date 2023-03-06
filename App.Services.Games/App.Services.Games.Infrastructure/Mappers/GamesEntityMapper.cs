@@ -2,14 +2,13 @@
 using App.Services.Games.Data.Entities;
 using AutoMapper;
 
-namespace App.Services.Games.Infrastructure.Mappers
+namespace App.Services.Games.Infrastructure.Mappers;
+
+public class GamesEntityMapper : Profile
 {
-    public class GamesEntityMapper : Profile
+    public GamesEntityMapper()
     {
-        public GamesEntityMapper()
-        {
-            this.CreateMap<GameEntity, GameDto>();
-            this.CreateMap<GameDto, GameEntity>();
-        }
+        this.CreateMap<GameEntity, GameDto>();
+        this.CreateMap<GameDto, GameEntity>();
     }
 }

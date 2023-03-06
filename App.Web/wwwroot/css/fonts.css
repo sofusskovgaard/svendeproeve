@@ -1,7 +1,12 @@
-﻿* {
-    font-family: 'Inter', var(--bs-font-sans-serif);
+﻿:root {
+    --custom-font: 'Inter', var(--bs-font-sans-serif);
+    --custom-display-font: 'Space Grotesk', var(--bs-font-sans-serif);
+}
+
+* {
+    font-family: var(--custom-font);
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', var(--bs-font-sans-serif);
+    font-family: var(--custom-display-font);
 }

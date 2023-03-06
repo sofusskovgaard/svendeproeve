@@ -13,8 +13,4 @@
         <ProjectReference Include="..\App.Services.RealTimeUpdater.Common\App.Services.RealTimeUpdater.Common.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="CommandHandlers\" />
-    </ItemGroup>
-
 </Project>

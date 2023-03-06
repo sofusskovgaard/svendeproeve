@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq.Expressions;
+using System.Net;
 using System.Security.Claims;
 using App.Common.Grpc;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +8,30 @@ namespace App.Services.Gateway.Infrastructure;
 
 public abstract class ApiController : ControllerBase
 {
-    public CurrentUser CurrentUser => new(this.User.FindFirst("id")!.Value,
-        this.User.FindFirst(ClaimTypes.NameIdentifier)!.Value, this.User.FindFirst(ClaimTypes.Email)!.Value);
+    protected CurrentUser? CurrentUser => User.HasClaim(claim => claim.Type == "id")
+        ? new CurrentUser(User.FindFirst("id")!.Value,
+            User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
+            User.FindFirst(ClaimTypes.Email)!.Value,
+            bool.TryParse(User.FindFirst("isAdmin")?.Value, out var _res) && _res)
+        : null;
+
+    protected T CreateCommandMessage<T>(Action<T>? data = null) where T : IGrpcCommandMessage
+    {
+        var command = Activator.CreateInstance<T>();
+
+        data?.Invoke(command);
+
+        if (CurrentUser != null)
+        {
+            command.Metadata = new GrpcCommandMessageMetadata()
+            {
+                UserId = CurrentUser.Id,
+                IsAdmin = CurrentUser.IsAdmin
+            };
+        }
+
+        return command;
+    }
 
     /// <summary>
     ///     Try running a piece of synchronous business logic in a task or create a proper error response and log error.
@@ -102,4 +125,4 @@ public abstract class ApiController : ControllerBase
     }
 }
 
-public record CurrentUser(string Id, string Username, string Email);
+public record CurrentUser(string Id, string Username, string Email, bool IsAdmin);

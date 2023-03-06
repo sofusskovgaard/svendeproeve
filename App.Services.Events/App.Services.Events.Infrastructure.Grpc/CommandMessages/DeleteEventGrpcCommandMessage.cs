@@ -1,12 +1,14 @@
-﻿using ProtoBuf;
-using App.Common.Grpc;
+﻿using App.Common.Grpc;
+using ProtoBuf;
 
-namespace App.Services.Events.Infrastructure.Grpc.CommandMessages
+namespace App.Services.Events.Infrastructure.Grpc.CommandMessages;
+
+[ProtoContract]
+public class DeleteEventGrpcCommandMessage : GrpcCommandMessage
 {
-    [ProtoContract]
-    public class DeleteEventGrpcCommandMessage : IGrpcCommandMessage
-    {
-        [ProtoMember(1)]
-        public string Id { get; set; }
-    }
+    [ProtoMember(1)]
+    public string Id { get; set; }
+
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

@@ -22,7 +22,6 @@
         "app.services.tickets": "StartDebugging",
         "app.services.turnaments": "StartDebugging",
         "redis": "StartWithoutDebugging",
-        "realtimeupdater": "StartDebugging",
         "app.services.realtimeupdater": "StartDebugging"
       }
     }

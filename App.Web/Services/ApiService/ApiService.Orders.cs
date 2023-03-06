@@ -2,6 +2,7 @@
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
 using System.Net.Http.Json;
+using App.Services.Gateway.Common;
 
 namespace App.Web.Services.ApiService
 {
@@ -9,7 +10,7 @@ namespace App.Web.Services.ApiService
     {
         public async Task<GetOrderByIdGrpcCommandResult> GetOrderById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/orders/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/orders/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetOrderByIdGrpcCommandResult>();
@@ -17,7 +18,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetProductsGrpcCommandResult> GetProducts()
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/orders/products");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/orders/products");
             
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetProductsGrpcCommandResult>();
@@ -25,15 +26,15 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetProductByIdGrpcCommandResult> GetProductById(string id)
         {
-            var request = _createRequestMessage(HttpMethod.Get, $"api/orders/product/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/orders/product/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetProductByIdGrpcCommandResult>();
         }
 
-        public async Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage data)
+        public async Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductModel data)
         {
-            var request = _createRequestMessage(HttpMethod.Post, $"api/orders/product");
+            var request = await _createRequestMessage(HttpMethod.Post, $"api/orders/product");
             request.Content = JsonContent.Create(data);
 
             var response = await _client.SendAsync(request);
@@ -49,6 +50,6 @@ namespace App.Web.Services.ApiService
 
         Task<GetProductByIdGrpcCommandResult> GetProductById(string id);
 
-        Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage data);
+        Task<CreateProductGrpcCommandResult> CreateProduct(CreateProductModel data);
     }
 }

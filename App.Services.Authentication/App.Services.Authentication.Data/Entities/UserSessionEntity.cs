@@ -13,4 +13,10 @@ public class UserSessionEntity : BaseEntity
 
     [IndexedProperty("token_hash")]
     public string TokenHash { get; set; }
+
+    public string? IP { get; set; } = null;
+
+    public string? UserAgent { get; set; } = null;
+
+    public bool Active { get; set; } = true;
 }

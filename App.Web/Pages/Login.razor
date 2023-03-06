@@ -1,8 +1,9 @@
 ﻿@page "/login"
 
+@implements IDisposable
+
 @inject NavigationManager NavigationManager
 @inject ISessionStore SessionStore
-@implements IDisposable
 
 <div class="row">
     <div class="col-md-6">
@@ -12,11 +13,11 @@
             <div class="mb-3">
                 <label for="email" class="form-label">Email / Username</label>
                 <InputText type="email" class="form-control" id="email" @bind-Value=LoginModel.Username/>
-                <div id="emailHelp" class="form-text">We'll never share your password with anyone else.</div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <InputText type="password" class="form-control" id="password" @bind-Value=LoginModel.Password/>
+                <div id="passwordHelp" class="form-text">We'll never share your password with anyone else.</div>
             </div>
             @*<div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -47,7 +48,6 @@
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
                     <InputText type="email" class="form-control" id="email" @bind-Value=RegisterModel.Email/>
-                    <div id="emailHelp" class="form-text">We'll never share your password with anyone else.</div>
                 </div>
                 <div class="col-md-6">
                     <label for="username" class="form-label">Username</label>
@@ -59,6 +59,7 @@
                 <div class="col-md-6">
                     <label for="password" class="form-label">Password</label>
                     <InputText type="password" class="form-control" id="password" @bind-Value=RegisterModel.Password/>
+                    <div id="passwordHelp" class="form-text">We'll never share your password with anyone else.</div>
                 </div>
                 <div class="col-md-6">
                     <label for="confirmPassword" class="form-label">Confirm Password</label>
@@ -115,7 +116,7 @@
 @code {
     protected override void OnInitialized()
     {
-        SessionStore.OnSessionChanged += SessionStoreOnOnSessionChanged;;
+        SessionStore.OnSessionChanged += SessionStoreOnOnSessionChanged;
 
         if (SessionStore.LoggedIn)
         {

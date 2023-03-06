@@ -1,8 +1,7 @@
 ﻿using App.Infrastructure.Events;
 
-namespace App.Services.Games.Infrastructure.Events
+namespace App.Services.Games.Infrastructure.Events;
+
+public class TestEventMessage : IEventMessage
 {
-    public class TestEventMessage : IEventMessage
-    {
-    }
 }

@@ -5,39 +5,38 @@ using App.Services.Events.Infrastructure.Commands;
 using App.Services.Events.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Events.Infrastructure.CommandHandlers
+namespace App.Services.Events.Infrastructure.CommandHandlers;
+
+public class CreateEventCommandHandler : ICommandHandler<CreateEventCommandMessage>
 {
-    public class CreateEventCommandHandler : ICommandHandler<CreateEventCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public CreateEventCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+        this._publishEndpoint = publishEndpoint;
+    }
 
-        private IPublishEndpoint _publishEndpoint;
+    public async Task Consume(ConsumeContext<CreateEventCommandMessage> context)
+    {
+        var message = context.Message;
 
-        public CreateEventCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        var entity = new EventEntity
         {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
+            EndDate = message.EndDate,
+            EventName = message.EventName,
+            Location = message.Location,
+            StartDate = message.StartDate,
+            Tournaments = message.Tournaments
+        };
 
-        public async Task Consume(ConsumeContext<CreateEventCommandMessage> context)
+        await this._entityDataService.SaveEntity(entity);
+
+        await this._publishEndpoint.Publish(new EventCreatedEventMessage
         {
-            var message = context.Message;
-
-            var entity = new EventEntity
-            {
-                EndDate = message.EndDate,
-                EventName = message.EventName,
-                Location = message.Location,
-                StartDate = message.StartDate,
-                Tournaments = message.Tournaments,
-            };
-
-            await _entityDataService.SaveEntity(entity);
-
-            await _publishEndpoint.Publish(new EventCreatedEventMessage
-            {
-                Id = entity.Id
-            });
-        }
+            Id = entity.Id
+        });
     }
 }

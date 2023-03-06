@@ -4,7 +4,7 @@ using App.Common.Grpc;
 namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
 {
     [ProtoContract]
-    public class UpdateOrganizationGrpcCommandMessage : IGrpcCommandMessage
+    public class UpdateOrganizationGrpcCommandMessage : GrpcCommandMessage
     {
         [ProtoMember(1)]
         public string Id { get; set; }
@@ -26,5 +26,8 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages
 
         [ProtoMember(7)]
         public string? DepartmentId { get; set; }
+
+        [ProtoMember(100)]
+        public override GrpcCommandMessageMetadata? Metadata { get; set; }
     }
 }
