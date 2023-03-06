@@ -65,7 +65,11 @@ public class EntityIndexGenerator : IEntityIndexGenerator
         if (existingIndex == null)
         {
             var keys = new BsonDocumentIndexKeysDefinition<IEntity>(new BsonDocument());
-            var options = new CreateIndexOptions();
+            var options = new CreateIndexOptions()
+            {
+                Name = indexDefinition.Name,
+                TextIndexVersion = 3
+            };
 
             foreach (var property in entityType.GetProperties())
             {
@@ -109,7 +113,11 @@ public class EntityIndexGenerator : IEntityIndexGenerator
         if (existingIndex == null)
         {
             var keys = new BsonDocumentIndexKeysDefinition<IEntity>(new BsonDocument());
-            var options = new CreateIndexOptions();
+            var options = new CreateIndexOptions()
+            {
+                Name = indexDefinition.Name,
+                Unique = indexDefinition.IsUnique
+            };
 
             foreach (var property in entityType.GetProperties())
             {
