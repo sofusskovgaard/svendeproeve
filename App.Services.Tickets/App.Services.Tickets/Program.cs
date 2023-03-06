@@ -1,9 +1,9 @@
+using System.Reflection;
 using App.Data.Extensions;
 using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.Tickets.Infrastructure;
 using ProtoBuf.Grpc.Server;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,6 @@ builder.Services.AddAutoMapper(Assembly.Load("App.Services.Tickets.Infrastructur
 
 builder.Services.AddMongoDb();
 builder.Services.AddRabbitMq(Assembly.Load("App.Services.Tickets.Infrastructure"));
-builder.Services.AddScoped<ITicketService, TicketService>();
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();

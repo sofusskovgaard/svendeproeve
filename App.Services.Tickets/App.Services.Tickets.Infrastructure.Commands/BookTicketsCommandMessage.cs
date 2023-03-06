@@ -1,16 +1,11 @@
-﻿namespace App.Services.Tickets.Infrastructure.Commands
+﻿using App.Infrastructure.Commands;
+using App.Services.Tickets.Common.Records;
+
+namespace App.Services.Tickets.Infrastructure.Commands;
+
+public class BookTicketsCommandMessage : ICommandMessage
 {
-    public class BookTicketsCommandMessage
-    {
-        public string UserId { get; set; }
-        public TicketOrder[] TicketOrders { get; set; }
+    public string UserId { get; set; }
 
-        public class TicketOrder
-        {
-            public string ProductId { get; set; }
-            public string Recipient { get; set; }
-        }
-    }
-
-    
+    public TicketBooking[] Bookings { get; set; }
 }

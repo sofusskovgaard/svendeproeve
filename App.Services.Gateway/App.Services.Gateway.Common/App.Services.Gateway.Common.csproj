@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\App.Services.Tickets\App.Services.Tickets.Common\App.Services.Tickets.Common.csproj" />
+  </ItemGroup>
+
 </Project>

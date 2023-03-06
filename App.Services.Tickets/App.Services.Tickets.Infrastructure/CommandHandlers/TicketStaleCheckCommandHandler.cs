@@ -13,14 +13,14 @@ public class TicketStaleCheckCommandHandler : ICommandHandler<TicketStaleCheckCo
 
     public TicketStaleCheckCommandHandler(IEntityDataService entityDataService)
     {
-        this._entityDataService = entityDataService;
+        _entityDataService = entityDataService;
     }
 
     public async Task Consume(ConsumeContext<TicketStaleCheckCommandMessage> context)
     {
         var message = context.Message;
 
-        await this._entityDataService.Update<TicketEntity>(
+        await _entityDataService.Update<TicketEntity>(
             filter => filter.And(
                 filter.In(entity => entity.Id, message.Tickets),
                 filter.Eq(entity => entity.Status, TicketStatus.Booked)
