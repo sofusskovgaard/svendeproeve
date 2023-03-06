@@ -8,11 +8,8 @@ namespace App.Services.Billing.Infrastructure.Grpc;
 public interface IBillingGrpcService
 {
     [Operation]
-    ValueTask<GetBillingByIdGrpcCommandResult> GetBillingById(GetBillingByIdGrpcCommandMessage message);
+    ValueTask<GetChargeByOrderGrpcCommandResult> GetChargeByOrder(GetChargeByOrderGrpcCommandMessage message);
 
     [Operation]
-    ValueTask<CreateBillingGrpcCommandResult> CreateBilling(CreateBillingGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message);
+    ValueTask<GetCardsForUserGrpcCommandResult> GetCardsForUser(GetCardsForUserGrpcCommandMessage message);
 }

@@ -1,10 +1,10 @@
-﻿using App.Common.Grpc;
+using App.Common.Grpc;
 using ProtoBuf;
 
 namespace App.Services.Billing.Infrastructure.Grpc.CommandMessages;
 
 [ProtoContract]
-public class PayOrderGrpcCommandMessage : GrpcCommandMessage
+public class GetChargeByOrderGrpcCommandMessage : GrpcCommandMessage
 {
     [ProtoMember(1)]
     public string OrderId { get; set; }

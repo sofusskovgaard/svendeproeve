@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Options\" />
+      <Folder Include="Mappers\" />
     </ItemGroup>
 
 </Project>

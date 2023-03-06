@@ -5,11 +5,11 @@ using ProtoBuf;
 namespace App.Services.Billing.Infrastructure.Grpc.CommandResults;
 
 [ProtoContract]
-public class GetBillingByIdGrpcCommandResult : IGrpcCommandResult
+public class GetChargeByOrderGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoMember(2)]
-    public BillingDto Billing { get; set; }
-
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
+
+    [ProtoMember(2)]
+    public OrderChargeDto Data { get; set; }
 }
