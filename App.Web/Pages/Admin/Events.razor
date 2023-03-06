@@ -1,0 +1,60 @@
+﻿@page "/admin/events"
+@layout AdminLayout
+@using global::App.Services.Events.Common.Dtos;
+
+@inject IApiService ApiService
+<h3>Events</h3>
+
+<div class="grid">
+    @if (loaded)
+    {
+        if (events != null && events.Count() > 0)
+        {
+            foreach (var _event in events)
+            {
+                <div class="g-col-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@_event.EventName</h5>
+                            <p class="card-test">@_event.Location</p>
+                            <p>@_event.StartDate</p>
+                            <ul>
+                                @if (_event.Tournaments != null && _event.Tournaments.Count() > 0)
+                                {
+                                    foreach (var tournament in _event.Tournaments)
+                                    {
+                                        <li>@tournament</li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li>No tournaments</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No events</p>
+        }
+    }
+    else
+    {
+        <App.Web.Shared.Components.Loader />
+    }
+</div>
+
+@code {
+    bool loaded = false;
+    List<EventDto> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await ApiService.GetAllEvents();
+        events = response.Data?.ToList() ?? new List<EventDto>();
+        loaded = true;
+    }
+}
