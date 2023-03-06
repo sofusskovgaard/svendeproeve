@@ -1,15 +1,14 @@
 ﻿using App.Common.Grpc;
 using ProtoBuf;
 
-namespace App.Services.Teams.Infrastructure.Grpc.CommandMessages
-{
-    [ProtoContract]
-    public class GetTeamsByNameGrpcCommandMessage : GrpcCommandMessage
-    {
-        [ProtoMember(1)]
-        public string Name { get; set; }
+namespace App.Services.Teams.Infrastructure.Grpc.CommandMessages;
 
-        [ProtoMember(100)]
-        public override GrpcCommandMessageMetadata? Metadata { get; set; }
-    }
+[ProtoContract]
+public class GetTeamsByNameGrpcCommandMessage : GrpcCommandMessage
+{
+    [ProtoMember(1)]
+    public string Name { get; set; }
+
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }
