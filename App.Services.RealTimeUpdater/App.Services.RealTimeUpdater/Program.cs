@@ -2,6 +2,7 @@ using App.Data.Extensions;
 using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.RealTimeUpdater.Infrastructure;
+using App.Services.RealTimeUpdater.Infrastructure.FakeWattageMonitor;
 using App.Services.RealTimeUpdater.Infrastructure.Hubs;
 using ProtoBuf.Grpc.Server;
 using System.Reflection;
@@ -26,6 +27,10 @@ builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IMatchHub, MatchHub>();
+builder.Services.AddScoped<ICO2DashHub, CO2DashHub>();
+builder.Services.AddSingleton<ICO2apiService, CO2apiService>();
+builder.Services.AddSingleton<IFakeWattageMonitorServiceHelper, FakeWattageMonitorServiceHelper>();
+builder.Services.AddScoped<IFakeWattageMonitorService, FakeWattageMonitorService>();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
@@ -61,6 +66,7 @@ app.UseCors();
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<MatchHub>("/matchhub");
+app.MapHub<CO2DashHub>("/co2hub");
 
 await app.RunAsync();
 
