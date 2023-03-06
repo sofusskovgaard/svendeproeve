@@ -18,7 +18,8 @@ builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(ApiOp
 builder.Services.AddTransient<IApiService, ApiService>();
 
 builder.Services.AddSingleton<IWebsocketConnection, WebsocketConnection>();
-builder.Services.AddTransient<IMatchWebsocketService, MatchWebsocketService>();
+builder.Services.AddTransient<IRegistrationWebsocketService, RegistrationWebsocketService>();
+//builder.Services.AddTransient<IMatchWebsocketService, MatchWebsocketService>();
 
 // stores
 builder.Services.AddSingleton<ITokenStore, TokenStore>();

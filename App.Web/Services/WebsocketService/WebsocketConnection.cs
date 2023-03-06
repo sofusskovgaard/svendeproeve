@@ -9,14 +9,7 @@ public class WebsocketConnection : IWebsocketConnection
     public WebsocketConnection(ITokenStore tokenStore)
     {
         this.Connection = new HubConnectionBuilder()
-            .WithUrl($"https://localhost:3001/main", options =>
-            {
-                options.AccessTokenProvider = async () => await tokenStore.GetAccessToken();
-                //options.HttpMessageHandlerFactory = handler => new HttpClientHandler()
-                //{
-                //    ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
-                //};
-            })
+            .WithUrl($"https://localhost:3001/main", options => options.AccessTokenProvider = async () => await tokenStore.GetAccessToken())
             .WithAutomaticReconnect()
             .Build();
 
@@ -24,6 +17,16 @@ public class WebsocketConnection : IWebsocketConnection
     }
 
     public HubConnection Connection { get; }
+
+    public async Task Subscribe(string service)
+    {
+        await Connection.InvokeAsync("Subscribe", service);
+    }
+
+    public async Task Unsubscribe(string service)
+    {
+        await Connection.InvokeAsync("Unsubscribe", service);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -34,4 +37,8 @@ public class WebsocketConnection : IWebsocketConnection
 public interface IWebsocketConnection : IAsyncDisposable
 {
     public HubConnection Connection { get; }
+
+    Task Subscribe(string service);
+
+    Task Unsubscribe(string service);
 }

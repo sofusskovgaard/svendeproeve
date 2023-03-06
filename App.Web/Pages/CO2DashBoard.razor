@@ -1,4 +1,6 @@
 ﻿@page "/co2dashboard"
+@inject ITokenStore TokenStore
+
 @using Microsoft.AspNetCore.SignalR.Client
 @using global::App.Services.RealTimeUpdater.Common.models
 
@@ -78,7 +80,7 @@
     protected async override Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:3001/co2hub")
+            .WithUrl("https://localhost:3001/co2hub", options => options.AccessTokenProvider = async () => await TokenStore.GetAccessToken())
             .WithAutomaticReconnect()
             .Build();
 

@@ -3,6 +3,7 @@ using System.Net;
 using System.Security.Claims;
 using App.Common.Grpc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace App.Services.Gateway.Infrastructure;
 
@@ -15,6 +16,8 @@ public abstract class ApiController : ControllerBase
             bool.TryParse(User.FindFirst("isAdmin")?.Value, out var _res) && _res)
         : null;
 
+    protected string? ConnectionId => HttpContext.Request.Headers.TryGetValue("X-ConnectionId", out StringValues connectionId) ? connectionId.FirstOrDefault() : null;
+
     protected T CreateCommandMessage<T>(Action<T>? data = null) where T : IGrpcCommandMessage
     {
         var command = Activator.CreateInstance<T>();
@@ -26,7 +29,8 @@ public abstract class ApiController : ControllerBase
             command.Metadata = new GrpcCommandMessageMetadata()
             {
                 UserId = CurrentUser.Id,
-                IsAdmin = CurrentUser.IsAdmin
+                IsAdmin = CurrentUser.IsAdmin,
+                ConnectionId = ConnectionId
             };
         }
 

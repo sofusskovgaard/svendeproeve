@@ -34,11 +34,13 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommandMessage
         if (!string.IsNullOrEmpty(message.Id)) user.Id = message.Id;
 
         await _entityDataService.SaveEntity(user);
+
         _logger.LogInformation("created user with id: {id}", user.Id);
 
         await context.Publish(new UserCreatedEventMessage
         {
-            Id = user.Id
+            Id = user.Id,
+            ConnectionId = message.ConnectionId
         });
     }
 }

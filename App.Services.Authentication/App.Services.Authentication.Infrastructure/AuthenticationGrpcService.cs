@@ -63,7 +63,8 @@ namespace App.Services.Authentication.Infrastructure
                     Firstname = message.Firstname,
                     Lastname = message.Lastname,
                     Username = login.Username,
-                    Email = login.Email
+                    Email = login.Email,
+                    ConnectionId = message.Metadata?.ConnectionId
                 });
 
                 return new RegisterGrpcCommandResult()

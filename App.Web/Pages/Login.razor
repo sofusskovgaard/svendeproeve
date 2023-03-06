@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@inject IRegistrationWebsocketService RegistrationWebsocketService
 
 @implements IDisposable
 
@@ -122,6 +123,13 @@
         {
             NavigationManager.NavigateTo("/");
         }
+
+        RegistrationWebsocketService.Registered += RegistrationWebsocketServiceOnRegistered;
+    }
+
+    private void RegistrationWebsocketServiceOnRegistered(object obj)
+    {
+        Console.WriteLine(obj);
     }
 
     private void SessionStoreOnOnSessionChanged()
@@ -135,5 +143,6 @@
     public void Dispose()
     {
         SessionStore.OnSessionChanged -= SessionStoreOnOnSessionChanged;
+        RegistrationWebsocketService.Registered -= RegistrationWebsocketServiceOnRegistered;
     }
 }

@@ -7,6 +7,7 @@ using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using App.Web.Stores;
 using System.Diagnostics.CodeAnalysis;
+using App.Web.Services.WebsocketService;
 
 namespace App.Web.Services.ApiService;
 
@@ -16,10 +17,13 @@ public partial class ApiService : IApiService
 
     private readonly ITokenStore _tokenStore;
 
-    public ApiService(HttpClient client, ITokenStore tokenStore)
+    private readonly IWebsocketConnection _websocketConnection;
+
+    public ApiService(HttpClient client, ITokenStore tokenStore, IWebsocketConnection websocketConnection)
     {
         _client = client;
         _tokenStore = tokenStore;
+        this._websocketConnection = websocketConnection;
     }
 
     private async ValueTask<HttpRequestMessage> _createRequestMessage(HttpMethod method, [StringSyntax(StringSyntaxAttribute.Uri)] string requestUri, bool force = false)
@@ -30,6 +34,11 @@ public partial class ApiService : IApiService
         if (!string.IsNullOrEmpty(accessToken) && !force)
         {
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        if (!string.IsNullOrEmpty(this._websocketConnection.Connection.ConnectionId))
+        {
+            requestMessage.Headers.Add("X-ConnectionId", this._websocketConnection.Connection.ConnectionId);
         }
 
         return requestMessage;

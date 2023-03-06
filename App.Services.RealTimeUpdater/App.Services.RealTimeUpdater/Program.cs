@@ -12,6 +12,7 @@ using App.Services.Gateway.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Services.Authentication.Infrastructure.Grpc;
+using App.Services.Gateway.Infrastructure.Extensions;
 using RealTimeUpdater.Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,13 +23,17 @@ builder.Services.AddHostedService<FakeWattageMonitorHostedService>();
 
 builder.Services.RegisterOptions();
 
+builder.Services.AddRedis();
+
 builder.Services.AddRabbitMq(Assembly.Load("App.Services.RealTimeUpdater.Infrastructure"));
 
 builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 
 builder.Services.AddSignalR();
 
+builder.Services.AddScoped<MainHub>();
 builder.Services.AddScoped<IMatchHub, MatchHub>();
+builder.Services.AddScoped<ICO2DashHub, CO2DashHub>();
 builder.Services.AddScoped<ICO2DashHub, CO2DashHub>();
 builder.Services.AddSingleton<ICO2apiService, CO2apiService>();
 //builder.Services.AddSingleton<IFakeWattageMonitorServiceHelper, FakeWattageMonitorServiceHelper>();
@@ -65,6 +70,8 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(options => options.
 var app = builder.Build();
 
 app.UseCors();
+
+app.MapHub<MainHub>("/main");
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<MatchHub>("/matchhub");
