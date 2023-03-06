@@ -2,15 +2,14 @@ using App.Common.Grpc;
 using App.Services.Billing.Common.Dtos;
 using ProtoBuf;
 
-namespace App.Services.Billing.Infrastructure.Grpc.CommandResults
-{
-    [ProtoContract]
-    public class GetBillingByIdGrpcCommandResult : IGrpcCommandResult
-    {
-        [ProtoMember(1)]
-        public GrpcCommandResultMetadata Metadata { get; set; }
+namespace App.Services.Billing.Infrastructure.Grpc.CommandResults;
 
-        [ProtoMember(2)]
-        public BillingDto Billing { get; set; }
-    }
+[ProtoContract]
+public class GetBillingByIdGrpcCommandResult : IGrpcCommandResult
+{
+    [ProtoMember(2)]
+    public BillingDto Billing { get; set; }
+
+    [ProtoMember(1)]
+    public GrpcCommandResultMetadata Metadata { get; set; }
 }

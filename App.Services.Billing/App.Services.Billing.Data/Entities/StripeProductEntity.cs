@@ -7,5 +7,6 @@ namespace App.Services.Billing.Data.Entities;
 public class StripeProductEntity : BaseEntity
 {
     public string Type { get; set; }
+
     public string[] Prices { get; set; }
 }

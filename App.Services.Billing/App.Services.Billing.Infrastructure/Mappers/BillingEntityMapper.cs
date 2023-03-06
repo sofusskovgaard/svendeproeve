@@ -2,14 +2,12 @@
 using App.Services.Billing.Data.Entities;
 using AutoMapper;
 
-namespace App.Services.Billing.Infrastructure.Mappers
-{
+namespace App.Services.Billing.Infrastructure.Mappers;
 
-    public class BillingEntityMapper : Profile
+public class BillingEntityMapper : Profile
+{
+    public BillingEntityMapper()
     {
-        public BillingEntityMapper()
-        {
-            this.CreateMap<BillingEntity, BillingDto>();
-        }
+        CreateMap<BillingEntity, BillingDto>();
     }
 }

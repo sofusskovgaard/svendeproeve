@@ -9,79 +9,77 @@ using App.Services.Billing.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
 
-namespace App.Services.Billing.Infrastructure
+namespace App.Services.Billing.Infrastructure;
+
+public class BillingGrpcService : BaseGrpcService, IBillingGrpcService
 {
-    public class BillingGrpcService : BaseGrpcService, IBillingGrpcService
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IMapper _mapper;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public BillingGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+        _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IMapper _mapper;
-
-        private readonly IPublishEndpoint _publishEndpoint;
-
-        public BillingGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
+    public ValueTask<GetBillingByIdGrpcCommandResult> GetBillingById(GetBillingByIdGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            _entityDataService = entityDataService;
-            _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
-        }
+            var billing = await _entityDataService.GetEntity<BillingEntity>(message.Id);
 
-        public ValueTask<GetBillingByIdGrpcCommandResult> GetBillingById(GetBillingByIdGrpcCommandMessage message)
-        {
-            return TryAsync(async () =>
+            return new GetBillingByIdGrpcCommandResult
             {
-                var billing = await _entityDataService.GetEntity<BillingEntity>(message.Id);
-
-                return new GetBillingByIdGrpcCommandResult
+                Metadata = new GrpcCommandResultMetadata
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Billing = _mapper.Map<BillingDto>(billing)
-                };
-            });
-        }
+                    Success = true
+                },
+                Billing = _mapper.Map<BillingDto>(billing)
+            };
+        });
+    }
 
-        public ValueTask<CreateBillingGrpcCommandResult> CreateBilling(CreateBillingGrpcCommandMessage message)
+    public ValueTask<CreateBillingGrpcCommandResult> CreateBilling(CreateBillingGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var billing = new BillingEntity
             {
-                var billing = new BillingEntity
+                OrderId = message.OrderId,
+                TransactionId = Guid.NewGuid().ToString() //TODO: implement stripe for billing now only for testing
+            };
+
+            await _entityDataService.SaveEntity(billing);
+
+            return new CreateBillingGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata
                 {
-                    OrderId = message.OrderId,
-                    TransactionId = Guid.NewGuid().ToString(),//TODO: implement stripe for billing now only for testing
-                };
+                    Success = true
+                },
+                Billing = _mapper.Map<BillingDto>(billing)
+            };
+        });
+    }
 
-                await _entityDataService.SaveEntity(billing);
+    public ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message)
+    {
+        // check for pending order charge with order id
 
-                return new CreateBillingGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Billing = _mapper.Map<BillingDto>(billing)
-                };
+        // if checkout session exists
+        // send checkout session url
 
-            });
-        }
+        // else
+        // publish ChargeOrderCommandMessage
+        // get user card
+        // charge user card
+        // change OrderCharge Type = CHARGED
+        // emit PendingOrderCharged
 
-        public ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message)
-        {
-            // check for pending order charge with order id
-
-            // if checkout session exists
-                // send checkout session url
-
-            // else
-                // publish ChargeOrderCommandMessage
-                    // get user card
-                    // charge user card
-                    // change OrderCharge Type = CHARGED
-                    // emit PendingOrderCharged
-
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
     }
 }
