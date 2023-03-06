@@ -2,24 +2,31 @@
 using App.Services.Organizations.Infrastructure.Grpc.CommandResults;
 using ProtoBuf.Grpc.Configuration;
 
-namespace App.Services.Organizations.Infrastructure.Grpc
+namespace App.Services.Organizations.Infrastructure.Grpc;
+
+[Service("app.services.organizations")]
+public interface IOrganizationsGrpcService
 {
-    [Service("app.services.organizations")]
-    public interface IOrganizationsGrpcService
-    {
-        [Operation]
-        ValueTask<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(GetOrganizationByIdGrpcCommandMessage message);
-        [Operation]
-        ValueTask<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(GetOrganizationsByAddressGrpcCommandMessage message);
-        [Operation]
-        ValueTask<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(GetOrganizationsByNameGrpcCommandMessage message);
-        [Operation]
-        ValueTask<CreateOrganizationGrpcCommandResult> CreateOrganization(CreateOrganizationGrpcCommandMessage message);
-        [Operation]
-        ValueTask<UpdateOrganizationGrpcCommandResult> UpdateOrganization(UpdateOrganizationGrpcCommandMessage message);
-        [Operation]
-        ValueTask<DeleteOrganizationGrpcCommandResult> DeleteOrganization(DeleteOrganizationGrpcCommandMessage message);
-        [Operation]
-        ValueTask<GetOrganizationsGrpcCommandResult> GetOrganizations(GetOrganizationsGrpcCommandMessage message);
-    }
+    [Operation]
+    ValueTask<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(GetOrganizationByIdGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(
+        GetOrganizationsByAddressGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(
+        GetOrganizationsByNameGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<CreateOrganizationGrpcCommandResult> CreateOrganization(CreateOrganizationGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<UpdateOrganizationGrpcCommandResult> UpdateOrganization(UpdateOrganizationGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<DeleteOrganizationGrpcCommandResult> DeleteOrganization(DeleteOrganizationGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<GetOrganizationsGrpcCommandResult> GetOrganizations(GetOrganizationsGrpcCommandMessage message);
 }

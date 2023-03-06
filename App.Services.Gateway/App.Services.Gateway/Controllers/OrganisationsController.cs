@@ -10,9 +10,10 @@ namespace App.Services.Gateway.Controllers;
 public class OrganisationsController : ApiController
 {
     private readonly IOrganizationsGrpcService _organizationsGrpcService;
+
     public OrganisationsController(IOrganizationsGrpcService organizationsGrpcService)
     {
-        this._organizationsGrpcService = organizationsGrpcService;
+        _organizationsGrpcService = organizationsGrpcService;
     }
 
     [HttpGet]
@@ -21,7 +22,8 @@ public class OrganisationsController : ApiController
     {
         return TryAsync(() =>
         {
-            return _organizationsGrpcService.GetOrganizationById(new GetOrganizationByIdGrpcCommandMessage { Id = id });
+            return _organizationsGrpcService.GetOrganizationById(new GetOrganizationByIdGrpcCommandMessage
+                { Id = id });
         });
     }
 
@@ -31,7 +33,8 @@ public class OrganisationsController : ApiController
     {
         return TryAsync(() =>
         {
-            return _organizationsGrpcService.GetOrganizationsByName(new GetOrganizationsByNameGrpcCommandMessage { Name = name });
+            return _organizationsGrpcService.GetOrganizationsByName(new GetOrganizationsByNameGrpcCommandMessage
+                { Name = name });
         });
     }
 
@@ -41,7 +44,8 @@ public class OrganisationsController : ApiController
     {
         return TryAsync(() =>
         {
-            return _organizationsGrpcService.GetOrganizationsByAddress(new GetOrganizationsByAddressGrpcCommandMessage { Address = address });
+            return _organizationsGrpcService.GetOrganizationsByAddress(
+                new GetOrganizationsByAddressGrpcCommandMessage { Address = address });
         });
     }
 
@@ -51,12 +55,12 @@ public class OrganisationsController : ApiController
     {
         return TryAsync(() =>
         {
-            return _organizationsGrpcService.GetOrganizations(new GetOrganizationsGrpcCommandMessage { });
+            return _organizationsGrpcService.GetOrganizations(new GetOrganizationsGrpcCommandMessage());
         });
     }
 
     /// <summary>
-    /// Creates organization from model
+    ///     Creates organization from model
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
@@ -76,12 +80,13 @@ public class OrganisationsController : ApiController
                 ProfilePicture = model.ProfilePicture,
                 DepartmentId = model.DepartmentId
             };
+
             return _organizationsGrpcService.CreateOrganization(command);
         });
     }
 
     /// <summary>
-    /// Update organizations information
+    ///     Update organizations information
     /// </summary>
     /// <param name="id"></param>
     /// <param name="model"></param>
@@ -108,7 +113,7 @@ public class OrganisationsController : ApiController
     }
 
     /// <summary>
-    /// Deleltes organization
+    ///     Deleltes organization
     /// </summary>
     /// <param name="id">id of the organization to be deleted</param>
     /// <returns></returns>
