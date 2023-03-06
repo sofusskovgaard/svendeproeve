@@ -16,8 +16,11 @@ namespace App.Services.Teams.Infrastructure;
 public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 {
     private readonly IEntityDataService _entityDataService;
+
     private readonly IMapper _mapper;
+
     private readonly IPublishEndpoint _publishEndpoint;
+
     public TeamsGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _entityDataService = entityDataService;
@@ -31,9 +34,9 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         {
             var teams = await _entityDataService.ListEntities<TeamEntity>();
 
-            return new GetAllTeamsGrpcCommandResult()
+            return new GetAllTeamsGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Getting teams"
@@ -43,14 +46,17 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByOrganizationIdGrpcCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdGrpcCommandMessage message)
+    public ValueTask<GetTeamsByOrganizationIdGrpcCommandResult> GetTeamsByOrganizationId(
+        GetTeamsByOrganizationIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.OrganizationId == message.OrganizationId));
-            return new GetTeamsByOrganizationIdGrpcCommandResult()
+            var teams = await _entityDataService.ListEntities(
+                new ExpressionFilterDefinition<TeamEntity>(entity => entity.OrganizationId == message.OrganizationId));
+
+            return new GetTeamsByOrganizationIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Getting teams"
@@ -60,15 +66,17 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByMemberIdGrpcCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdGrpcCommandMessage message)
+    public ValueTask<GetTeamsByMemberIdGrpcCommandResult> GetTeamsByMemberId(
+        GetTeamsByMemberIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.MembersId.Contains(message.MemberId)));
+            var teams = await _entityDataService.ListEntities(
+                new ExpressionFilterDefinition<TeamEntity>(entity => entity.MembersId.Contains(message.MemberId)));
 
-            return new GetTeamsByMemberIdGrpcCommandResult()
+            return new GetTeamsByMemberIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Getting teams"
@@ -82,11 +90,12 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.Name.Contains(message.Name)));
+            var teams = await _entityDataService.ListEntities(
+                new ExpressionFilterDefinition<TeamEntity>(entity => entity.Name.Contains(message.Name)));
 
-            return new GetTeamsByNameGrpcCommandResult()
+            return new GetTeamsByNameGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Getting teams"
@@ -100,11 +109,12 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.GameId == message.GameId));
+            var teams = await _entityDataService.ListEntities(
+                new ExpressionFilterDefinition<TeamEntity>(entity => entity.GameId == message.GameId));
 
-            return new GetTeamsByGameIdGrpcCommandResult()
+            return new GetTeamsByGameIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Getting teams"
@@ -114,15 +124,17 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         });
     }
 
-    public ValueTask<GetTeamsByManagerIdGrpcCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdGrpcCommandMessage message)
+    public ValueTask<GetTeamsByManagerIdGrpcCommandResult> GetTeamsByManagerId(
+        GetTeamsByManagerIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.ManagerId == message.ManagerId));
+            var teams = await _entityDataService.ListEntities(
+                new ExpressionFilterDefinition<TeamEntity>(entity => entity.ManagerId == message.ManagerId));
 
-            return new GetTeamsByManagerIdGrpcCommandResult()
+            return new GetTeamsByManagerIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Getting teams"
@@ -138,9 +150,9 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
         {
             var team = await _entityDataService.GetEntity<TeamEntity>(message.Id);
 
-            return new GetTeamByIdGrpcCommandResult()
+            return new GetTeamByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true,
                     Message = "Returning team"
@@ -163,12 +175,12 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 GameId = message.GameId,
                 OrganizationId = message.OrganizationId,
                 MembersId = message.MembersId,
-                ManagerId = message.ManagerId,
+                ManagerId = message.ManagerId
             });
 
-            return new CreateTeamGrpcCommandResult()
+            return new CreateTeamGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true
                 }
@@ -185,11 +197,11 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 Id = message.Id
             });
 
-            return new DeleteTeamByIdGrpcCommandResult()
+            return new DeleteTeamByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
-                    Success = true,
+                    Success = true
                 }
             };
         });
@@ -208,9 +220,9 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 CoverPicturePath = message.TeamDto.CoverPicturePath
             });
 
-            return new UpdateTeamGrpcCommandResult()
+            return new UpdateTeamGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
+                Metadata = new GrpcCommandResultMetadata
                 {
                     Success = true
                 }

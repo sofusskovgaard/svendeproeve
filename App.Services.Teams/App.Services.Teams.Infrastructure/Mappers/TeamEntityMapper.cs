@@ -2,14 +2,13 @@
 using App.Services.Teams.Data.Entities;
 using AutoMapper;
 
-namespace App.Services.Teams.Infrastructure.Mappers
+namespace App.Services.Teams.Infrastructure.Mappers;
+
+public class TeamEntityMapper : Profile
 {
-    public class TeamEntityMapper : Profile
+    public TeamEntityMapper()
     {
-        public TeamEntityMapper()
-        {
-            this.CreateMap<TeamEntity, TeamDto>().ReverseMap();
-            this.CreateMap<TeamEntity, UpdateTeamDto>().ReverseMap();
-        }
+        CreateMap<TeamEntity, TeamDto>().ReverseMap();
+        CreateMap<TeamEntity, UpdateTeamDto>().ReverseMap();
     }
 }
