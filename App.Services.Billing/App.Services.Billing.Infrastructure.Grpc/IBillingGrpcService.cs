@@ -2,18 +2,14 @@
 using App.Services.Billing.Infrastructure.Grpc.CommandResults;
 using ProtoBuf.Grpc.Configuration;
 
-namespace App.Services.Billing.Infrastructure.Grpc
+namespace App.Services.Billing.Infrastructure.Grpc;
+
+[Service("app.services.billing")]
+public interface IBillingGrpcService
 {
-    [Service("app.services.billing")]
-    public interface IBillingGrpcService
-    {
-        [Operation]
-        ValueTask<GetBillingByIdGrpcCommandResult> GetBillingById(GetBillingByIdGrpcCommandMessage message);
+    [Operation]
+    ValueTask<GetChargeByOrderGrpcCommandResult> GetChargeByOrder(GetChargeByOrderGrpcCommandMessage message);
 
-        [Operation]
-        ValueTask<CreateBillingGrpcCommandResult> CreateBilling(CreateBillingGrpcCommandMessage message);
-
-        [Operation]
-        ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message);
-    }
+    [Operation]
+    ValueTask<GetCardsForUserGrpcCommandResult> GetCardsForUser(GetCardsForUserGrpcCommandMessage message);
 }

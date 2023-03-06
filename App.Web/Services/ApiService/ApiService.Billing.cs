@@ -5,16 +5,16 @@ namespace App.Web.Services.ApiService
 {
     public partial class ApiService
     {
-        public async Task<GetBillingByIdGrpcCommandResult> GetBillingById(string id)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/billing/{id}");
+        //public async Task<GetChargeByOrderGrpcCommandResult> GetBillingById(string id)
+        //{
+        //    var request = await _createRequestMessage(HttpMethod.Get, $"api/billing/{id}");
 
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetBillingByIdGrpcCommandResult>();
-        }
+        //    var response = await _client.SendAsync(request);
+        //    return await response.Content.ReadFromJsonAsync<GetChargeByOrderGrpcCommandResult>();
+        //}
     }
     public partial interface IApiService
     {
-        Task<GetBillingByIdGrpcCommandResult> GetBillingById(string id);
+        //Task<GetChargeByOrderGrpcCommandResult> GetBillingById(string id);
     }
 }

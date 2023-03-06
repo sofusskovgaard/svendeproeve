@@ -1,14 +1,15 @@
 ﻿using App.Common.Grpc;
+using App.Services.Billing.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Billing.Infrastructure.Grpc.CommandResults;
 
 [ProtoContract]
-public class PayOrderGrpcCommandResult : IGrpcCommandResult
+public class GetCardsForUserGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
 
     [ProtoMember(2)]
-    public string? CheckoutUrl { get; set; }
+    public UserCardDto[] Data { get; set; }
 }

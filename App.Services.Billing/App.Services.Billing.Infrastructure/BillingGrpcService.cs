@@ -9,79 +9,54 @@ using App.Services.Billing.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
 
-namespace App.Services.Billing.Infrastructure
+namespace App.Services.Billing.Infrastructure;
+
+public class BillingGrpcService : BaseGrpcService, IBillingGrpcService
 {
-    public class BillingGrpcService : BaseGrpcService, IBillingGrpcService
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IMapper _mapper;
+
+    public BillingGrpcService(IEntityDataService entityDataService, IMapper mapper)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+        _mapper = mapper;
+    }
 
-        private readonly IMapper _mapper;
-
-        private readonly IPublishEndpoint _publishEndpoint;
-
-        public BillingGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
+    public ValueTask<GetChargeByOrderGrpcCommandResult> GetChargeByOrder(GetChargeByOrderGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            _entityDataService = entityDataService;
-            _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
-        }
+            var entities =
+                await _entityDataService.ListEntities<OrderChargeEntity>(filter =>
+                    filter.Eq(entity => entity.OrderId, message.OrderId));
 
-        public ValueTask<GetBillingByIdGrpcCommandResult> GetBillingById(GetBillingByIdGrpcCommandMessage message)
-        {
-            return TryAsync(async () =>
+            return new GetChargeByOrderGrpcCommandResult
             {
-                var billing = await _entityDataService.GetEntity<BillingEntity>(message.Id);
+                Metadata = new GrpcCommandResultMetadata { Success = true },
+                Data = _mapper.Map<OrderChargeDto>(entities)
+            };
+        });
+    }
 
-                return new GetBillingByIdGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Billing = _mapper.Map<BillingDto>(billing)
-                };
-            });
-        }
-
-        public ValueTask<CreateBillingGrpcCommandResult> CreateBilling(CreateBillingGrpcCommandMessage message)
+    public ValueTask<GetCardsForUserGrpcCommandResult> GetCardsForUser(GetCardsForUserGrpcCommandMessage message)
+    {
+        return this.TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            if (!message.Metadata.IsAdmin && !string.IsNullOrEmpty(message.Id) && message.Id != message.Metadata.UserId)
             {
-                var billing = new BillingEntity
-                {
-                    OrderId = message.OrderId,
-                    TransactionId = Guid.NewGuid().ToString(),//TODO: implement stripe for billing now only for testing
-                };
+                throw new Exception("You are not authorized to access this users cards");
+            }
 
-                await _entityDataService.SaveEntity(billing);
+            var entities =
+                await _entityDataService.ListEntities<UserCardEntity>(filter =>
+                    filter.Eq(entity => entity.UserId, message.Id ?? message.Metadata.UserId));
 
-                return new CreateBillingGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Billing = _mapper.Map<BillingDto>(billing)
-                };
-
-            });
-        }
-
-        public ValueTask<PayOrderGrpcCommandResult> PayOrder(PayOrderGrpcCommandMessage message)
-        {
-            // check for pending order charge with order id
-
-            // if checkout session exists
-                // send checkout session url
-
-            // else
-                // publish ChargeOrderCommandMessage
-                    // get user card
-                    // charge user card
-                    // change OrderCharge Type = CHARGED
-                    // emit PendingOrderCharged
-
-            throw new NotImplementedException();
-        }
+            return new GetCardsForUserGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata { Success = true },
+                Data = _mapper.Map<UserCardDto[]>(entities)
+            };
+        });
     }
 }

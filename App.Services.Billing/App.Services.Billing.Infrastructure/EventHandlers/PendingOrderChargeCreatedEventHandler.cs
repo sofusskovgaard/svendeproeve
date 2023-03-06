@@ -20,7 +20,8 @@ public class PendingOrderChargeCreatedEventHandler : IEventHandler<PendingOrderC
     {
         var message = context.Message;
 
-        await _entityDataService.Update<OrderChargeEntity>(filter => filter.Eq(entity => entity.Id, message.OrderChargeId),
+        await _entityDataService.Update<OrderChargeEntity>(
+            filter => filter.Eq(entity => entity.Id, message.OrderChargeId),
             builder => builder.Set(entity => entity.Status, OrderChargeStatus.Charged));
 
         await Task.Delay(500);

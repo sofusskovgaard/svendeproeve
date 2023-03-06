@@ -1,12 +1,10 @@
-﻿using System.Runtime.Serialization;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using App.Data.Services;
 using App.Infrastructure.Events;
 using App.Services.Billing.Common.Constants;
 using App.Services.Billing.Data.Entities;
 using App.Services.Billing.Infrastructure.Events;
 using MassTransit;
-using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 
 namespace App.Services.Billing.Infrastructure.EventHandlers;
@@ -24,15 +22,14 @@ public class OrderChargedEventHandler : IEventHandler<OrderChargedEventMessage>
     {
         var message = context.Message;
 
-        if (RandomNumberGenerator.GetInt32(1000) >= 750)
-        {
-            return;
-        }
+        if (RandomNumberGenerator.GetInt32(1000) >= 750) return;
 
         var transactionNumber = Convert.ToHexString(RandomNumberGenerator.GetBytes(16)).ToLower();
 
-        await _entityDataService.Update<OrderChargeEntity>(filter => filter.Eq(entity => entity.Id, message.OrderChargeId),
-            builder => builder.Set(entity => entity.Status, OrderChargeStatus.Paid).Set(entity => entity.TransactionNumber, transactionNumber));
+        await _entityDataService.Update<OrderChargeEntity>(
+            filter => filter.Eq(entity => entity.Id, message.OrderChargeId),
+            builder => builder.Set(entity => entity.Status, OrderChargeStatus.Paid)
+                .Set(entity => entity.TransactionNumber, transactionNumber));
 
         await Task.Delay(500);
 
