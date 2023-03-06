@@ -1,5 +1,4 @@
 ﻿using App.Services.RealTimeUpdater.Common.models;
-using App.Services.RealTimeUpdater.Infrastructure.FakeWattageMonitor;
 using App.Services.Turnaments.Common.Dtos;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -18,19 +17,10 @@ namespace App.Services.RealTimeUpdater.Infrastructure.Hubs
 
         private ICO2apiService _cO2ApiService;
 
-        private IFakeWattageMonitorService _fakeWattageMonitorService;
-
-        public CO2DashHub(IHubContext<CO2DashHub> context, ICO2apiService cO2ApiService, IFakeWattageMonitorService fakeWattageMonitorService)
+        public CO2DashHub(IHubContext<CO2DashHub> context, ICO2apiService cO2ApiService)
         {
             _context = context;
             _cO2ApiService = cO2ApiService;
-            _fakeWattageMonitorService = fakeWattageMonitorService;
-            StartFaker();
-        }
-
-        public void StartFaker()
-        {
-            _fakeWattageMonitorService.FakeWattageMonitorInit();
         }
 
         public async Task SendCO2Update(string location, double kwh)
@@ -43,7 +33,7 @@ namespace App.Services.RealTimeUpdater.Infrastructure.Hubs
                 Location = location,
             };
 
-            await _context.Clients.All.SendAsync("location-" + location, emission);
+            await _context.Clients.All.SendAsync("co2-reading", emission);
         }
         private string GetCountryByLocation(string location)
         {

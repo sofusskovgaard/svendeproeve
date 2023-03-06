@@ -18,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.RegisterSerilog();
 
+builder.Services.AddHostedService<FakeWattageMonitorHostedService>();
+
 builder.Services.RegisterOptions();
 
 builder.Services.AddRabbitMq(Assembly.Load("App.Services.RealTimeUpdater.Infrastructure"));
@@ -29,8 +31,8 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IMatchHub, MatchHub>();
 builder.Services.AddScoped<ICO2DashHub, CO2DashHub>();
 builder.Services.AddSingleton<ICO2apiService, CO2apiService>();
-builder.Services.AddSingleton<IFakeWattageMonitorServiceHelper, FakeWattageMonitorServiceHelper>();
-builder.Services.AddScoped<IFakeWattageMonitorService, FakeWattageMonitorService>();
+//builder.Services.AddSingleton<IFakeWattageMonitorServiceHelper, FakeWattageMonitorServiceHelper>();
+//builder.Services.AddScoped<IFakeWattageMonitorService, FakeWattageMonitorService>();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
