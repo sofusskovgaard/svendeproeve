@@ -9,6 +9,7 @@ using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
+using MongoDB.Driver;
 
 namespace App.Services.Orders.Infrastructure;
 
@@ -27,6 +28,23 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
         _publishEndpoint = publishEndpoint;
     }
 
+    public ValueTask<GetOrdersGrpcCommandResult> GetOrders(GetOrdersGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
+        {
+            var entities = !string.IsNullOrEmpty(message.UserId)
+                ? await _entityDataService.ListEntities<OrderEntity>(filter =>
+                    filter.Eq(entity => entity.UserId, message.UserId))
+                : await _entityDataService.ListEntities<OrderEntity>();
+
+            return new GetOrdersGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata { Success = true },
+                Data = _mapper.Map<OrderDto[]>(entities)
+            };
+        });
+    }
+
     public ValueTask<GetOrderByIdGrpcCommandResult> GetOrderById(GetOrderByIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
@@ -39,36 +57,10 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
                 {
                     Success = true
                 },
-                Order = _mapper.Map<OrderDto>(order)
+                Data = _mapper.Map<OrderDto>(order)
             };
         });
     }
-
-    //public ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message)
-    //{
-    //    return TryAsync(async () =>
-    //    {
-    //        var order = new OrderEntity
-    //        {
-    //            UserId = message.UserId,
-    //            Total = message.Total,
-    //            TicketIds = message.TicketIds
-    //        };
-
-    //        await _entityDataService.SaveEntity(order);
-
-    //        var dto = _mapper.Map<OrderDto>(order);
-
-    //        return new CreateOrderGrpcCommandResult
-    //        {
-    //            Metadata = new GrpcCommandResultMetadata
-    //            {
-    //                Success = true
-    //            },
-    //            Order = dto
-    //        };
-    //    });
-    //}
 
     public ValueTask<GetProductByIdGrpcCommandResult> GetProductById(GetProductByIdGrpcCommandMessage message)
     {
@@ -82,7 +74,7 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
                 {
                     Success = true
                 },
-                Product = _mapper.Map<ProductDto>(order)
+                Data = _mapper.Map<ProductDto>(order)
             };
         });
     }
@@ -116,12 +108,24 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
     {
         return TryAsync(async () =>
         {
-            var entities = await _entityDataService.ListEntities<ProductEntity>();
+            var filters = new List<FilterDefinition<ProductEntity>>();
+
+            if (!string.IsNullOrEmpty(message.ReferenceId))
+            {
+                filters.Add(new FilterDefinitionBuilder<ProductEntity>().Eq(entity => entity.ReferenceId, message.ReferenceId));
+            }
+
+            if (!string.IsNullOrEmpty(message.ReferenceType))
+            {
+                filters.Add(new FilterDefinitionBuilder<ProductEntity>().Eq(entity => entity.ReferenceType, message.ReferenceType));
+            }
+
+            var entities = await _entityDataService.ListEntities<ProductEntity>(filter => filters.Any() ? filter.And(filters) : FilterDefinition<ProductEntity>.Empty);
 
             return new GetProductsGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata { Success = true },
-                Products = _mapper.Map<ProductDto[]>(entities)
+                Data = _mapper.Map<ProductDto[]>(entities)
             };
         });
     }

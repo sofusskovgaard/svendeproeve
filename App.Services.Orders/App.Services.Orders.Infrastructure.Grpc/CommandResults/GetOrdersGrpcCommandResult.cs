@@ -2,14 +2,13 @@
 using App.Services.Orders.Common.Dtos;
 using ProtoBuf;
 
-namespace App.Services.Orders.Infrastructure.Grpc;
+namespace App.Services.Orders.Infrastructure.Grpc.CommandResults;
 
 [ProtoContract]
-public class GetProductByIdGrpcCommandResult : IGrpcCommandResult
+public class GetOrdersGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
 
-    [ProtoMember(2)]
-    public ProductDto? Data { get; set; }
+    public OrderDto[] Data { get; set; }
 }

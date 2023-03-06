@@ -8,6 +8,9 @@ namespace App.Services.Orders.Infrastructure.Grpc;
 public interface IOrdersGrpcService
 {
     [Operation]
+    ValueTask<GetOrdersGrpcCommandResult> GetOrders(GetOrdersGrpcCommandMessage message);
+
+    [Operation]
     ValueTask<GetOrderByIdGrpcCommandResult> GetOrderById(GetOrderByIdGrpcCommandMessage message);
 
     //[Operation]

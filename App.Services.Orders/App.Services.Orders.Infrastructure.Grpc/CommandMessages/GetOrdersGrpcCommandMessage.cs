@@ -4,13 +4,12 @@ using ProtoBuf;
 namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 
 [ProtoContract]
-public class GetProductsGrpcCommandMessage : GrpcCommandMessage
+public class GetOrdersGrpcCommandMessage : GrpcCommandMessage
 {
     [ProtoMember(1)]
-    public string? ReferenceId { get; set; }
+    public string? UserId { get; set; }
 
-    [ProtoMember(2)]
-    public string? ReferenceType { get; set; }
+    // TODO: Add more filtering options
 
     [ProtoMember(100)]
     public override GrpcCommandMessageMetadata? Metadata { get; set; }

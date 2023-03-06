@@ -7,9 +7,9 @@ namespace App.Services.Orders.Infrastructure.Grpc.CommandResults;
 [ProtoContract]
 public class GetProductsGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoMember(2)]
-    public ProductDto[] Products { get; set; }
-
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
+
+    [ProtoMember(2)]
+    public ProductDto[] Data { get; set; }
 }

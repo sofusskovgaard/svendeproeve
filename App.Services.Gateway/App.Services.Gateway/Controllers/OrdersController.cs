@@ -1,12 +1,18 @@
-﻿using App.Services.Gateway.Common;
+﻿using App.Common.Grpc;
+using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
 using App.Services.Orders.Infrastructure.Grpc;
 using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
+using App.Services.Orders.Infrastructure.Grpc.CommandResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace App.Services.Gateway.Controllers;
 
 [Route("api/[controller]")]
+[Produces(MediaTypeNames.Application.Json)]
+[Consumes(MediaTypeNames.Application.Json)]
 public class OrdersController : ApiController
 {
     private readonly IOrdersGrpcService _ordersGrpcService;
@@ -16,70 +22,30 @@ public class OrdersController : ApiController
         _ordersGrpcService = ordersGrpcService;
     }
 
-    [HttpGet]
-    [Route("{id}")]
-    public Task<IActionResult> GetOrderById(string id)
-    {
-        return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id }));
-    }
-
-    [HttpGet]
-    [Route("{id}/pay")]
-    public Task<IActionResult> PayOrderById(string id)
-    {
-        return TryAsync(() => _ordersGrpcService.GetOrderById(new GetOrderByIdGrpcCommandMessage { Id = id }));
-    }
-
-    //[HttpPost]
-    //public Task<IActionResult> CreateOrder([FromBody] CreateOrderModel model)
-    //{
-    //    return TryAsync(() =>
-    //    {
-    //        var command = new CreateOrderGrpcCommandMessage
-    //        {
-    //            UserId  = model.UserId,
-    //            Total = model.Total,
-    //            TicketIds = model.TicketIds,
-    //        };
-
-    //         return _ordersGrpcService.CreateOrder(command);
-    //    });
-    //}
-
     /// <summary>
-    ///     Gets all products
+    ///     Get all orders
     /// </summary>
+    /// <param name="userId">if specified will return orders for user</param>
     /// <returns></returns>
     [HttpGet]
-    [Route("product")]
-    public Task<IActionResult> GetProducts()
+    [Route(""), Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrdersGrpcCommandResult))]
+    public Task<IActionResult> GetOrders(string? userId = null)
     {
-        return TryAsync(() => _ordersGrpcService.GetProducts(new GetProductsGrpcCommandMessage()));
+        return TryAsync(() => _ordersGrpcService.GetOrders(CreateCommandMessage<GetOrdersGrpcCommandMessage>(message => message.UserId = userId)));
     }
 
+    /// <summary>
+    ///     Get order by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet]
-    [Route("product/{id}")]
-    public Task<IActionResult> GetProductById(string id)
+    [Route("{id}"), Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> GetOrderById(string id)
     {
-        return TryAsync(() => _ordersGrpcService.GetProductById(new GetProductByIdGrpcCommandMessage { Id = id }));
-    }
-
-    [HttpPost]
-    [Route("product")]
-    public Task<IActionResult> CreateProduct([FromBody] CreateProductModel model)
-    {
-        return TryAsync(() =>
-        {
-            var command = new CreateProductGrpcCommandMessage
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Price = model.Price,
-                ReferenceId = model.ReferenceId,
-                ReferenceType = model.ReferenceType
-            };
-
-            return _ordersGrpcService.CreateProduct(command);
-        });
+        return TryAsync(() => _ordersGrpcService.GetOrderById(CreateCommandMessage<GetOrderByIdGrpcCommandMessage>(message => message.Id = id)));
     }
 }
