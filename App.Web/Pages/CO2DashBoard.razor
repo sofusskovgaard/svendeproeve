@@ -6,7 +6,7 @@
 
 <PageTitle>MatchWatcher</PageTitle>
 
-<h1>Match</h1>
+<h1>CO2 dashboard</h1>
 <input @bind="locationInput" />
 <button @onclick="SelectLocation">Connect</button>
 <label>Connected: @IsConnected</label>
@@ -31,7 +31,7 @@
                     <td>@emission.CO2MeasurementModel.CO2g_pr_kwh</td>
                     <td>@emission.CO2MeasurementModel.Country</td>
                     <td>@emission.CO2MeasurementModel.TimeStamp.ToString("yyyy MM-dd hh:mm:ss")</td>
-                    <td>@emission.Wattage kw</td>
+                    <td>@emission.Wattage kW</td>
                     <td>@emission.CO2Emission grams of CO2 if continued for an hour</td>
                 }
             </tr>
@@ -45,11 +45,6 @@
     private List<string> messages = new List<string>();
     private string locationInput;
     private EmissionModel emission;
-
-    protected override async Task OnInitializedAsync()
-    {
-        
-    }
 
     protected async Task SelectLocation()
     {

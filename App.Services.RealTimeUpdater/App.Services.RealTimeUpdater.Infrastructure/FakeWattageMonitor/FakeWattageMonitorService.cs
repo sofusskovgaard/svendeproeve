@@ -59,7 +59,7 @@ namespace App.Services.RealTimeUpdater.Infrastructure.FakeWattageMonitor
         Task FakeWattageMonitorInitHelper(Action action);
     }
 
-    public class FakeWattageMonitorServiceHelper : IFakeWattageMonitorServiceHelper
+    public class FakeWattageMonitorServiceHelper : IFakeWattageMonitorServiceHelper, IDisposable
     {
         private PeriodicTimer? _timer;
 
@@ -82,6 +82,11 @@ namespace App.Services.RealTimeUpdater.Infrastructure.FakeWattageMonitor
             {
                 action();
             }
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }
