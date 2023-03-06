@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Services.Gateway.Controllers;
 
 [Route("api/[controller]")]
-public class OrganisationsController : ApiController
+public class OrganizationsController : ApiController
 {
     private readonly IOrganizationsGrpcService _organizationsGrpcService;
 
-    public OrganisationsController(IOrganizationsGrpcService organizationsGrpcService)
+    public OrganizationsController(IOrganizationsGrpcService organizationsGrpcService)
     {
         _organizationsGrpcService = organizationsGrpcService;
     }
