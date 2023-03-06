@@ -11,22 +11,6 @@ public interface ITeamsGrpcService
     ValueTask<GetAllTeamsGrpcCommandResult> GetAllTeams(GetAllTeamsGrpcCommandMessage message);
 
     [Operation]
-    ValueTask<GetTeamsByOrganizationIdGrpcCommandResult> GetTeamsByOrganizationId(
-        GetTeamsByOrganizationIdGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTeamsByNameGrpcCommandResult> GetTeamsByName(GetTeamsByNameGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTeamsByMemberIdGrpcCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTeamsByGameIdGrpcCommandResult> GetTeamsByGameId(GetTeamsByGameIdGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTeamsByManagerIdGrpcCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdGrpcCommandMessage message);
-
-    [Operation]
     ValueTask<GetTeamByIdGrpcCommandResult> GetTeamById(GetTeamByIdGrpcCommandMessage message);
 
     [Operation]

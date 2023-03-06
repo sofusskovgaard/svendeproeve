@@ -8,7 +8,7 @@ namespace App.Services.Teams.Infrastructure.Grpc.CommandResults;
 public class GetTeamByIdGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public TeamDto TeamDto { get; set; }
+    public TeamDto Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
