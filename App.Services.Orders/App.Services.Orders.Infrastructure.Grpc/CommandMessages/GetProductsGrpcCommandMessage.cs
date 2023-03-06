@@ -1,12 +1,11 @@
-﻿using ProtoBuf;
-using App.Common.Grpc;
+﻿using App.Common.Grpc;
+using ProtoBuf;
 
-namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
+namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages;
+
+[ProtoContract]
+public class GetProductsGrpcCommandMessage : GrpcCommandMessage
 {
-    [ProtoContract]
-    public class GetProductsGrpcCommandMessage : GrpcCommandMessage
-    {
-        [ProtoMember(100)]
-        public override GrpcCommandMessageMetadata? Metadata { get; set; }
-    }
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

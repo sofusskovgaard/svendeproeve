@@ -1,12 +1,11 @@
-﻿using ProtoBuf;
-using App.Common.Grpc;
+﻿using App.Common.Grpc;
+using ProtoBuf;
 
-namespace App.Services.Orders.Infrastructure.Grpc.CommandResults
+namespace App.Services.Orders.Infrastructure.Grpc.CommandResults;
+
+[ProtoContract]
+public class CreateProductGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoContract]
-    public class CreateProductGrpcCommandResult : IGrpcCommandResult
-    {
-        [ProtoMember(1)]
-        public GrpcCommandResultMetadata Metadata { get; set; }
-    }
+    [ProtoMember(1)]
+    public GrpcCommandResultMetadata Metadata { get; set; }
 }
