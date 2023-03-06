@@ -1,4 +1,4 @@
-﻿@page "/matchwatcher"
+﻿@page "/matchwatcher/{matchId}"
 @inject IApiService _apiService;
 @using Microsoft.AspNetCore.SignalR.Client;
 @using global::App.Services.Turnaments.Common.Dtos;
@@ -48,9 +48,15 @@
     private List<string> messages = new List<string>();
     private string? userInput;
     private string? messageInput;
-    private string? matchId;
+    [Parameter]
+    public string matchId { get; set; }
     private MatchDto? match;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await SelectMatch();
+        await base.OnInitializedAsync();
+    }
 
     protected async Task SelectMatch()
     {
