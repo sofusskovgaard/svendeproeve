@@ -6,6 +6,9 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
 [ProtoContract]
 public class GetOrganizationsGrpcCommandMessage : GrpcCommandMessage
 {
+    [ProtoMember(1)]
+    public string? DepartmentId { get; set; }
+
     [ProtoMember(100)]
     public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

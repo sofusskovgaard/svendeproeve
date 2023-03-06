@@ -8,7 +8,7 @@ namespace App.Services.Organizations.Infrastructure.Grpc.CommandResults;
 public class GetOrganizationsGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public OrganizationDto[] OrganizationDtos { get; set; }
+    public OrganizationDto[] Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }

@@ -11,14 +11,6 @@ public interface IOrganizationsGrpcService
     ValueTask<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(GetOrganizationByIdGrpcCommandMessage message);
 
     [Operation]
-    ValueTask<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(
-        GetOrganizationsByAddressGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(
-        GetOrganizationsByNameGrpcCommandMessage message);
-
-    [Operation]
     ValueTask<CreateOrganizationGrpcCommandResult> CreateOrganization(CreateOrganizationGrpcCommandMessage message);
 
     [Operation]

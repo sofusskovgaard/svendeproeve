@@ -9,6 +9,9 @@ using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
 using App.Services.Organizations.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 
 namespace App.Services.Organizations.Infrastructure;
 
@@ -28,20 +31,28 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
         _publishEndpoint = publishEndpoint;
     }
 
-    public ValueTask<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(
-        GetOrganizationByIdGrpcCommandMessage message)
+    public ValueTask<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(GetOrganizationByIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var entity = await _entityDataservice.GetEntity<OrganizationEntity>(message.Id);
+            OrganizationEntity entity;
+
+            try
+            {
+                ObjectId.Parse(message.Id);
+
+                entity = await _entityDataservice.GetEntity<OrganizationEntity>(message.Id);
+            }
+            catch (FormatException)
+            {
+                entity = await _entityDataservice.GetEntity<OrganizationEntity>(filter =>
+                    filter.Eq(organizationEntity => organizationEntity.Name, message.Id));
+            }
 
             return new GetOrganizationByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                Organization = _mapper.Map<OrganizationDto>(entity)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<OrganizationDto>(entity)
             };
         });
     }
@@ -50,65 +61,24 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
     {
         return TryAsync(async () =>
         {
-            var res = await _entityDataservice.ListEntities<OrganizationEntity>();
+            var entities = await _entityDataservice.ListEntities<OrganizationEntity>(filter =>
+                !string.IsNullOrEmpty(message.DepartmentId)
+                    ? filter.Eq(entity => entity.DepartmentId, message.DepartmentId)
+                    : FilterDefinition<OrganizationEntity>.Empty);
 
             return new GetOrganizationsGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                OrganizationDtos = _mapper.Map<OrganizationDto[]>(res)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<OrganizationDto[]>(entities)
             };
         });
     }
 
-    public ValueTask<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(
-        GetOrganizationsByNameGrpcCommandMessage message)
+    public ValueTask<CreateOrganizationGrpcCommandResult> CreateOrganization(CreateOrganizationGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var res = (await _entityDataservice.ListEntities<OrganizationEntity>()).Where(x =>
-                x.Name.Contains(message.Name)); //TODO: better Where statement
-
-            return new GetOrganizationsByNameGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "completed"
-                },
-                Organizations = _mapper.Map<OrganizationDto[]>(res)
-            };
-        });
-    }
-
-    public ValueTask<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(
-        GetOrganizationsByAddressGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var res = (await _entityDataservice.ListEntities<OrganizationEntity>()).Where(x =>
-                x.Address.Contains(message.Address)); //TODO: better Where statement
-
-            return new GetOrganizationsByAddressGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true,
-                    Message = "completed"
-                },
-                Organizations = _mapper.Map<OrganizationDto[]>(res)
-            };
-        });
-    }
-
-    public ValueTask<CreateOrganizationGrpcCommandResult> CreateOrganization(
-        CreateOrganizationGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var createMessage = new CreateOrganizationCommandMessage
+            await _publishEndpoint.Publish(new CreateOrganizationCommandMessage
             {
                 Address = message.Address,
                 Bio = message.Bio,
@@ -116,23 +86,17 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
                 Name = message.Name,
                 ProfilePicture = message.ProfilePicture,
                 DepartmentId = message.DepartmentId
-            };
+            });
 
-            await _publishEndpoint.Publish(createMessage);
-
-            return new CreateOrganizationGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata { Success = true }
-            };
+            return new CreateOrganizationGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
-    public ValueTask<UpdateOrganizationGrpcCommandResult> UpdateOrganization(
-        UpdateOrganizationGrpcCommandMessage message)
+    public ValueTask<UpdateOrganizationGrpcCommandResult> UpdateOrganization(UpdateOrganizationGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var updateMessage = new UpdateOrganizationCommandMessage
+            await _publishEndpoint.Publish(new UpdateOrganizationCommandMessage
             {
                 Id = message.Id,
                 Address = message.Address,
@@ -141,33 +105,18 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
                 Name = message.Name,
                 ProfilePicture = message.ProfilePicture,
                 DepartmentId = message.DepartmentId
-            };
+            });
 
-            await _publishEndpoint.Publish(updateMessage);
-
-            return new UpdateOrganizationGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata { Success = true }
-            };
+            return new UpdateOrganizationGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
-    public ValueTask<DeleteOrganizationGrpcCommandResult> DeleteOrganization(
-        DeleteOrganizationGrpcCommandMessage message)
+    public ValueTask<DeleteOrganizationGrpcCommandResult> DeleteOrganization(DeleteOrganizationGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var deleteMessage = new DeleteOrganizationCommandMessage
-            {
-                Id = message.Id
-            };
-
-            await _publishEndpoint.Publish(deleteMessage);
-
-            return new DeleteOrganizationGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata { Success = true }
-            };
+            await _publishEndpoint.Publish(new DeleteOrganizationCommandMessage{ Id = message.Id });
+            return new DeleteOrganizationGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 }
