@@ -73,7 +73,7 @@ public class EntityIndexGenerator : IEntityIndexGenerator
 
                 if (attributes.FirstOrDefault(attr => attr.IndexName == indexDefinition.Name) is IndexedPropertyAttribute attr)
                 {
-                    keys.Text(new StringFieldDefinition<IEntity>(property.Name));
+                    keys.Document.Add(new BsonElement(property.Name, "text"));
 
                     if (attr.Weight != 1)
                     {
@@ -119,17 +119,11 @@ public class EntityIndexGenerator : IEntityIndexGenerator
                 {
                     if (attr.Hashed)
                     {
-                        keys.Hashed(new StringFieldDefinition<IEntity>(property.Name));
+                        keys.Document.Add(new BsonElement(property.Name, "hashed"));
                         continue;
                     }
 
-                    if (attr.Order == IndexedPropertyAttribute.Direction.Descending)
-                    {
-                        keys.Descending(new StringFieldDefinition<IEntity>(property.Name));
-                        continue;
-                    }
-
-                    keys.Ascending(new StringFieldDefinition<IEntity>(property.Name));
+                    keys.Document.Add(new BsonElement(property.Name, (int)attr.Order));
                 }
             }
 
