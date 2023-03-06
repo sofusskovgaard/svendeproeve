@@ -9,9 +9,11 @@ using App.Services.Orders.Common.Constants;
 
 namespace App.Services.Orders.Data.Entities
 {
+    [IndexDefinition("user")]
     [CollectionDefinition(nameof(OrderEntity))]
     public class OrderEntity : BaseEntity
     {
+        [IndexedProperty("user")]
         public string UserId { get; set; }
 
         public decimal Total { get; set; }
