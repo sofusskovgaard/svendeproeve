@@ -5,11 +5,10 @@ using ProtoBuf;
 namespace App.Services.Orders.Infrastructure.Grpc.CommandResults;
 
 [ProtoContract]
-public class CreateOrderGrpcCommandResult : IGrpcCommandResult
+public class GetOrdersGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoMember(2)]
-    public OrderDto Order { get; set; }
-
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
+
+    public OrderDto[] Data { get; set; }
 }

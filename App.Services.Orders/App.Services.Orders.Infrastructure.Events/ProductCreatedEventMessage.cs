@@ -2,7 +2,7 @@
 
 namespace App.Services.Orders.Infrastructure.Events;
 
-public class ProductCreatedEventMessage: IEventMessage
+public class ProductCreatedEventMessage : IEventMessage
 {
     public string ProductId { get; set; }
 
