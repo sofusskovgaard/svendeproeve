@@ -87,11 +87,15 @@ public class EntityIndexGenerator : IEntityIndexGenerator
                 }
             }
 
-            var test = new IndexKeysDefinitionBuilder<IEntity>().Text(entity => entity.Id).ToBsonDocument();
-
-            await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
-
-            this._logger.LogInformation("Created search index for {entity}", entityType.Name);
+            try
+            {
+                await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
+                this._logger.LogInformation("Created search index for {entity}", entityType.Name);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, "Could not create search index for {entity}", entityType.Name);
+            }
         }
     }
 
@@ -129,12 +133,18 @@ public class EntityIndexGenerator : IEntityIndexGenerator
                 }
             }
 
-            await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
-
-            this._logger.LogInformation(
-                keys.Document.Any(element => element.Value == "hashed")
-                    ? "Created shard index for {entity}"
-                    : "Created index for {entity}", entityType.Name);
+            try
+            {
+                await collection.Indexes.CreateOneAsync(new CreateIndexModel<IEntity>(keys, options));
+                this._logger.LogInformation(
+                    keys.Document.Any(element => element.Value == "hashed")
+                        ? "Created shard index for {entity}"
+                        : "Created index for {entity}", entityType.Name);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, "Could not create index for {entity}", entityType.Name);
+            }
         }
     }
 }
