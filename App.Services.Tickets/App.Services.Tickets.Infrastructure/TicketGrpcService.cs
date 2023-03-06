@@ -10,58 +10,59 @@ using App.Services.Tickets.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
 
-namespace App.Services.Tickets.Infrastructure
+namespace App.Services.Tickets.Infrastructure;
+
+public class TicketGrpcService : BaseGrpcService, ITicketGrpcService
 {
-    public class TicketGrpcService : BaseGrpcService, ITicketGrpcService
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IMapper _mapper;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    private readonly ITicketService _ticketService;
+
+    public TicketGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint,
+        ITicketService ticketService)
     {
-        private readonly ITicketService _ticketService;
+        _entityDataService = entityDataService;
+        _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
+        _ticketService = ticketService;
+    }
 
-        private readonly IEntityDataService _entityDataService;
-
-        private readonly IMapper _mapper;
-
-        private readonly IPublishEndpoint _publishEndpoint;
-
-        public TicketGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint, ITicketService ticketService)
+    public ValueTask<GetTicketByIdGrpcCommandResult> GetTicketById(GetTicketByIdGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            _entityDataService = entityDataService;
-            _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
-            _ticketService = ticketService;
-        }
+            var ticket = await _entityDataService.GetEntity<TicketEntity>(message.Id);
 
-        public ValueTask<GetTicketByIdGrpcCommandResult> GetTicketById(GetTicketByIdGrpcCommandMessage message)
-        {
-            return TryAsync(async () =>
+            return new GetTicketByIdGrpcCommandResult
             {
-                var ticket = await _entityDataService.GetEntity<TicketEntity>(message.Id);
-
-                return new GetTicketByIdGrpcCommandResult
+                Metadata = new GrpcCommandResultMetadata
                 {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Ticket = _mapper.Map<TicketDto>(ticket)
-                };
-            });
-        }
+                    Success = true
+                },
+                Ticket = _mapper.Map<TicketDto>(ticket)
+            };
+        });
+    }
 
-        public ValueTask<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage message)
+    public ValueTask<BookTicketsGrpcCommandResult> BookTickets(BookTicketsGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            await _ticketService.CreateTickets(new BookTicketsCommandMessage
             {
-                await _ticketService.CreateTickets(new BookTicketsCommandMessage
-                {
-                    UserId = message.Metadata.UserId,
-                    TicketOrders = message.TicketOrders.Select((x) => new BookTicketsCommandMessage.TicketOrder { ProductId = x.ProductId, Recipient = x.Recipient }).ToArray()
-                });
-
-                return new BookTicketsGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata{ Success = true }
-                };
+                UserId = message.Metadata.UserId,
+                TicketOrders = message.TicketOrders.Select(x => new BookTicketsCommandMessage.TicketOrder
+                    { ProductId = x.ProductId, Recipient = x.Recipient }).ToArray()
             });
-        }
+
+            return new BookTicketsGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata { Success = true }
+            };
+        });
     }
 }

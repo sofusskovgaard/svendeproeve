@@ -14,7 +14,7 @@ public class TicketsController : ApiController
 
     public TicketsController(ITicketGrpcService ticketsGrpcService)
     {
-        this._ticketsGrpcService = ticketsGrpcService;
+        _ticketsGrpcService = ticketsGrpcService;
     }
 
     [HttpGet]
@@ -23,9 +23,9 @@ public class TicketsController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public Task<IActionResult> GetTicketById(string id)
     {
-        return this.TryAsync(() =>
-            this._ticketsGrpcService.GetTicketById(
-                this.CreateCommandMessage<GetTicketByIdGrpcCommandMessage>(message => message.Id = id)));
+        return TryAsync(() =>
+            _ticketsGrpcService.GetTicketById(
+                CreateCommandMessage<GetTicketByIdGrpcCommandMessage>(message => message.Id = id)));
     }
 
     [HttpPost]
@@ -35,8 +35,8 @@ public class TicketsController : ApiController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public Task<IActionResult> CreateTicket([FromBody] BookTicketsModel model)
     {
-        return this.TryAsync(() => this._ticketsGrpcService.BookTickets(
-            this.CreateCommandMessage<BookTicketsGrpcCommandMessage>(message =>
+        return TryAsync(() => _ticketsGrpcService.BookTickets(
+            CreateCommandMessage<BookTicketsGrpcCommandMessage>(message =>
             {
                 message.TicketOrders = model.TicketOrderModels.Select(x =>
                     new BookTicketsGrpcCommandMessage.TicketOrder
