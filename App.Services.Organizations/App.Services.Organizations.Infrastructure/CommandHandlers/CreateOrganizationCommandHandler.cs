@@ -5,36 +5,37 @@ using App.Services.Organizations.Infrastructure.Commands;
 using App.Services.Organizations.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Organizations.Infrastructure.CommandHandlers
+namespace App.Services.Organizations.Infrastructure.CommandHandlers;
+
+public class CreateOrganizationCommandHandler : ICommandHandler<CreateOrganizationCommandMessage>
 {
-    public class CreateOrganizationCommandHandler : ICommandHandler<CreateOrganizationCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public CreateOrganizationCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+        _publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IPublishEndpoint _publishEndpoint;
+    public async Task Consume(ConsumeContext<CreateOrganizationCommandMessage> context)
+    {
+        var message = context.Message;
 
-        public CreateOrganizationCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        var entity = new OrganizationEntity
         {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
-        public async Task Consume(ConsumeContext<CreateOrganizationCommandMessage> context)
-        {
-            var message = context.Message;
+            Address = message.Address,
+            Bio = message.Bio,
+            CoverPicture = message.CoverPicture,
+            Name = message.Name,
+            ProfilePicture = message.ProfilePicture,
+            DepartmentId = message.DepartmentId
+        };
 
-            var entity = new OrganizationEntity
-            {
-                Address = message.Address,
-                Bio = message.Bio,
-                CoverPicture = message.CoverPicture,
-                Name = message.Name,
-                ProfilePicture = message.ProfilePicture,
-                DepartmentId = message.DepartmentId,
-            };
+        await _entityDataService.SaveEntity(entity);
 
-            await _entityDataService.SaveEntity(entity);
-
-            await _publishEndpoint.Publish(new OrganizationCreatedEventMessage { Id = entity.Id, DepartmentId = entity.DepartmentId });
-        }
+        await _publishEndpoint.Publish(new OrganizationCreatedEventMessage
+            { Id = entity.Id, DepartmentId = entity.DepartmentId });
     }
 }

@@ -1,6 +1,5 @@
-﻿namespace App.Services.Organizations.Common.Dtos
+﻿namespace App.Services.Organizations.Common.Dtos;
+
+public class OrganizationDetailedDto
 {
-    public class OrganizationDetailedDto
-    {
-    }
 }
