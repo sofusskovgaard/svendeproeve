@@ -23,13 +23,11 @@ public class DeleteMatchCommandHandler : ICommandHandler<DeleteMatchCommandMessa
     {
         var message = context.Message;
 
-        var match = await _entityDataService.GetEntity<MatchEntity>(message.Id);
+        var result = await _entityDataService.Delete<MatchEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
 
-        await _entityDataService.Delete(match);
-
-        await _publishEndpoint.Publish(new MatchDeletedEventMessage
+        if (result)
         {
-            Id = message.Id
-        });
+            await _publishEndpoint.Publish(new MatchDeletedEventMessage{ Id = message.Id });
+        }
     }
 }

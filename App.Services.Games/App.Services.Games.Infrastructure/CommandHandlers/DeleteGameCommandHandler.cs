@@ -23,10 +23,11 @@ public class DeleteGameCommandHandler : ICommandHandler<DeleteGameCommandMessage
     {
         var message = context.Message;
 
-        var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
+        var result = await this._entityDataService.Delete<GameEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
 
-        await this._entityDataService.Delete(game);
-
-        await this._publishEndpoint.Publish(new GameDeletedEventMessage { Id = message.Id });
+        if (result)
+        {
+            await this._publishEndpoint.Publish(new GameDeletedEventMessage{ Id = message.Id });
+        }
     }
 }

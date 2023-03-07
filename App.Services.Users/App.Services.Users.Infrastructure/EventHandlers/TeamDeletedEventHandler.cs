@@ -18,22 +18,10 @@ namespace App.Services.Users.Infrastructure.EventHandlers
 
         public async Task Consume(ConsumeContext<TeamDeletedEventMessage> context)
         {
-            //var users1 = await _entityDataService.ListEntities(new ExpressionFilterDefinition<UserEntity>(entity => entity.Teams.Contains(context.Message.Id)));
-            var users = await _entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Teams, context.Message.Id));
+            var message = context.Message;
 
-            foreach (var user in users)
-            {
-                user.Teams = user.Teams.Where(t => t != context.Message.Id).ToArray();
-
-                var updateDefinition = new UpdateDefinitionBuilder<UserEntity>().Set(entity => entity.Teams, user.Teams);
-
-                if (!user.Teams.Any())
-                {
-                    updateDefinition = updateDefinition.Set(entity => entity.IsInTeam, false);
-                }
-
-                await _entityDataService.Update<UserEntity>(filter => filter.Eq(entity => entity.Id, user.Id), _ => updateDefinition);
-            }
+            await _entityDataService.Update<UserEntity>(filter => filter.AnyEq(entity => entity.Teams, message.Id),
+                builder => builder.Pull(entity => entity.Teams, message.Id));
         }
     }
 }

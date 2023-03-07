@@ -18,18 +18,10 @@ public class TeamDeletedEventHandler : IEventHandler<TeamDeletedEventMessage>
 
     public async Task Consume(ConsumeContext<TeamDeletedEventMessage> context)
     {
-        var organizations = await _entityDataService.ListEntities<OrganizationEntity>(filter =>
-            filter.AnyStringIn(entity => entity.TeamIds, context.Message.Id));
+        var message = context.Message;
 
-        foreach (var organization in organizations)
-        {
-            organization.TeamIds = organization.TeamIds.Where(t => t != context.Message.Id).ToArray();
-
-            var updateDefinition =
-                new UpdateDefinitionBuilder<OrganizationEntity>().Set(entity => entity.TeamIds, organization.TeamIds);
-
-            await _entityDataService.Update<OrganizationEntity>(
-                filter => filter.Eq(entity => entity.Id, organization.Id), _ => updateDefinition);
-        }
+        await _entityDataService.Update<OrganizationEntity>(
+            filter => filter.AnyEq(entity => entity.TeamIds, message.Id),
+            builder => builder.Pull(entity => entity.TeamIds, message.Id));
     }
 }

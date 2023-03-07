@@ -18,16 +18,10 @@ public class DepartmentDeletedEventHandler : IEventHandler<DepartmentDeletedEven
 
     public async Task Consume(ConsumeContext<DepartmentDeletedEventMessage> context)
     {
-        var organizations = await _entityDataService.ListEntities<OrganizationEntity>(filter =>
-            filter.Eq(entity => entity.DepartmentId, context.Message.Id));
+        var message = context.Message;
 
-        foreach (var organization in organizations)
-        {
-            var updateDefinition =
-                new UpdateDefinitionBuilder<OrganizationEntity>().Set(entity => entity.DepartmentId, null);
-
-            await _entityDataService.Update<OrganizationEntity>(
-                filter => filter.Eq(entity => entity.Id, organization.Id), _ => updateDefinition);
-        }
+        await _entityDataService.Update<OrganizationEntity>(
+            filter => filter.Eq(entity => entity.DepartmentId, message.Id),
+            builder => builder.Unset(entity => entity.DepartmentId));
     }
 }

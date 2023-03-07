@@ -20,19 +20,7 @@ public class TournamentDeletedEventHandler : IEventHandler<TournamentDeletedEven
     {
         var message = context.Message;
 
-        var events = await this._entityDataService.ListEntities<EventEntity>(filter =>
-            filter.AnyStringIn(entity => entity.Tournaments, message.Id));
-
-        foreach (var @event in events)
-            if (@event.Tournaments.Contains(message.Id))
-            {
-                @event.Tournaments = @event.Tournaments.Where(t => t != message.Id).ToArray();
-
-                var updateDefinition =
-                    new UpdateDefinitionBuilder<EventEntity>().Set(entity => entity.Tournaments, @event.Tournaments);
-
-                await this._entityDataService.Update<EventEntity>(filter => filter.Eq(entity => entity.Id, @event.Id),
-                    _ => updateDefinition);
-            }
+        await _entityDataService.Update<EventEntity>(filter => filter.AnyEq(entity => entity.Tournaments, message.Id),
+            builder => builder.Pull(entity => entity.Tournaments, message.Id));
     }
 }

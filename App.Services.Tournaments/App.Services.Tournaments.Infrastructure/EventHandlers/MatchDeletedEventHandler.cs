@@ -22,7 +22,6 @@ public class MatchDeletedEventHandler : IEventHandler<MatchDeletedEventMessage>
 
         await _entityDataService.Update<TournamentEntity>(
             filter => filter.AnyEq(entity => entity.MatchesId, message.Id),
-            builder => builder.PullFilter(entity => entity.MatchesId,
-                new FilterDefinitionBuilder<string>().Eq(s => s, message.Id)));
+            builder => builder.Pull(entity => entity.MatchesId, message.Id));
     }
 }
