@@ -66,14 +66,14 @@ public class SessionStore : ISessionStore
 
         if (response.Metadata.Success)
         {
-            var payload = await this._tokenStore.SetTokens(response.AccessToken, response.RefreshToken, response.ExpiresIn);
+            var payload = await this._tokenStore.SetTokens(response.Data.AccessToken, response.Data.RefreshToken, response.Data.ExpiresIn);
 
             if (payload != null)
             {
                 this.IsAdmin = payload?.isAdmin ?? false;
 
                 var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
-                this.CurrentUser = currentUserResponse.User;
+                this.CurrentUser = currentUserResponse.Data;
 
                 this.LoggedIn = true;
             }
@@ -138,12 +138,12 @@ public class SessionStore : ISessionStore
 
             if (payload.isAdmin ?? false)
             {
-                Console.WriteLine("User is administrator");
+                Console.WriteLine("Data is administrator");
                 this.IsAdmin = true;
             }
 
             var currentUserResponse = await _apiService.GetCurrentlyLoggedInUser();
-            this.CurrentUser = currentUserResponse.User;
+            this.CurrentUser = currentUserResponse.Data;
 
             this.LoggedIn = true;
         }

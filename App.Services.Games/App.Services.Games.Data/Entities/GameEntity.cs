@@ -11,7 +11,7 @@ public class GameEntity : BaseEntity
     public string Name { get; set; }
 
     [IndexedProperty("search")]
-    public string Discription { get; set; }
+    public string Description { get; set; }
 
     public string ProfilePicture { get; set; }
 

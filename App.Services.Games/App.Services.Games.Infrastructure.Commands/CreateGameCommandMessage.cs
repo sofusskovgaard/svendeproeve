@@ -6,7 +6,7 @@ public class CreateGameCommandMessage : ICommandMessage
 {
     public string Name { get; set; }
 
-    public string Discription { get; set; }
+    public string Description { get; set; }
 
     public string ProfilePicture { get; set; }
 

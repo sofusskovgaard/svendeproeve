@@ -20,15 +20,8 @@ public class OrganizationDeletedEventHandler : IEventHandler<OrganizationDeleted
     {
         var message = context.Message;
 
-        var teams = await _entityDataService.ListEntities<TeamEntity>(filter =>
-            filter.Eq(entity => entity.OrganizationId, message.Id));
-
-        foreach (var team in teams)
-        {
-            var updateDefinition = new UpdateDefinitionBuilder<TeamEntity>().Set(entity => entity.OrganizationId, null);
-
-            await _entityDataService.Update<TeamEntity>(filter => filter.Eq(entity => entity.Id, team.Id),
-                _ => updateDefinition);
-        }
+        await _entityDataService.Update<TeamEntity>(
+            filter => filter.Eq(entity => entity.OrganizationId, message.Id),
+            builder => builder.Unset(entity => entity.OrganizationId));
     }
 }

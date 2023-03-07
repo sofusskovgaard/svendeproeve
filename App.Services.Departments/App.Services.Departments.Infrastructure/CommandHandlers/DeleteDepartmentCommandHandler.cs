@@ -23,10 +23,11 @@ public class DeleteDepartmentCommandHandler : ICommandHandler<DeleteDepartmentCo
     {
         var message = context.Message;
 
-        var department = await this._entityDataService.GetEntity<DepartmentEntity>(message.Id);
+        var result = await this._entityDataService.Delete<DepartmentEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
 
-        await this._entityDataService.Delete(department);
-
-        await this._publishEndpoint.Publish(new DepartmentDeletedEventMessage { Id = message.Id });
+        if (result)
+        {
+            await this._publishEndpoint.Publish(new DepartmentDeletedEventMessage{ Id = message.Id });
+        }
     }
 }

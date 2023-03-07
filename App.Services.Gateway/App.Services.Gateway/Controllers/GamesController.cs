@@ -27,23 +27,20 @@ public class GamesController : ApiController
     /// <summary>
     ///     Get all games
     /// </summary>
-    /// <param name="name">if specified will return games search by name</param>
+    /// <param name="searchText">if specified will search with this</param>
     /// <param name="genre">if specified will return game search by genre</param>
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAllGamesGrpcCommandResult))]
-    public Task<IActionResult> GetAllGames(string? name = null, string? genre = null)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetGamesGrpcCommandResult))]
+    public Task<IActionResult> GetAllGames(string? searchText = null, string? genre = null)
     {
-        if (!string.IsNullOrEmpty(name))
-            return this.TryAsync(() =>
-                this._gamesGrpcService.GetGamesByName(CreateCommandMessage<GetGamesByNameGrpcCommandMessage>(message => message.Name = name)));
-
-        if (!string.IsNullOrEmpty(genre))
-            return this.TryAsync(() =>
-                this._gamesGrpcService.GetGamesByGenre(CreateCommandMessage<GetGamesByGenreGrpcCommandMessage>(message => message.Genre = genre)));
-
-        return this.TryAsync(() => this._gamesGrpcService.GetAllGames(CreateCommandMessage<GetAllGamesGrpcCommandMessage>()));
+        return this.TryAsync(() => this._gamesGrpcService.GetGames(CreateCommandMessage<GetGamesGrpcCommandMessage>(
+            message =>
+            {
+                message.SearchText = searchText;
+                message.Genre = genre;
+            })));
     }
 
     /// <summary>
@@ -94,11 +91,11 @@ public class GamesController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> UpdateGame(string id, [FromBody] UpdateGameModel model)
     {
-        return this.TryAsync(() => this._gamesGrpcService.updateGame(CreateCommandMessage<UpdateGameGrpcCommandMessage>(message =>
+        return this.TryAsync(() => this._gamesGrpcService.UpdateGame(CreateCommandMessage<UpdateGameGrpcCommandMessage>(message =>
             {
                 message.Id = id;
                 message.Name = model.Name;
-                message.Discription = model.Description;
+                message.Description = model.Description;
                 message.ProfilePicture = model.ProfilePicture;
                 message.CoverPicture = model.CoverPicture;
                 message.Genre = model.Genre;

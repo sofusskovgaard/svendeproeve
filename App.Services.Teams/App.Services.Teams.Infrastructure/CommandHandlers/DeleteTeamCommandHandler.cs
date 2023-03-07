@@ -23,10 +23,11 @@ public class DeleteTeamCommandHandler : ICommandHandler<DeleteTeamCommandMessage
     {
         var message = context.Message;
 
-        var team = await _entityDataService.GetEntity<TeamEntity>(message.Id);
+        var result = await _entityDataService.Delete<TeamEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
 
-        await _entityDataService.Delete(team);
-
-        await _publishEndpoint.Publish(new TeamDeletedEventMessage { Id = message.Id });
+        if (result)
+        {
+            await _publishEndpoint.Publish(new TeamDeletedEventMessage { Id = message.Id });
+        }
     }
 }

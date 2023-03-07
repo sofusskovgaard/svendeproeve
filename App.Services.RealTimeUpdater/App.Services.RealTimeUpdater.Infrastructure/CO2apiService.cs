@@ -1,5 +1,4 @@
-﻿using App.Services.Gateway.Infrastructure.Services;
-using App.Services.RealTimeUpdater.Common.models;
+﻿using App.Services.RealTimeUpdater.Common.models;
 using App.Services.RealTimeUpdater.Infrastructure.Cache;
 using MassTransit;
 using Microsoft.Extensions.Caching.Memory;

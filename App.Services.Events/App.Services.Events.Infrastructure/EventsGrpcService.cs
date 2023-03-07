@@ -9,6 +9,7 @@ using App.Services.Events.Infrastructure.Grpc.CommandMessages;
 using App.Services.Events.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
+using MongoDB.Driver;
 
 namespace App.Services.Events.Infrastructure;
 
@@ -88,12 +89,25 @@ public class EventsGrpcService : BaseGrpcService, IEventsGrpcService
     {
         return this.TryAsync(async () =>
         {
-            var events = await this._entityDataService.ListEntities<EventEntity>();
+            var filters = new List<FilterDefinition<EventEntity>>();
+
+            if (!string.IsNullOrEmpty(message.SearchText))
+            {
+                filters.Add(new FilterDefinitionBuilder<EventEntity>().Text(message.SearchText));
+            }
+
+            if (!string.IsNullOrEmpty(message.DepartmentId))
+            {
+                filters.Add(new FilterDefinitionBuilder<EventEntity>().Eq(entity => entity.DepartmentId, message.DepartmentId));
+            }
+
+            var entities = await _entityDataService.ListEntities<EventEntity>(filter =>
+                filters.Any() ? filter.And(filters) : FilterDefinition<EventEntity>.Empty);
 
             return new GetEventsGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata{ Success = true },
-                Data = this._mapper.Map<EventDto[]>(events)
+                Data = this._mapper.Map<EventDto[]>(entities)
             };
         });
     }

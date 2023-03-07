@@ -24,8 +24,8 @@ public class UpdateGameCommandHandler : ICommandHandler<UpdateGameCommandMessage
 
         var updateDefinition = new UpdateDefinitionBuilder<GameEntity>().Set(entity => entity.Name, message.Name);
 
-        if (game.Discription != message.Discription)
-            updateDefinition = updateDefinition.Set(entity => entity.Discription, message.Discription);
+        if (game.Description != message.Description)
+            updateDefinition = updateDefinition.Set(entity => entity.Description, message.Description);
 
         if (game.ProfilePicture != message.ProfilePicture)
             updateDefinition = updateDefinition.Set(entity => entity.ProfilePicture, message.ProfilePicture);

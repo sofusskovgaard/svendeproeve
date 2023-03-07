@@ -35,7 +35,8 @@ public class UserEntity : BaseEntity
     [IndexedProperty("search")]
     public string? Bio { get; set; }
 
-    public bool IsInTeam { get; set; }
+    [BsonIgnore]
+    public bool IsInTeam => Teams?.Length > 0;
 
     [IndexedProperty("organizations")]
     public string[]? Organizations { get; set; }

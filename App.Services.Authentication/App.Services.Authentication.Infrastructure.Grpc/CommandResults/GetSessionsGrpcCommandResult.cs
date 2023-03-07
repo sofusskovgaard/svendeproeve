@@ -11,5 +11,5 @@ public class GetSessionsGrpcCommandResult : IGrpcCommandResult
     public GrpcCommandResultMetadata Metadata { get; set; }
 
     [ProtoMember(2)]
-    public UserSessionDto[] Sessions { get; set; }
+    public UserSessionDto[] Data { get; set; }
 }

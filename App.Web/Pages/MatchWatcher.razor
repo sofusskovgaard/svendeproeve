@@ -1,7 +1,7 @@
 ﻿@page "/matchwatcher/{matchId}"
 @inject IApiService _apiService;
 @using Microsoft.AspNetCore.SignalR.Client;
-@using global::App.Services.Turnaments.Common.Dtos;
+@using global::App.Services.Tournaments.Common.Dtos;
 @using global::App.Web.Services.ApiService;
 
 <PageTitle>MatchWatcher</PageTitle>
@@ -17,8 +17,8 @@
             <tr>
                 <td>Id</td>
                 <td>Name</td>
-                <td>Teamids</td>
-                <td>Turnamentid</td>
+                <td>Teams</td>
+                <td>Tournament</td>
                 <td>WinningTeam</td>
             </tr>
         </thead>
@@ -34,7 +34,7 @@
                             <span>team: @item</span><br />
                         }
                     </td>
-                    <td>@match.TurnamentId</td>
+                    <td>@match.TournamentId</td>
                     <td>@match.WinningTeamId</td>
                 }
             </tr>
@@ -60,7 +60,7 @@
 
     protected async Task SelectMatch()
     {
-        match = (await _apiService.GetMatchById(matchId)).MatchDto;
+        match = (await _apiService.GetMatchById(matchId)).Data;
 
         hubConnection = new HubConnectionBuilder()
             .WithUrl("https://localhost:3001/matchhub")
@@ -70,7 +70,7 @@
         {
             match.Id = matchData.Id;
             match.TeamsId = matchData.TeamsId ?? match.TeamsId;
-            match.TurnamentId = matchData.TurnamentId ?? match.TurnamentId;
+            match.TournamentId = matchData.TournamentId ?? match.TournamentId;
             match.Name = matchData.Name ?? match.Name;
             match.WinningTeamId = matchData.WinningTeamId ?? match.WinningTeamId;
 

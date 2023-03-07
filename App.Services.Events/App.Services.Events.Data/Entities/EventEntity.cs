@@ -3,6 +3,7 @@ using App.Data.Attributes;
 
 namespace App.Services.Events.Data.Entities;
 
+[IndexDefinition("department")]
 [IndexDefinition("tournaments")]
 [SearchIndexDefinition("search")]
 [CollectionDefinition(nameof(EventEntity))]
@@ -16,6 +17,9 @@ public class EventEntity : BaseEntity
 
     [IndexedProperty("tournaments")]
     public string[] Tournaments { get; set; }
+
+    [IndexedProperty("department")]
+    public string DepartmentId { get; set; }
 
     public DateTime StartDate { get; set; }
 

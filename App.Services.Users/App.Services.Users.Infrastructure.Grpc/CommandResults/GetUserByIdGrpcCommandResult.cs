@@ -11,5 +11,5 @@ public class GetUserByIdGrpcCommandResult : IGrpcCommandResult
     public GrpcCommandResultMetadata Metadata { get; set; }
 
     [ProtoMember(2)]
-    public UserDto User { get; set; }
+    public UserDto Data { get; set; }
 }

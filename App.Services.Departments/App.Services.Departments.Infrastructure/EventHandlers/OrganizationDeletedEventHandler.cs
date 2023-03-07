@@ -20,19 +20,8 @@ public class OrganizationDeletedEventHandler : IEventHandler<OrganizationDeleted
     {
         var message = context.Message;
 
-        var departments = await this._entityDataService.ListEntities<DepartmentEntity>(filter =>
-            filter.AnyStringIn(entity => entity.OrganizationIds, message.Id));
-
-        foreach (var department in departments)
-        {
-            department.OrganizationIds = department.OrganizationIds.Where(o => o != message.Id).ToArray();
-
-            var updateDefinition =
-                new UpdateDefinitionBuilder<DepartmentEntity>().Set(entity => entity.OrganizationIds,
-                    department.OrganizationIds);
-
-            await this._entityDataService.Update<DepartmentEntity>(
-                filter => filter.Eq(entity => entity.Id, department.Id), _ => updateDefinition);
-        }
+        await _entityDataService.Update<DepartmentEntity>(
+            filter => filter.AnyEq(entity => entity.OrganizationIds, message.Id),
+            builder => builder.Pull(entity => entity.OrganizationIds, message.Id));
     }
 }

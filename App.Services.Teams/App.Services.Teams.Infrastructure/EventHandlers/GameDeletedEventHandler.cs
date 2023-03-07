@@ -20,15 +20,7 @@ public class GameDeletedEventHandler : IEventHandler<GameDeletedEventMessage>
     {
         var message = context.Message;
 
-        var teams = await _entityDataService.ListEntities<TeamEntity>(filter =>
-            filter.Eq(entity => entity.GameId, message.Id));
-
-        foreach (var team in teams)
-        {
-            var updateDefinition = new UpdateDefinitionBuilder<TeamEntity>().Set(entity => entity.GameId, null);
-
-            await _entityDataService.Update<TeamEntity>(filter => filter.Eq(entity => entity.Id, team.Id),
-                _ => updateDefinition);
-        }
+        await _entityDataService.Update<TeamEntity>(filter => filter.Eq(entity => entity.GameId, message.Id),
+            builder => builder.Unset(entity => entity.GameId));
     }
 }

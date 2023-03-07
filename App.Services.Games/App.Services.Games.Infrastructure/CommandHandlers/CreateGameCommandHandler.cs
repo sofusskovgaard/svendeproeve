@@ -22,7 +22,7 @@ public class CreateGameCommandHandler : ICommandHandler<CreateGameCommandMessage
         var game = new GameEntity
         {
             Name = message.Name,
-            Discription = message.Discription,
+            Description = message.Description,
             ProfilePicture = message.ProfilePicture,
             CoverPicture = message.CoverPicture,
             Genre = message.Genre

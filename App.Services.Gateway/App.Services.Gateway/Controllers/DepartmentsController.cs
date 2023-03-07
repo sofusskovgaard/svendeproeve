@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using App.Common.Grpc;
 using App.Services.Departments.Infrastructure.Grpc.CommandResults;
+using App.Services.Events.Infrastructure.Grpc;
+using App.Services.Events.Infrastructure.Grpc.CommandMessages;
+using App.Services.Events.Infrastructure.Grpc.CommandResults;
+using App.Services.Organizations.Infrastructure.Grpc.CommandMessages;
+using App.Services.Organizations.Infrastructure.Grpc.CommandResults;
 
 namespace App.Services.Gateway.Controllers;
 
@@ -19,9 +24,15 @@ public class DepartmentsController : ApiController
 {
     private readonly IDepartmentsGrpcService _departmentsGrpcService;
 
-    public DepartmentsController(IDepartmentsGrpcService departmentsGrpcService)
+    private readonly IEventsGrpcService _eventsGrpcService;
+
+    private readonly IOrganizationsGrpcService _organizationsGrpcService;
+
+    public DepartmentsController(IDepartmentsGrpcService departmentsGrpcService, IEventsGrpcService eventsGrpcService, IOrganizationsGrpcService organizationsGrpcService)
     {
         this._departmentsGrpcService = departmentsGrpcService;
+        _eventsGrpcService = eventsGrpcService;
+        _organizationsGrpcService = organizationsGrpcService;
     }
 
     /// <summary>
@@ -66,10 +77,12 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpGet]
     [Route("{id}/organizations")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrganizationsGrpcCommandResult))]
     public Task<IActionResult> GetOrganizationsByDepartment(string id)
     {
-        throw new NotImplementedException();
+        return this.TryAsync(() =>
+            _organizationsGrpcService.GetOrganizations(
+                CreateCommandMessage<GetOrganizationsGrpcCommandMessage>(message => message.DepartmentId = id)));
     }
 
     /// <summary>
@@ -79,10 +92,12 @@ public class DepartmentsController : ApiController
     /// <returns></returns>
     [HttpGet]
     [Route("{id}/events")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetEventsGrpcCommandResult))]
     public Task<IActionResult> GetEventsByDepartment(string id)
     {
-        throw new NotImplementedException();
+        return this.TryAsync(() =>
+            _eventsGrpcService.GetEvents(
+                CreateCommandMessage<GetEventsGrpcCommandMessage>(message => message.DepartmentId = id)));
     }
 
     /// <summary>

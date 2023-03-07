@@ -17,7 +17,7 @@ namespace App.Services.Organizations.Infrastructure;
 
 public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcService
 {
-    private readonly IEntityDataService _entityDataservice;
+    private readonly IEntityDataService _entityDataService;
 
     private readonly IMapper _mapper;
 
@@ -26,7 +26,7 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
     public OrganizationsGrpcService(IEntityDataService entityDataService, IMapper mapper,
         IPublishEndpoint publishEndpoint)
     {
-        _entityDataservice = entityDataService;
+        _entityDataService = entityDataService;
         _mapper = mapper;
         _publishEndpoint = publishEndpoint;
     }
@@ -41,11 +41,11 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
             {
                 ObjectId.Parse(message.Id);
 
-                entity = await _entityDataservice.GetEntity<OrganizationEntity>(message.Id);
+                entity = await _entityDataService.GetEntity<OrganizationEntity>(message.Id);
             }
             catch (FormatException)
             {
-                entity = await _entityDataservice.GetEntity<OrganizationEntity>(filter =>
+                entity = await _entityDataService.GetEntity<OrganizationEntity>(filter =>
                     filter.Eq(organizationEntity => organizationEntity.Name, message.Id));
             }
 
@@ -61,10 +61,25 @@ public class OrganizationsGrpcService : BaseGrpcService, IOrganizationsGrpcServi
     {
         return TryAsync(async () =>
         {
-            var entities = await _entityDataservice.ListEntities<OrganizationEntity>(filter =>
-                !string.IsNullOrEmpty(message.DepartmentId)
-                    ? filter.Eq(entity => entity.DepartmentId, message.DepartmentId)
-                    : FilterDefinition<OrganizationEntity>.Empty);
+            var filters = new List<FilterDefinition<OrganizationEntity>>();
+
+            if (!string.IsNullOrEmpty(message.SearchText))
+            {
+                filters.Add(new FilterDefinitionBuilder<OrganizationEntity>().Text(message.SearchText));
+            }
+
+            if (!string.IsNullOrEmpty(message.MemberId))
+            {
+                filters.Add(new FilterDefinitionBuilder<OrganizationEntity>().AnyEq(entity => entity.MemberIds, message.MemberId));
+            }
+
+            if (!string.IsNullOrEmpty(message.DepartmentId))
+            {
+                filters.Add(new FilterDefinitionBuilder<OrganizationEntity>().Eq(entity => entity.DepartmentId, message.DepartmentId));
+            }
+
+            var entities = await _entityDataService.ListEntities<OrganizationEntity>(filter =>
+                filters.Any() ? filter.And(filters) : FilterDefinition<OrganizationEntity>.Empty);
 
             return new GetOrganizationsGrpcCommandResult
             {
