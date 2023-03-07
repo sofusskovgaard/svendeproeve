@@ -5,36 +5,37 @@ using App.Services.Turnaments.Infrastructure.Commands;
 using App.Services.Turnaments.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Turnaments.Infrastructure.CommandHandlers
+namespace App.Services.Turnaments.Infrastructure.CommandHandlers;
+
+public class CreateTurnamentCommandHandler : ICommandHandler<CreateTurnamentCommandMessage>
 {
-    public class CreateTurnamentCommandHandler : ICommandHandler<CreateTurnamentCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public CreateTurnamentCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public CreateTurnamentCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        _entityDataService = entityDataService;
+        _publishEndpoint = publishEndpoint;
+    }
+
+    public async Task Consume(ConsumeContext<CreateTurnamentCommandMessage> context)
+    {
+        var message = context.Message;
+
+        var turnament = new TurnamentEntity
         {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
+            Name = message.Name,
+            GameId = message.GameId,
+            EventId = message.EventId
+        };
 
-        public async Task Consume(ConsumeContext<CreateTurnamentCommandMessage> context)
+        turnament = await _entityDataService.Create(turnament);
+
+        await _publishEndpoint.Publish(new TurnamentCreatedEventMessage
         {
-            var message = context.Message;
-
-            TurnamentEntity turnament = new TurnamentEntity
-            {
-                Name = message.Name,
-                GameId = message.GameId,
-                EventId = message.EventId
-            };
-
-            turnament = await this._entityDataService.Create<TurnamentEntity>(turnament);
-
-            await _publishEndpoint.Publish(new TurnamentCreatedEventMessage
-            {
-                Id = turnament.Id,
-                EventId = message.EventId
-            });
-        }
+            Id = turnament.Id,
+            EventId = message.EventId
+        });
     }
 }

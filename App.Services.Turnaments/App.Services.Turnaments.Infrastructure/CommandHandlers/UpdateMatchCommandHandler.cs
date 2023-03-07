@@ -7,46 +7,42 @@ using MassTransit;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
-namespace App.Services.Turnaments.Infrastructure.CommandHandlers
+namespace App.Services.Turnaments.Infrastructure.CommandHandlers;
+
+public class UpdateMatchCommandHandler : ICommandHandler<UpdateMatchCommandMessage>
 {
-    public class UpdateMatchCommandHandler : ICommandHandler<UpdateMatchCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public UpdateMatchCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+        _publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IPublishEndpoint _publishEndpoint;
+    public async Task Consume(ConsumeContext<UpdateMatchCommandMessage> context)
+    {
+        var message = context.Message;
 
-        public UpdateMatchCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        var match = await _entityDataService.GetEntity<MatchEntity>(message.Id);
+
+        var updateDefinition = new UpdateDefinitionBuilder<MatchEntity>().Set(entity => entity.Name, message.Name);
+
+        if (!message.WinningTeamId.IsNullOrEmpty())
+            if (match.WinningTeamId != message.WinningTeamId)
+                updateDefinition = updateDefinition.Set(entity => entity.WinningTeamId, message.WinningTeamId);
+
+        await _entityDataService.Update<MatchEntity>(filter => filter.Eq(entity => entity.Id, message.Id),
+            _ => updateDefinition);
+
+        var updateMessage = new MatchUpdatedEventMessage
         {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
+            Id = message.Id,
+            Name = message.Name,
+            WinningTeamId = message.WinningTeamId
+        };
 
-        public async Task Consume(ConsumeContext<UpdateMatchCommandMessage> context)
-        {
-            var message = context.Message;
-
-            var match = await _entityDataService.GetEntity<MatchEntity>(message.Id);
-
-            var updateDefinition = new UpdateDefinitionBuilder<MatchEntity>().Set(entity => entity.Name, message.Name);
-
-            if (!message.WinningTeamId.IsNullOrEmpty())
-            {
-                if (match.WinningTeamId != message.WinningTeamId)
-                {
-                    updateDefinition = updateDefinition.Set(entity => entity.WinningTeamId, message.WinningTeamId);
-                }
-            }
-
-            await _entityDataService.Update<MatchEntity>(filter => filter.Eq(entity => entity.Id, message.Id), _ => updateDefinition);
-
-            var updateMessage = new MatchUpdatedEventMessage
-            {
-                Id = message.Id,
-                Name = message.Name,
-                WinningTeamId = message.WinningTeamId
-            };
-
-            await _publishEndpoint.Publish(updateMessage);
-        }
+        await _publishEndpoint.Publish(updateMessage);
     }
 }

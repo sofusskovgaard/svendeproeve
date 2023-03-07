@@ -2,14 +2,14 @@
 using App.Services.Turnaments.Common.Dtos;
 using ProtoBuf;
 
-namespace App.Services.Turnaments.Infrastructure.Grpc.CommandResults
+namespace App.Services.Turnaments.Infrastructure.Grpc.CommandResults;
+
+[ProtoContract]
+public class GetAllTurnamentsGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoContract]
-    public class GetAllTurnamentsGrpcCommandResult : IGrpcCommandResult
-    {
-        [ProtoMember(1)]
-        public GrpcCommandResultMetadata Metadata { get; set; }
-        [ProtoMember(2)]
-        public IEnumerable<TurnamentDto> TurnamentDtos { get; set; }
-    }
+    [ProtoMember(2)]
+    public IEnumerable<TurnamentDto> TurnamentDtos { get; set; }
+
+    [ProtoMember(1)]
+    public GrpcCommandResultMetadata Metadata { get; set; }
 }

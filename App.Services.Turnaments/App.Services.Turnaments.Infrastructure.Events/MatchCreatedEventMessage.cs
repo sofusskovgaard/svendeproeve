@@ -1,10 +1,10 @@
 ﻿using App.Infrastructure.Events;
 
-namespace App.Services.Turnaments.Infrastructure.Events
+namespace App.Services.Turnaments.Infrastructure.Events;
+
+public class MatchCreatedEventMessage : IEventMessage
 {
-    public class MatchCreatedEventMessage : IEventMessage
-    {
-        public string Id { get; set; }
-        public string TurnamentId { get; set; }
-    }
+    public string Id { get; set; }
+
+    public string TurnamentId { get; set; }
 }

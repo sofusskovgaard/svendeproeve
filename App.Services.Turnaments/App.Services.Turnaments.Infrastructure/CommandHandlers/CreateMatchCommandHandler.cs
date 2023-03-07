@@ -5,36 +5,37 @@ using App.Services.Turnaments.Infrastructure.Commands;
 using App.Services.Turnaments.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Turnaments.Infrastructure.CommandHandlers
+namespace App.Services.Turnaments.Infrastructure.CommandHandlers;
+
+public class CreateMatchCommandHandler : ICommandHandler<CreateMatchCommandMessage>
 {
-    public class CreateMatchCommandHandler : ICommandHandler<CreateMatchCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public CreateMatchCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public CreateMatchCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+        _entityDataService = entityDataService;
+        _publishEndpoint = publishEndpoint;
+    }
+
+    public async Task Consume(ConsumeContext<CreateMatchCommandMessage> context)
+    {
+        var message = context.Message;
+
+        var match = new MatchEntity
         {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
+            Name = message.Name,
+            TeamsId = message.TeamsId,
+            TurnamentId = message.TurnamentId
+        };
 
-        public async Task Consume(ConsumeContext<CreateMatchCommandMessage> context)
+        match = await _entityDataService.Create(match);
+
+        await _publishEndpoint.Publish(new MatchCreatedEventMessage
         {
-            var message = context.Message;
-
-            MatchEntity match = new MatchEntity
-            {
-                Name = message.Name,
-                TeamsId = message.TeamsId,
-                TurnamentId = message.TurnamentId
-            };
-
-            match = await this._entityDataService.Create<MatchEntity>(match);
-
-            await _publishEndpoint.Publish(new MatchCreatedEventMessage
-            {
-                Id = match.Id,
-                TurnamentId = message.TurnamentId
-            });
-        }
+            Id = match.Id,
+            TurnamentId = message.TurnamentId
+        });
     }
 }

@@ -1,12 +1,11 @@
 ﻿using App.Common.Grpc;
 using ProtoBuf;
 
-namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages
+namespace App.Services.Turnaments.Infrastructure.Grpc.CommandMessages;
+
+[ProtoContract]
+public class GetAllTurnamentsGrpcCommandMessage : GrpcCommandMessage
 {
-    [ProtoContract]
-    public class GetAllTurnamentsGrpcCommandMessage : GrpcCommandMessage
-    {
-        [ProtoMember(100)]
-        public override GrpcCommandMessageMetadata? Metadata { get; set; }
-    }
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

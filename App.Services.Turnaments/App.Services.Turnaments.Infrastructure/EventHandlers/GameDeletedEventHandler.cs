@@ -5,29 +5,31 @@ using App.Services.Turnaments.Data.Entities;
 using MassTransit;
 using MongoDB.Driver;
 
-namespace App.Services.Turnaments.Infrastructure.EventHandlers
+namespace App.Services.Turnaments.Infrastructure.EventHandlers;
+
+public class GameDeletedEventHandler : IEventHandler<GameDeletedEventMessage>
 {
-    public class GameDeletedEventHandler : IEventHandler<GameDeletedEventMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    public GameDeletedEventHandler(IEntityDataService entityDataService)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+    }
 
-        public GameDeletedEventHandler(IEntityDataService entityDataService)
+    public async Task Consume(ConsumeContext<GameDeletedEventMessage> context)
+    {
+        var message = context.Message;
+
+        var turnaments =
+            await _entityDataService.ListEntities<TurnamentEntity>(filter =>
+                filter.Eq(entity => entity.GameId, message.Id));
+
+        foreach (var turnament in turnaments)
         {
-            _entityDataService = entityDataService;
-        }
+            var updateDefinition = new UpdateDefinitionBuilder<TurnamentEntity>().Set(entity => entity.GameId, null);
 
-        public async Task Consume(ConsumeContext<GameDeletedEventMessage> context)
-        {
-            var message = context.Message;
-
-            var turnaments = await _entityDataService.ListEntities<TurnamentEntity>(filter => filter.Eq(entity => entity.GameId, message.Id));
-
-            foreach (var turnament in turnaments)
-            {
-                var updateDefinition = new UpdateDefinitionBuilder<TurnamentEntity>().Set(entity => entity.GameId, null);
-
-                await _entityDataService.Update<TurnamentEntity>(filter => filter.Eq(entity => entity.Id, turnament.Id), _ => updateDefinition);
-            }
+            await _entityDataService.Update<TurnamentEntity>(filter => filter.Eq(entity => entity.Id, turnament.Id),
+                _ => updateDefinition);
         }
     }
 }
