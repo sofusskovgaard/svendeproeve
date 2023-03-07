@@ -10,8 +10,15 @@ using MongoDB.Driver;
 
 namespace App.Data.Extensions;
 
+/// <summary>
+///     Extension methods used to add the required boilerplate to enable MongoDB access
+/// </summary>
 public static class DatabaseRegistrationExtensions
 {
+    /// <summary>
+    ///     Add MongoDB to <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add MongoDB to</param>
     public static void AddMongoDb(this IServiceCollection services)
     {
         BsonSerializer.RegisterSerializer(new DecimalSerializer(BsonType.Decimal128));

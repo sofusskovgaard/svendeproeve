@@ -1,5 +1,8 @@
 ﻿namespace App.Data.Attributes;
 
+/// <summary>
+///     Used define a property as part of a index in a collection
+/// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public class IndexedPropertyAttribute : Attribute
 {

@@ -74,15 +74,6 @@ public class EntityDataService : IEntityDataService
         return entities;
     }
 
-    [Obsolete("Use the other update method")]
-    public async Task<T> Update<T>(T entity) where T : IEntity
-    {
-        var collection = this._db.GetCollection<T>();
-        await collection.UpdateOneAsync(f => f.Id == entity.Id, new ObjectUpdateDefinition<T>(entity));
-
-        return entity;
-    }
-
     public async Task<bool> Update<T>(Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter, Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> definition, UpdateOptions? options = null) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();
