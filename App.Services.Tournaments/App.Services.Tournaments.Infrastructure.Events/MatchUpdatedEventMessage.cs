@@ -10,7 +10,7 @@ public class MatchUpdatedEventMessage : IEventMessage
 
     public string[] TeamsId { get; set; }
 
-    public string TurnamentId { get; set; }
+    public string TournamentId { get; set; }
 
     public string WinningTeamId { get; set; }
 }

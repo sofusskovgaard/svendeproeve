@@ -30,76 +30,43 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
 
     #region Tournaments
 
-    public ValueTask<GetAllTournamentsGrpcCommandResult> GetAllTournaments(GetAllTournamentsGrpcCommandMessage message)
+    public ValueTask<GetTournamentsGrpcCommandResult> GetTournaments(GetTournamentsGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var turnaments = await _entityDataService.ListEntities<TournamentEntity>();
+            var filters = new List<FilterDefinition<TournamentEntity>>();
 
-            return new GetAllTournamentsGrpcCommandResult
+            if (!string.IsNullOrEmpty(message.EventId))
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                TurnamentDtos = _mapper.Map<IEnumerable<TournamentDto>>(turnaments)
+                filters.Add(new FilterDefinitionBuilder<TournamentEntity>().Eq(entity => entity.EventId, message.EventId));
+            }
+
+            if (!string.IsNullOrEmpty(message.GameId))
+            {
+                filters.Add(new FilterDefinitionBuilder<TournamentEntity>().Eq(entity => entity.GameId, message.GameId));
+            }
+
+            var entities = await _entityDataService.ListEntities<TournamentEntity>(filter =>
+                filters.Any() ? filter.And(filters) : FilterDefinition<TournamentEntity>.Empty);
+
+            return new GetTournamentsGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<TournamentDto[]>(entities)
             };
         });
     }
 
-    public ValueTask<GetTournamentsByEventIdGrpcCommandResult> GetTournamentsByEventId(
-        GetTournamentsByEventIdGrpcCommandMessage message)
+    public ValueTask<GetTournamentByMatchIdGrpcCommandResult> GetTournamentByMatchId(GetTournamentByMatchIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            var turnaments = await _entityDataService.ListEntities(
-                new ExpressionFilterDefinition<TournamentEntity>(entity => entity.EventId == message.EventId));
-
-            return new GetTournamentsByEventIdGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                TurnamentDtos = _mapper.Map<IEnumerable<TournamentDto>>(turnaments)
-            };
-        });
-    }
-
-    public ValueTask<GetTournamentsByGameIdGrpcCommandResult> GetTournamentsByGameId(
-        GetTournamentsByGameIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var turnaments = await _entityDataService.ListEntities(
-                new ExpressionFilterDefinition<TournamentEntity>(entity => entity.GameId == message.GameId));
-
-            return new GetTournamentsByGameIdGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                TurnamentDtos = _mapper.Map<IEnumerable<TournamentDto>>(turnaments)
-            };
-        });
-    }
-
-    public ValueTask<GetTournamentByMatchIdGrpcCommandResult> GetTournamentByMatchId(
-        GetTournamentByMatchIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var turnament = await _entityDataService.ListEntities(
-                new ExpressionFilterDefinition<TournamentEntity>(entity => entity.MatchesId.Contains(message.MatchId)));
+            var entity = await _entityDataService.GetEntity<TournamentEntity>(filter => filter.AnyEq(entity => entity.MatchesId, message.MatchId));
 
             return new GetTournamentByMatchIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                TournamentDto = _mapper.Map<TournamentDto>(turnament.FirstOrDefault())
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<TournamentDto>(entity)
             };
         });
     }
@@ -108,15 +75,12 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
     {
         return TryAsync(async () =>
         {
-            var turnament = await _entityDataService.GetEntity<TournamentEntity>(message.Id);
+            var entity = await _entityDataService.GetEntity<TournamentEntity>(message.Id);
 
             return new GetTournamentByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                TournamentDto = _mapper.Map<TournamentDto>(turnament)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<TournamentDto>(entity)
             };
         });
     }
@@ -132,13 +96,7 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
                 EventId = message.EventId
             });
 
-            return new CreateTournamentGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new CreateTournamentGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 
@@ -148,38 +106,21 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
         {
             await _publishEndpoint.Publish(new UpdateTournamentCommandMessage
             {
-                Id = message.TournamentDto.Id,
-                Name = message.TournamentDto.Name,
-                GameId = message.TournamentDto.GameId
+                Id = message.Id,
+                Name = message.Name,
+                GameId = message.GameId
             });
 
-            return new UpdateTournamentGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new UpdateTournamentGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 
-    public ValueTask<DeleteTournamentByIdGrpcCommandResult> DeleteTournamentById(
-        DeleteTournamentByIdGrpcCommandMessage message)
+    public ValueTask<DeleteTournamentByIdGrpcCommandResult> DeleteTournamentById(DeleteTournamentByIdGrpcCommandMessage message)
     {
         return TryAsync(async () =>
         {
-            await _publishEndpoint.Publish(new DeleteTournamentCommandMessage
-            {
-                Id = message.Id
-            });
-
-            return new DeleteTournamentByIdGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            await _publishEndpoint.Publish(new DeleteTournamentCommandMessage{ Id = message.Id });
+            return new DeleteTournamentByIdGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 
@@ -187,40 +128,34 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
 
     #region Matches
 
-    public ValueTask<GetMatchesByTournamentIdGrpcCommandResult> GetMatchesByTournamentId(
-        GetMatchesByTurnamentIdGrpcCommandMessage message)
+    public ValueTask<GetMatchesGrpcCommandResult> GetMatches(GetMatchesGrpcCommandMessage message)
     {
-        return TryAsync(async () =>
+        return this.TryAsync(async () =>
         {
-            var matches = await _entityDataService.ListEntities(
-                new ExpressionFilterDefinition<MatchEntity>(entity => entity.TurnamentId == message.TurnamentId));
+            var filters = new List<FilterDefinition<MatchEntity>>();
 
-            return new GetMatchesByTournamentIdGrpcCommandResult
+            if (!string.IsNullOrEmpty(message.TeamId))
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                MatchDtos = _mapper.Map<IEnumerable<MatchDto>>(matches)
-            };
-        });
-    }
+                filters.Add(new FilterDefinitionBuilder<MatchEntity>().AnyEq(entity => entity.TeamsId, message.TeamId));
+            }
 
-    public ValueTask<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeamId(
-        GetMatchesByTeamIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var matches = await _entityDataService.ListEntities(
-                new ExpressionFilterDefinition<MatchEntity>(entity => entity.TeamsId.Contains(message.TeamId)));
-
-            return new GetMatchesByTeamIdGrpcCommandResult
+            if (!string.IsNullOrEmpty(message.TournamentId))
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                MatchDtos = _mapper.Map<IEnumerable<MatchDto>>(matches)
+                filters.Add(new FilterDefinitionBuilder<MatchEntity>().Eq(entity => entity.TournamentId, message.TournamentId));
+            }
+
+            if (!string.IsNullOrEmpty(message.WinningTeamId))
+            {
+                filters.Add(new FilterDefinitionBuilder<MatchEntity>().Eq(entity => entity.WinningTeamId, message.WinningTeamId));
+            }
+
+            var entities = await _entityDataService.ListEntities<MatchEntity>(filter =>
+                filters.Any() ? filter.And(filters) : FilterDefinition<MatchEntity>.Empty);
+
+            return new GetMatchesGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata { Success = true },
+                Data = _mapper.Map<MatchDto[]>(entities)
             };
         });
     }
@@ -229,15 +164,12 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
     {
         return TryAsync(async () =>
         {
-            var match = await _entityDataService.GetEntity<MatchEntity>(message.Id);
+            var entity = await _entityDataService.GetEntity<MatchEntity>(message.Id);
 
             return new GetMatchByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                MatchDto = _mapper.Map<MatchDto>(match)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<MatchDto>(entity)
             };
         });
     }
@@ -250,16 +182,10 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
             {
                 Name = message.Name,
                 TeamsId = message.TeamsId,
-                TurnamentId = message.TurnamentId
+                TournamentId = message.TournamentId
             });
 
-            return new CreateMatchGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new CreateMatchGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
@@ -269,18 +195,12 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
         {
             await _publishEndpoint.Publish(new UpdateMatchCommandMessage
             {
-                Id = message.MatchDto.Id,
-                Name = message.MatchDto.Name,
-                WinningTeamId = message.MatchDto.WinningTeamId
+                Id = message.Id,
+                Name = message.Name,
+                WinningTeamId = message.WinningTeamId
             });
 
-            return new UpdateMatchGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new UpdateMatchGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 
@@ -288,18 +208,8 @@ public class TournamentsGrpcService : BaseGrpcService, ITournamentsGrpcService
     {
         return TryAsync(async () =>
         {
-            await _publishEndpoint.Publish(new DeleteMatchCommandMessage
-            {
-                Id = message.Id
-            });
-
-            return new DeleteMatchByIdGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            await _publishEndpoint.Publish(new DeleteMatchCommandMessage{ Id = message.Id });
+            return new DeleteMatchByIdGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 

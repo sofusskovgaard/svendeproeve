@@ -17,7 +17,7 @@ public class MatchEntity : BaseEntity
     public string[] TeamsId { get; set; }
 
     [IndexedProperty("tournament")]
-    public string TurnamentId { get; set; }
+    public string TournamentId { get; set; }
 
     [IndexedProperty("winning_team")]
     public string WinningTeamId { get; set; }

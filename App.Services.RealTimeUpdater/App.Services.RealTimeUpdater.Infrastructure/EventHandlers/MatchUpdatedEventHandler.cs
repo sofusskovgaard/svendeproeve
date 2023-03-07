@@ -30,7 +30,7 @@ namespace App.Services.RealTimeUpdater.Infrastructure.EventHandlers
                 Id = message.Id,
                 Name = message.Name,
                 TeamsId = message.TeamsId,
-                TurnamentId = message.TurnamentId,
+                TournamentId = message.TournamentId,
                 WinningTeamId = message.WinningTeamId
             };
 

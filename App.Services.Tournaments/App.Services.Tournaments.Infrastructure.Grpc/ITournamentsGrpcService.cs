@@ -7,22 +7,16 @@ namespace App.Services.Tournaments.Infrastructure.Grpc;
 [Service("app.services.tournaments")]
 public interface ITournamentsGrpcService
 {
-    #region Turnaments
+    #region Tournaments
 
     [Operation]
-    ValueTask<GetAllTournamentsGrpcCommandResult> GetAllTournaments(GetAllTournamentsGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTournamentsByEventIdGrpcCommandResult> GetTournamentsByEventId(GetTournamentsByEventIdGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTournamentsByGameIdGrpcCommandResult> GetTournamentsByGameId(GetTournamentsByGameIdGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetTournamentByMatchIdGrpcCommandResult> GetTournamentByMatchId(GetTournamentByMatchIdGrpcCommandMessage message);
+    ValueTask<GetTournamentsGrpcCommandResult> GetTournaments(GetTournamentsGrpcCommandMessage message);
 
     [Operation]
     ValueTask<GetTournamentByIdGrpcCommandResult> GetTournamentById(GetTournamentByIdGrpcCommandMessage message);
+
+    [Operation]
+    ValueTask<GetTournamentByMatchIdGrpcCommandResult> GetTournamentByMatchId(GetTournamentByMatchIdGrpcCommandMessage message);
 
     [Operation]
     ValueTask<CreateTournamentGrpcCommandResult> CreateTournament(CreateTournamentGrpcCommandMessage message);
@@ -38,10 +32,7 @@ public interface ITournamentsGrpcService
     #region Mathes
 
     [Operation]
-    ValueTask<GetMatchesByTournamentIdGrpcCommandResult> GetMatchesByTournamentId(GetMatchesByTurnamentIdGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeamId(GetMatchesByTeamIdGrpcCommandMessage message);
+    ValueTask<GetMatchesGrpcCommandResult> GetMatches(GetMatchesGrpcCommandMessage message);
 
     [Operation]
     ValueTask<GetMatchByIdGrpcCommandResult> GetMatchById(GetMatchByIdGrpcCommandMessage message);

@@ -7,29 +7,29 @@ using MassTransit;
 
 namespace App.Services.Tournaments.Infrastructure.CommandHandlers;
 
-public class DeleteTurnamentCommandHandler : ICommandHandler<DeleteTournamentCommandMessage>
+public class CreateTournamentCommandHandler : ICommandHandler<CreateTournamentCommandMessage>
 {
     private readonly IEntityDataService _entityDataService;
 
     private readonly IPublishEndpoint _publishEndpoint;
 
-    public DeleteTurnamentCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
+    public CreateTournamentCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
         _entityDataService = entityDataService;
         _publishEndpoint = publishEndpoint;
     }
 
-    public async Task Consume(ConsumeContext<DeleteTournamentCommandMessage> context)
+    public async Task Consume(ConsumeContext<CreateTournamentCommandMessage> context)
     {
         var message = context.Message;
 
-        var turnament = await _entityDataService.GetEntity<TournamentEntity>(message.Id);
-
-        await _entityDataService.Delete(turnament);
-
-        await _publishEndpoint.Publish(new TournamentDeletedEventMessage
+        var entity = await _entityDataService.Create(new TournamentEntity
         {
-            Id = message.Id
+            Name = message.Name,
+            GameId = message.GameId,
+            EventId = message.EventId
         });
+
+        await _publishEndpoint.Publish(new TournamentCreatedEventMessage{ Id = entity.Id!, EventId = message.EventId });
     }
 }

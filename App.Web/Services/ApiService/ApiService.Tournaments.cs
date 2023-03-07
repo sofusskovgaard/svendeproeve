@@ -23,14 +23,6 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetTournamentByMatchIdGrpcCommandResult>();
         }
 
-        public async Task<GetTournamentsByEventIdGrpcCommandResult> GetTournamentsByEvent(string @event)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments/{@event}/event");
-
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetTournamentsByEventIdGrpcCommandResult>();
-        }
-
         public async Task<GetTournamentsByGameIdGrpcCommandResult> GetTournamentsByGame(string game)
         {
             var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments/{game}/game");
@@ -39,17 +31,17 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetTournamentsByGameIdGrpcCommandResult>();
         }
 
-        public async Task<GetAllTournamentsGrpcCommandResult> GetAllTournaments()
+        public async Task<GetTournamentsGrpcCommandResult> GetAllTournaments()
         {
             var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments");
 
             var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetAllTournamentsGrpcCommandResult>();
+            return await response.Content.ReadFromJsonAsync<GetTournamentsGrpcCommandResult>();
         }
 
         public async Task<GetMatchByIdGrpcCommandResult> GetMatchById(string id)
         {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments/matches/{id}");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/matches/{id}");
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetMatchByIdGrpcCommandResult>();
@@ -61,14 +53,6 @@ namespace App.Web.Services.ApiService
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetMatchesByTeamIdGrpcCommandResult>();
-        }
-
-        public async Task<GetMatchesByTournamentIdGrpcCommandResult> GetMatchesByTournament(string turnament)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments/matches/{turnament}/tournament");
-
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetMatchesByTournamentIdGrpcCommandResult>();
         }
 
         public async Task<CreateTournamentGrpcCommandResult> CreateTournament(CreateTournamentModel data)
@@ -131,17 +115,13 @@ namespace App.Web.Services.ApiService
 
         Task<GetTournamentByMatchIdGrpcCommandResult> GetTournamentByMatch(string match);
 
-        Task<GetTournamentsByEventIdGrpcCommandResult> GetTournamentsByEvent(string @event);
-
         Task<GetTournamentsByGameIdGrpcCommandResult> GetTournamentsByGame(string game);
 
-        Task<GetAllTournamentsGrpcCommandResult> GetAllTournaments();
+        Task<GetTournamentsGrpcCommandResult> GetAllTournaments();
 
         Task<GetMatchByIdGrpcCommandResult> GetMatchById(string id);
 
         Task<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeam(string team);
-
-        Task<GetMatchesByTournamentIdGrpcCommandResult> GetMatchesByTournament(string turnament);
 
         Task<CreateTournamentGrpcCommandResult> CreateTournament(CreateTournamentModel data);
 

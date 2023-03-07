@@ -8,7 +8,7 @@ namespace App.Services.Tournaments.Infrastructure.Grpc.CommandResults;
 public class GetTournamentsByGameIdGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public IEnumerable<TournamentDto> TurnamentDtos { get; set; }
+    public TournamentDto[] Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }

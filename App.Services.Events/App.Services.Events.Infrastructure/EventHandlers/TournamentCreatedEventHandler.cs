@@ -21,14 +21,14 @@ public class TournamentCreatedEventHandler : IEventHandler<TournamentCreatedEven
     {
         var @event = await this._entityDataService.GetEntity<EventEntity>(context.Message.EventId);
 
-        var turnaments = new List<string>();
-        if (!@event.Tournaments.IsNullOrEmpty()) turnaments = @event.Tournaments.ToList();
-        turnaments.Add(context.Message.Id);
+        var tournaments = new List<string>();
 
-        var updateDefinition =
-            new UpdateDefinitionBuilder<EventEntity>().Set(entity => entity.Tournaments, turnaments.ToArray());
+        if (!@event.Tournaments.IsNullOrEmpty())
+            tournaments = @event.Tournaments.ToList();
 
-        await this._entityDataService.Update<EventEntity>(filter => filter.Eq(enity => enity.Id, @event.Id),
-            _ => updateDefinition);
+        tournaments.Add(context.Message.Id);
+
+        await this._entityDataService.Update<EventEntity>(filter => filter.Eq(entity => entity.Id, @event.Id),
+            builder => builder.Set(entity => entity.Tournaments, tournaments.ToArray()));
     }
 }

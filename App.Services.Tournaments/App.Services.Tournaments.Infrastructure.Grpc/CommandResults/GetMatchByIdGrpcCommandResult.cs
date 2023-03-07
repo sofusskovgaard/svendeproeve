@@ -8,7 +8,7 @@ namespace App.Services.Tournaments.Infrastructure.Grpc.CommandResults;
 public class GetMatchByIdGrpcCommandResult : IGrpcCommandResult
 {
     [ProtoMember(2)]
-    public MatchDto MatchDto { get; set; }
+    public MatchDto Data { get; set; }
 
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }

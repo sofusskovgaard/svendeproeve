@@ -15,7 +15,7 @@ public class MatchDto
     public string[] TeamsId { get; set; }
 
     [ProtoMember(4)]
-    public string TurnamentId { get; set; }
+    public string TournamentId { get; set; }
 
     [ProtoMember(5)]
     public string WinningTeamId { get; set; }

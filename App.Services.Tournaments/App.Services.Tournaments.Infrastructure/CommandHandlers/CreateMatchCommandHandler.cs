@@ -27,7 +27,7 @@ public class CreateMatchCommandHandler : ICommandHandler<CreateMatchCommandMessa
         {
             Name = message.Name,
             TeamsId = message.TeamsId,
-            TurnamentId = message.TurnamentId
+            TournamentId = message.TournamentId
         };
 
         match = await _entityDataService.Create(match);
@@ -35,7 +35,7 @@ public class CreateMatchCommandHandler : ICommandHandler<CreateMatchCommandMessa
         await _publishEndpoint.Publish(new MatchCreatedEventMessage
         {
             Id = match.Id,
-            TurnamentId = message.TurnamentId
+            TournamentId = message.TournamentId
         });
     }
 }

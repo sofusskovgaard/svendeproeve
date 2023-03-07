@@ -8,7 +8,13 @@ namespace App.Services.Tournaments.Infrastructure.Grpc.CommandMessages;
 public class UpdateTournamentGrpcCommandMessage : GrpcCommandMessage
 {
     [ProtoMember(1)]
-    public TournamentDto TournamentDto { get; set; }
+    public string Id { get; set; }
+
+    [ProtoMember(2)]
+    public string Name { get; set; }
+
+    [ProtoMember(3)]
+    public string GameId { get; set; }
 
     [ProtoMember(100)]
     public override GrpcCommandMessageMetadata? Metadata { get; set; }

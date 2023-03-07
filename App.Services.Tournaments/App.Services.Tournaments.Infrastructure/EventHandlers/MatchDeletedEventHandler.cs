@@ -20,18 +20,9 @@ public class MatchDeletedEventHandler : IEventHandler<MatchDeletedEventMessage>
     {
         var message = context.Message;
 
-        var turnaments = await _entityDataService.ListEntities<TournamentEntity>(filter =>
-            filter.AnyStringIn(entity => entity.MatchesId, message.Id));
-
-        foreach (var turnament in turnaments)
-        {
-            turnament.MatchesId = turnament.MatchesId.Where(m => m != message.Id).ToArray();
-
-            var updateDefinition =
-                new UpdateDefinitionBuilder<TournamentEntity>().Set(entity => entity.MatchesId, turnament.MatchesId);
-
-            await _entityDataService.Update<TournamentEntity>(filter => filter.Eq(entity => entity.Id, turnament.Id),
-                _ => updateDefinition);
-        }
+        await _entityDataService.Update<TournamentEntity>(
+            filter => filter.AnyEq(entity => entity.MatchesId, message.Id),
+            builder => builder.PullFilter(entity => entity.MatchesId,
+                new FilterDefinitionBuilder<string>().Eq(s => s, message.Id)));
     }
 }

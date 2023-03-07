@@ -13,7 +13,7 @@ public class CreateMatchGrpcCommandMessage : GrpcCommandMessage
     public string[] TeamsId { get; set; }
 
     [ProtoMember(3)]
-    public string TurnamentId { get; set; }
+    public string TournamentId { get; set; }
 
     [ProtoMember(100)]
     public override GrpcCommandMessageMetadata? Metadata { get; set; }

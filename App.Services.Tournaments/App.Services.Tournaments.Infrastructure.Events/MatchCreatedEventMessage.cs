@@ -6,5 +6,5 @@ public class MatchCreatedEventMessage : IEventMessage
 {
     public string Id { get; set; }
 
-    public string TurnamentId { get; set; }
+    public string TournamentId { get; set; }
 }

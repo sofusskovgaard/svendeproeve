@@ -8,5 +8,5 @@ public class CreateMatchCommandMessage : ICommandMessage
 
     public string[] TeamsId { get; set; }
 
-    public string TurnamentId { get; set; }
+    public string TournamentId { get; set; }
 }

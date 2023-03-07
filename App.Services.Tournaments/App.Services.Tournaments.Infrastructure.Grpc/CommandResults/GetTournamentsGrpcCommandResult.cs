@@ -5,11 +5,11 @@ using ProtoBuf;
 namespace App.Services.Tournaments.Infrastructure.Grpc.CommandResults;
 
 [ProtoContract]
-public class GetMatchesByTournamentIdGrpcCommandResult : IGrpcCommandResult
+public class GetTournamentsGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoMember(2)]
-    public IEnumerable<MatchDto> MatchDtos { get; set; }
-
     [ProtoMember(1)]
     public GrpcCommandResultMetadata Metadata { get; set; }
+
+    [ProtoMember(2)]
+    public TournamentDto[] Data { get; set; }
 }
