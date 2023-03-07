@@ -1,7 +1,7 @@
 ﻿using App.Infrastructure.Events;
 using App.Services.RealTimeUpdater.Infrastructure.Hubs;
-using App.Services.Turnaments.Common.Dtos;
-using App.Services.Turnaments.Infrastructure.Events;
+using App.Services.Tournaments.Common.Dtos;
+using App.Services.Tournaments.Infrastructure.Events;
 using AutoMapper;
 using MassTransit;
 using System;

@@ -1,4 +1,4 @@
-﻿using App.Services.Turnaments.Common.Dtos;
+﻿using App.Services.Tournaments.Common.Dtos;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace App.Web.Services.WebsocketService;

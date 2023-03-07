@@ -20,7 +20,7 @@
         "app.services.organizations": "StartDebugging",
         "app.services.teams": "StartDebugging",
         "app.services.tickets": "StartDebugging",
-        "app.services.turnaments": "StartDebugging",
+        "app.services.tournaments": "StartDebugging",
         "redis": "StartWithoutDebugging",
         "app.services.realtimeupdater": "StartDebugging"
       }

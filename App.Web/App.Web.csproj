@@ -39,8 +39,8 @@
     <ProjectReference Include="..\App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.Common\App.Services.RealTimeUpdater.Common.csproj" />
     <ProjectReference Include="..\App.Services.Teams\App.Services.Teams.Infrastructure.Grpc\App.Services.Teams.Infrastructure.Grpc.csproj" />
     <ProjectReference Include="..\App.Services.Tickets\App.Services.Tickets.Infrastructure.Grpc\App.Services.Tickets.Infrastructure.Grpc.csproj" />
-    <ProjectReference Include="..\App.Services.Turnaments\App.Services.Turnaments.Common\App.Services.Turnaments.Common.csproj" />
-    <ProjectReference Include="..\App.Services.Turnaments\App.Services.Turnaments.Infrastructure.Grpc\App.Services.Turnaments.Infrastructure.Grpc.csproj" />
+    <ProjectReference Include="..\App.Services.Tournaments\App.Services.Tournaments.Common\App.Services.Tournaments.Common.csproj" />
+    <ProjectReference Include="..\App.Services.Tournaments\App.Services.Tournaments.Infrastructure.Grpc\App.Services.Tournaments.Infrastructure.Grpc.csproj" />
     <ProjectReference Include="..\App.Services.Users\App.Services.Users.Common\App.Services.Users.Common.csproj" />
     <ProjectReference Include="..\App.Services.Users\App.Services.Users.Infrastructure.Grpc\App.Services.Users.Infrastructure.Grpc.csproj" />
   </ItemGroup>

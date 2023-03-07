@@ -1,5 +1,5 @@
 ﻿using App.Services.RealTimeUpdater.Common.models;
-using App.Services.Turnaments.Common.Dtos;
+using App.Services.Tournaments.Common.Dtos;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;

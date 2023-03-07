@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\App.Services.Turnaments\App.Services.Turnaments.Infrastructure.Events\App.Services.Turnaments.Infrastructure.Events.csproj" />
+        <ProjectReference Include="..\..\App.Services.Tournaments\App.Services.Tournaments.Infrastructure.Events\App.Services.Tournaments.Infrastructure.Events.csproj" />
         <ProjectReference Include="..\App.Services.Events.Data\App.Services.Events.Data.csproj" />
         <ProjectReference Include="..\App.Services.Events.Infrastructure.Commands\App.Services.Events.Infrastructure.Commands.csproj" />
         <ProjectReference Include="..\App.Services.Events.Infrastructure.Events\App.Services.Events.Infrastructure.Events.csproj" />
