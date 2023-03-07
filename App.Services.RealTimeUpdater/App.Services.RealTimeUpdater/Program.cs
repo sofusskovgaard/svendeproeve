@@ -13,10 +13,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Services.Authentication.Infrastructure.Grpc;
 using RealTimeUpdater.Infrastructure.Hubs;
+using App.Services.Gateway.Infrastructure.Extensions;
+using App.Services.RealTimeUpdater.Infrastructure.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.RegisterSerilog();
+
+builder.Services.AddSingleton(sp => new HttpClient());
 
 builder.Services.AddHostedService<FakeWattageMonitorHostedService>();
 
@@ -30,9 +34,10 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IMatchHub, MatchHub>();
 builder.Services.AddScoped<ICO2DashHub, CO2DashHub>();
-builder.Services.AddSingleton<ICO2apiService, CO2apiService>();
+builder.Services.AddScoped<ICO2apiService, CO2apiService>();
 //builder.Services.AddSingleton<IFakeWattageMonitorServiceHelper, FakeWattageMonitorServiceHelper>();
 //builder.Services.AddScoped<IFakeWattageMonitorService, FakeWattageMonitorService>();
+builder.Services.AddSingleton<DataCache, DataCache>();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
