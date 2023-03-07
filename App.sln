@@ -211,10 +211,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Turnaments.Infrastructure.Commands", "App.Services.Turnaments\App.Services.Turnaments.Infrastructure.Commands\App.Services.Turnaments.Infrastructure.Commands.csproj", "{5CC49936-6732-4DB3-B2AF-B4AD52087E55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Turnaments.Infrastructure.Events", "App.Services.Turnaments\App.Services.Turnaments.Infrastructure.Events\App.Services.Turnaments.Infrastructure.Events.csproj", "{C72FA008-FA4E-4FEE-AED9-423B03438136}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dev", "Dev", "{6D24D6D0-3933-41C4-8553-34A288E6E170}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Turnaments.Infrastructure.Grpc", "App.Services.Turnaments\App.Services.Turnaments.Infrastructure.Grpc\App.Services.Turnaments.Infrastructure.Grpc.csproj", "{D02AF262-8B59-4C60-A81A-423931EAFD0F}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmqpMessages", "Dev\AmqpMessages\AmqpMessages.csproj", "{E3478C22-BE6A-4D07-A737-CE63A651755E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AmqpMessages", "Dev\AmqpMessages\AmqpMessages.csproj", "{E3478C22-BE6A-4D07-A737-CE63A651755E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{373AD218-9E4D-4AE6-83DF-4DC7250FFAC7}"
 EndProject
@@ -234,7 +236,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdate
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.RealTimeUpdater.Infrastructure", "App.Services.RealTimeUpdater\App.Services.RealTimeUpdater.Infrastructure\App.Services.RealTimeUpdater.Infrastructure.csproj", "{87386BE9-76DA-4E65-AB71-677CFB492A6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Services.Gateway.Infrastructure", "App.Services.Gateway\App.Services.Gateway.Infrastructure\App.Services.Gateway.Infrastructure.csproj", "{C07E5D1A-62C9-4A06-A469-9E096CBD260E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Gateway.Infrastructure", "App.Services.Gateway\App.Services.Gateway.Infrastructure\App.Services.Gateway.Infrastructure.csproj", "{C07E5D1A-62C9-4A06-A469-9E096CBD260E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -594,6 +596,10 @@ Global
 		{D02AF262-8B59-4C60-A81A-423931EAFD0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D02AF262-8B59-4C60-A81A-423931EAFD0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D02AF262-8B59-4C60-A81A-423931EAFD0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10C1634E-2DB2-4168-B689-E1AF5AF28827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10C1634E-2DB2-4168-B689-E1AF5AF28827}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10C1634E-2DB2-4168-B689-E1AF5AF28827}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -626,10 +632,6 @@ Global
 		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C07E5D1A-62C9-4A06-A469-9E096CBD260E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3478C22-BE6A-4D07-A737-CE63A651755E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
