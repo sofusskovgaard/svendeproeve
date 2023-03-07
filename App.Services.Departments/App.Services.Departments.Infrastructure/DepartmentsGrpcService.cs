@@ -38,7 +38,7 @@ public class DepartmentsGrpcService : BaseGrpcService, IDepartmentsGrpcService
             return new GetAllDepartmentsGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata{ Success = true },
-                Data = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                Data = this._mapper.Map<DepartmentDto[]>(departments)
             };
         });
     }
@@ -52,7 +52,7 @@ public class DepartmentsGrpcService : BaseGrpcService, IDepartmentsGrpcService
             return new GetDepartmentsByNameGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata{ Success = true },
-                Data = this._mapper.Map<IEnumerable<DepartmentDto>>(departments)
+                Data = this._mapper.Map<DepartmentDto[]>(departments)
             };
         });
     }

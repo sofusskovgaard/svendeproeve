@@ -25,13 +25,20 @@ public class EventsController : ApiController
     /// <summary>
     ///     Get all events
     /// </summary>
+    /// <param name="searchText">if specified will search events with this</param>
+    /// <param name="departmentId">if specified will return events in this department</param>
     /// <returns></returns>
     [HttpGet]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetEventsGrpcCommandResult))]
-    public Task<IActionResult> GetAllEvents()
+    public Task<IActionResult> GetAllEvents(string? searchText = null, string? departmentId = null)
     {
-        return this.TryAsync(() => this._eventsGrpcService.GetEvents(CreateCommandMessage<GetEventsGrpcCommandMessage>()));
+        return this.TryAsync(() => this._eventsGrpcService.GetEvents(CreateCommandMessage<GetEventsGrpcCommandMessage>(
+            message =>
+            {
+                message.SearchText = searchText;
+                message.DepartmentId = departmentId;
+            })));
     }
 
     /// <summary>

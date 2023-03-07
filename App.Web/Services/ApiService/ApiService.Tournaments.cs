@@ -23,14 +23,6 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetTournamentByMatchIdGrpcCommandResult>();
         }
 
-        public async Task<GetTournamentsByGameIdGrpcCommandResult> GetTournamentsByGame(string game)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments/{game}/game");
-
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetTournamentsByGameIdGrpcCommandResult>();
-        }
-
         public async Task<GetTournamentsGrpcCommandResult> GetAllTournaments()
         {
             var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments");
@@ -45,14 +37,6 @@ namespace App.Web.Services.ApiService
 
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetMatchByIdGrpcCommandResult>();
-        }
-
-        public async Task<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeam(string team)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/tournaments/matches/{team}/team");
-
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetMatchesByTeamIdGrpcCommandResult>();
         }
 
         public async Task<CreateTournamentGrpcCommandResult> CreateTournament(CreateTournamentModel data)
@@ -115,13 +99,9 @@ namespace App.Web.Services.ApiService
 
         Task<GetTournamentByMatchIdGrpcCommandResult> GetTournamentByMatch(string match);
 
-        Task<GetTournamentsByGameIdGrpcCommandResult> GetTournamentsByGame(string game);
-
         Task<GetTournamentsGrpcCommandResult> GetAllTournaments();
 
         Task<GetMatchByIdGrpcCommandResult> GetMatchById(string id);
-
-        Task<GetMatchesByTeamIdGrpcCommandResult> GetMatchesByTeam(string team);
 
         Task<CreateTournamentGrpcCommandResult> CreateTournament(CreateTournamentModel data);
 

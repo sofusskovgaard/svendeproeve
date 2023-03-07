@@ -28,44 +28,29 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
         this._publishEndpoint = publishEndpoint;
     }
 
-    public ValueTask<GetAllGamesGrpcCommandResult> GetAllGames(GetAllGamesGrpcCommandMessage message)
+    public ValueTask<GetGamesGrpcCommandResult> GetGames(GetGamesGrpcCommandMessage message)
     {
         return this.TryAsync(async () =>
         {
-            var games = await this._entityDataService.ListEntities<GameEntity>();
+            var filters = new List<FilterDefinition<GameEntity>>();
 
-            return new GetAllGamesGrpcCommandResult
+            if (!string.IsNullOrEmpty(message.SearchText))
+            {
+                filters.Add(new FilterDefinitionBuilder<GameEntity>().Text(message.SearchText));
+            }
+
+            if (!string.IsNullOrEmpty(message.Genre))
+            {
+                filters.Add(new FilterDefinitionBuilder<GameEntity>().AnyEq(entity => entity.Genre, message.Genre));
+            }
+
+            var entities = await _entityDataService.ListEntities<GameEntity>(filter =>
+                filters.Any() ? filter.And(filters) : FilterDefinition<GameEntity>.Empty);
+
+            return new GetGamesGrpcCommandResult
             {
                 Metadata = new GrpcCommandResultMetadata{ Success = true },
-                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
-            };
-        });
-    }
-
-    public ValueTask<GetGamesByNameGrpcCommandResult> GetGamesByName(GetGamesByNameGrpcCommandMessage message)
-    {
-        return this.TryAsync(async () =>
-        {
-            var games = await this._entityDataService.ListEntities<GameEntity>(filter => filter.Text(message.Name));
-
-            return new GetGamesByNameGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata{ Success = true },
-                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
-            };
-        });
-    }
-
-    public ValueTask<GetGamesByGenreGrpcCommandResult> GetGamesByGenre(GetGamesByGenreGrpcCommandMessage message)
-    {
-        return this.TryAsync(async () =>
-        {
-            var games = await this._entityDataService.ListEntities<GameEntity>(filter => filter.Text(message.Genre));
-
-            return new GetGamesByGenreGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata{ Success = true },
-                Data = this._mapper.Map<IEnumerable<GameDto>>(games)
+                Data = this._mapper.Map<GameDto[]>(entities)
             };
         });
     }
@@ -91,7 +76,7 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
             await this._publishEndpoint.Publish(new CreateGameCommandMessage
             {
                 Name = message.Name,
-                Discription = message.Description,
+                Description = message.Description,
                 ProfilePicture = message.ProfilePicture,
                 CoverPicture = message.CoverPicture,
                 Genre = message.Genre
@@ -101,7 +86,7 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
         });
     }
 
-    public ValueTask<UpdateGameGrpcCommandResult> updateGame(UpdateGameGrpcCommandMessage message)
+    public ValueTask<UpdateGameGrpcCommandResult> UpdateGame(UpdateGameGrpcCommandMessage message)
     {
         return this.TryAsync(async () =>
         {
@@ -109,7 +94,7 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
             {
                 Id = message.Id,
                 Name = message.Name,
-                Discription = message.Discription,
+                Description = message.Description,
                 ProfilePicture = message.ProfilePicture,
                 CoverPicture = message.CoverPicture,
                 Genre = message.Genre
@@ -124,7 +109,6 @@ public class GamesGrpcService : BaseGrpcService, IGamesGrpcService
         return this.TryAsync(async () =>
         {
             await this._publishEndpoint.Publish(new DeleteGameCommandMessage { Id = message.Id });
-
             return new DeleteGameByIdGrpcCommandResult { Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }

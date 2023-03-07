@@ -26,13 +26,22 @@ public class OrganizationsController : ApiController
     /// <summary>
     ///     Get all organizations
     /// </summary>
+    /// <param name="searchText">if specified will search organizations for this</param>
+    /// <param name="memberId">if specified will return organizations for this member</param>
+    /// <param name="departmentId">if specified will return organizations in this department</param>
     /// <returns></returns>
     [HttpGet]
     [Route("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrganizationsGrpcCommandMessage))]
-    public Task<IActionResult> GetOrganizations(string? departmentId = null)
+    public Task<IActionResult> GetOrganizations(string? searchText = null, string? memberId = null, string? departmentId = null)
     {
-        return TryAsync(() => _organizationsGrpcService.GetOrganizations(CreateCommandMessage<GetOrganizationsGrpcCommandMessage>(message => message.DepartmentId = departmentId)));
+        return TryAsync(() => _organizationsGrpcService.GetOrganizations(CreateCommandMessage<GetOrganizationsGrpcCommandMessage>(
+            message =>
+            {
+                message.SearchText = searchText;
+                message.MemberId = memberId;
+                message.DepartmentId = departmentId;
+            })));
     }
 
     /// <summary>

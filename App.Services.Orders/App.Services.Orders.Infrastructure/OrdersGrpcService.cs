@@ -53,10 +53,7 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
 
             return new GetOrderByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
                 Data = _mapper.Map<OrderDto>(order)
             };
         });
@@ -70,10 +67,7 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
 
             return new GetProductByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
                 Data = _mapper.Map<ProductDto>(order)
             };
         });
@@ -94,13 +88,7 @@ public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
 
             await _publishEndpoint.Publish(createMessage);
 
-            return new CreateProductGrpcCommandResult
-            {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                }
-            };
+            return new CreateProductGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
         });
     }
 

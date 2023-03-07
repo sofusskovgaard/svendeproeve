@@ -12,16 +12,4 @@ public interface IUsersGrpcService
 
     [Operation]
     ValueTask<GetUsersGrpcCommandResult> GetUsers(GetUsersGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetUsersInTeamGrpcCommandResult> GetUsersInTeam(GetUsersInTeamGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<GetUsersInOrganizationGrpcCommandResult> GetUsersInOrganization(GetUsersInOrganizationGrpcCommandMessage message);
-
-    //[Operation]
-    //ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message);
-
-    [Operation]
-    ValueTask<TestCommandResult> Test();
 }

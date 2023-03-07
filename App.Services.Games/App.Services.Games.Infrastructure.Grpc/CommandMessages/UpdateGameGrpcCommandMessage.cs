@@ -14,7 +14,7 @@ public class UpdateGameGrpcCommandMessage : GrpcCommandMessage
     public string Name { get; set; }
 
     [ProtoMember(3)]
-    public string Discription { get; set; }
+    public string Description { get; set; }
 
     [ProtoMember(4)]
     public string ProfilePicture { get; set; }

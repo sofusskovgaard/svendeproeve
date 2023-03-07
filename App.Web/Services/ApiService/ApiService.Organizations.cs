@@ -15,22 +15,6 @@ namespace App.Web.Services.ApiService
             return await response.Content.ReadFromJsonAsync<GetOrganizationByIdGrpcCommandResult>();
         }
 
-        public async Task<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(string name)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/organization/{name}/name");
-
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetOrganizationsByNameGrpcCommandResult>();
-        }
-
-        public async Task<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(string address)
-        {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/organization/{address}/address");
-
-            var response = await _client.SendAsync(request);
-            return await response.Content.ReadFromJsonAsync<GetOrganizationsByAddressGrpcCommandResult>();
-        }
-
         public async Task<GetOrganizationsGrpcCommandResult> GetOrganizations()
         {
             var request = await _createRequestMessage(HttpMethod.Get, "api/organizations");
@@ -69,10 +53,6 @@ namespace App.Web.Services.ApiService
     public partial interface IApiService
     {
         Task<GetOrganizationByIdGrpcCommandResult> GetOrganizationById(string id);
-
-        Task<GetOrganizationsByNameGrpcCommandResult> GetOrganizationsByName(string name);
-
-        Task<GetOrganizationsByAddressGrpcCommandResult> GetOrganizationsByAddress(string address);
 
         Task<GetOrganizationsGrpcCommandResult> GetOrganizations();
 

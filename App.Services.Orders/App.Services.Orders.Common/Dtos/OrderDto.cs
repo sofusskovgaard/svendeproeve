@@ -12,21 +12,33 @@ public class OrderDto
     public string UserId { get; set; }
 
     [ProtoMember(3)]
-    public double Total { get; set; }
+    public decimal Total { get; set; }
 
     [ProtoMember(4)]
+    public string Status { get; set; }
+
+    [ProtoMember(5)]
+    public string? ChargeId { get; set; }
+
+    [ProtoMember(6)]
     public OrderLine[] OrderLines { get; set; }
 
     [ProtoContract]
     public class OrderLine
     {
         [ProtoMember(1)]
-        public string TicketId { get; set; }
+        public string? ReferenceId { get; set; }
 
         [ProtoMember(2)]
-        public int Quantity { get; set; }
+        public string? ReferenceType { get; set; }
 
         [ProtoMember(3)]
+        public string ProductId { get; set; }
+
+        [ProtoMember(4)]
+        public int Quantity { get; set; }
+
+        [ProtoMember(5)]
         public decimal Price { get; set; }
     }
 }
