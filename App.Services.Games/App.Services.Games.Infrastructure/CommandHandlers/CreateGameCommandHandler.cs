@@ -4,31 +4,30 @@ using App.Services.Games.Data.Entities;
 using App.Services.Games.Infrastructure.Commands;
 using MassTransit;
 
-namespace App.Services.Games.Infrastructure.CommandHandlers
+namespace App.Services.Games.Infrastructure.CommandHandlers;
+
+public class CreateGameCommandHandler : ICommandHandler<CreateGameCommandMessage>
 {
-    public class CreateGameCommandHandler : ICommandHandler<CreateGameCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    public CreateGameCommandHandler(IEntityDataService entityDataService)
     {
-        private readonly IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+    }
 
-        public CreateGameCommandHandler(IEntityDataService entityDataService)
+    public async Task Consume(ConsumeContext<CreateGameCommandMessage> context)
+    {
+        var message = context.Message;
+
+        var game = new GameEntity
         {
-            _entityDataService = entityDataService;
-        }
+            Name = message.Name,
+            Description = message.Description,
+            ProfilePicture = message.ProfilePicture,
+            CoverPicture = message.CoverPicture,
+            Genre = message.Genre
+        };
 
-        public async Task Consume(ConsumeContext<CreateGameCommandMessage> context)
-        {
-            var message = context.Message;
-
-            GameEntity game = new GameEntity
-            {
-                Name = message.Name,
-                Discription = message.Discription,
-                ProfilePicture = message.ProfilePicture,
-                CoverPicture = message.CoverPicture,
-                Genre = message.Genre
-            };
-
-            await _entityDataService.Create<GameEntity>(game);
-        }
+        await this._entityDataService.Create(game);
     }
 }

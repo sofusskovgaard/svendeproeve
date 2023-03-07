@@ -7,12 +7,9 @@ namespace App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
 public class ChangePasswordGrpcCommandMessage : GrpcCommandMessage
 {
     [ProtoMember(1)]
-    public string UserId { get; set; }
-
-    [ProtoMember(2)]
     public string Password { get; set; }
 
-    [ProtoMember(3)]
+    [ProtoMember(2)]
     public string ConfirmPassword { get; set; }
 
     [ProtoMember(100)]

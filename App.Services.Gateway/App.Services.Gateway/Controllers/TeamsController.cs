@@ -1,191 +1,133 @@
-﻿using App.Services.Gateway.Infrastructure;
+﻿using System.Net.Mime;
+using System.Xml.Linq;
+using App.Common.Grpc;
+using App.Services.Gateway.Common;
+using App.Services.Gateway.Infrastructure;
 using App.Services.Teams.Common.Dtos;
 using App.Services.Teams.Infrastructure.Grpc;
 using App.Services.Teams.Infrastructure.Grpc.CommandMessages;
+using App.Services.Teams.Infrastructure.Grpc.CommandResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-using App.Services.Gateway.Common;
 
-namespace App.Services.Gateway.Controllers
+namespace App.Services.Gateway.Controllers;
+
+[Route("api/[controller]")]
+[Produces(MediaTypeNames.Application.Json)]
+[Consumes(MediaTypeNames.Application.Json)]
+public class TeamsController : ApiController
 {
-    [Route("api/[controller]")]
-    [Produces(MediaTypeNames.Application.Json)]
-    [Consumes(MediaTypeNames.Application.Json)]
-    public class TeamsController : ApiController
+    private readonly ITeamsGrpcService _teamsGrpcService;
+
+    public TeamsController(ITeamsGrpcService teamsGrpcService)
     {
-        private readonly ITeamsGrpcService _teamsGrpcService;
+        _teamsGrpcService = teamsGrpcService;
+    }
 
-        public TeamsController(ITeamsGrpcService teamsGrpcService)
-        {
-            _teamsGrpcService = teamsGrpcService;
-        }
-
-        /// <summary>
-        /// Get all teams
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetAllTeams()
-        {
-            return TryAsync(() => this._teamsGrpcService.GetAllTeams(new GetAllTeamsGrpcCommandMessage()));
-        }
-
-        /// <summary>
-        /// Get all team in organization based on id of the organization id
-        /// </summary>
-        /// <param name="organizationid"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{organizationid}/organization")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetTeamsByOrganizationId(string organizationid)
-        {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByOrganizationId(new GetTeamsByOrganizationIdGrpcCommandMessage() { OrganizationId = organizationid }));
-        }
-
-        /// <summary>
-        /// Get all teams that has the same name as the given
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{name}/teamname")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetTeamsByName(string name)
-        {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByName(new GetTeamsByNameGrpcCommandMessage() { Name = name }));
-        }
-
-        /// <summary>
-        /// Get all teams that has a member with given member id
-        /// </summary>
-        /// <param name="memberid"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{memberid}/member")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetTeamsByMemberId(string memberid)
-        {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByMemberId(new GetTeamsByMemberIdGrpcCommandMessage() { MemberId = memberid }));
-        }
-
-        /// <summary>
-        /// Get all teams that play a game based on the given gmae id
-        /// </summary>
-        /// <param name="gameid"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{gameid}/game")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetTeamsByGameId(string gameid)
-        {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByGameId(new GetTeamsByGameIdGrpcCommandMessage() { GameId = gameid }));
-        }
-
-        /// <summary>
-        /// Get all teams where the team manger has the same id as given
-        /// </summary>
-        /// <param name="managerid"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{managerid}/manager")]
-        public Task<IActionResult> GetTeamsByManagerId(string managerid)
-        {
-            return TryAsync(() => this._teamsGrpcService.GetTeamsByManagerId(new GetTeamsByManagerIdGrpcCommandMessage() { ManagerId = managerid }));
-        }
-
-        /// <summary>
-        /// Get a team by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetTeamById(string id)
-        {
-            return TryAsync(() => this._teamsGrpcService.GetTeamById(new GetTeamByIdGrpcCommandMessage() { Id = id }));
-        }
-
-        /// <summary>
-        /// Create a team
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("team")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> CreateTeam([FromBody] CreateTeamModel model)
-        {
-            return TryAsync(() =>
+    /// <summary>
+    ///     Get all teams
+    /// </summary>
+    /// <param name="searchText">if specified will return teams searched in name and bio</param>
+    /// <param name="gameId">if specified will return teams assigned with this game</param>
+    /// <param name="organizationId">if specified will return teams in this organization</param>
+    /// <param name="memberId">if specified will return teams with this member</param>
+    /// <param name="managerId">if specified will return teams with this manager</param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAllTeamsGrpcCommandResult))]
+    public Task<IActionResult> GetAllTeams(string? searchText = null, string? gameId = null, string? organizationId = null, string? memberId = null, string? managerId = null)
+    {
+        return TryAsync(() => _teamsGrpcService.GetAllTeams(CreateCommandMessage<GetAllTeamsGrpcCommandMessage>(
+            message =>
             {
-                var command = new CreateTeamGrpcCommandMessage
-                {
-                    Name = model.Name,
-                    Bio = model.Bio,
-                    ProfilePicturePath = model.ProfilePicturePath,
-                    CoverPicturePath = model.CoverPicturePath,
-                    GameId = model.GameId,
-                    MembersId = model.MembersId,
-                    ManagerId = model.ManagerId,
-                    OrganizationId = model.OrganizationId
-                };
+                message.SearchText = searchText;
+                message.GameId = gameId;
+                message.OrganizationId = organizationId;
+                message.MemberId = memberId;
+                message.ManagerId = managerId;
+            })));
+    }
 
-                return _teamsGrpcService.CreateTeam(command);
-            });
-        }
+    /// <summary>
+    ///     Get team by id or name
+    /// </summary>
+    /// <param name="id">id or name of team</param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetTeamByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> GetTeamById(string id)
+    {
+        return TryAsync(() => _teamsGrpcService.GetTeamById(CreateCommandMessage<GetTeamByIdGrpcCommandMessage>(message => message.Id = id)));
+    }
 
-        /// <summary>
-        /// Delete a team
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Route("{id}")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> DeleteTeamById(string id)
+    /// <summary>
+    ///     Create a team
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route(""), Authorize]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(CreateTeamGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> CreateTeam([FromBody] CreateTeamModel model)
+    {
+        return TryAsync(() => _teamsGrpcService.CreateTeam(CreateCommandMessage<CreateTeamGrpcCommandMessage>(message =>
         {
-            return TryAsync(() => this._teamsGrpcService.DeleteTeamById(new DeleteTeamByIdGrpcCommandMessage() { Id = id }));
-        }
+            message.Name = model.Name;
+            message.Bio = model.Bio;
+            message.ProfilePicturePath = model.ProfilePicturePath;
+            message.CoverPicturePath = model.CoverPicturePath;
+            message.GameId = model.GameId;
+            message.MembersId = model.MembersId;
+            message.ManagerId = model.ManagerId;
+            message.OrganizationId = model.OrganizationId;
+        })), true);
+    }
 
-        /// <summary>
-        /// Update a team
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("{id}")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> UpdateTeam(string id, [FromBody] UpdateTeamModel model)
+    /// <summary>
+    ///     Update a team by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("{id}"), Authorize]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(UpdateTeamGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> UpdateTeam(string id, [FromBody] UpdateTeamModel model)
+    {
+        return TryAsync(() => _teamsGrpcService.UpdateTeam(CreateCommandMessage<UpdateTeamGrpcCommandMessage>(message =>
         {
-            return TryAsync(() =>
+            message.TeamId = id;
+            message.TeamDto = new UpdateTeamDto
             {
-                var command = new UpdateTeamGrpcCommandMessage
-                {
-                    TeamId = id,
-                    TeamDto = new UpdateTeamDto
-                    {
-                        Name = model.Name,
-                        Bio = model.Bio,
-                        ProfilePicturePath = model.ProfilePicturePath,
-                        CoverPicturePath = model.CoverPicturePath
-                    }
-                };
+                Name = model.Name,
+                Bio = model.Bio,
+                ProfilePicturePath = model.ProfilePicturePath,
+                CoverPicturePath = model.CoverPicturePath
+            };
+        })), true);
+    }
 
-                return _teamsGrpcService.UpdateTeam(command);
-            });
-        }
+    /// <summary>
+    ///     Delete a team by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("{id}"), Authorize]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(DeleteTeamByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> DeleteTeamById(string id)
+    {
+        return TryAsync(() => _teamsGrpcService.DeleteTeamById(CreateCommandMessage<DeleteTeamByIdGrpcCommandMessage>(message => message.Id = id)), true);
     }
 }

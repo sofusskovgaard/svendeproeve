@@ -139,8 +139,8 @@ public class TokenStore : ITokenStore
             return;
         }
 
-        this.AccessToken = response.AccessToken;
-        this.ExpireTime = DateTime.UtcNow.AddSeconds(response.ExpiresIn - 30);
+        this.AccessToken = response.Data.AccessToken;
+        this.ExpireTime = DateTime.UtcNow.AddSeconds(response.Data.ExpiresIn - 30);
     }
 
     private void _initialize()

@@ -1,4 +1,4 @@
-﻿using App.Services.Turnaments.Common.Dtos;
+﻿using App.Services.Tournaments.Common.Dtos;
 
 namespace App.Services.RealTimeUpdater.Infrastructure.Hubs
 {

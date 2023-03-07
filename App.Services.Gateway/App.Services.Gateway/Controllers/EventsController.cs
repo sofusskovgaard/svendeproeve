@@ -1,80 +1,115 @@
-﻿using App.Services.Events.Infrastructure.Grpc;
+﻿using App.Common.Grpc;
+using App.Services.Events.Infrastructure.Grpc;
 using App.Services.Events.Infrastructure.Grpc.CommandMessages;
 using App.Services.Events.Infrastructure.Grpc.CommandResults;
 using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
-namespace App.Services.Gateway.Controllers
+namespace App.Services.Gateway.Controllers;
+
+[Route("api/[controller]")]
+[Produces(MediaTypeNames.Application.Json)]
+[Consumes(MediaTypeNames.Application.Json)]
+public class EventsController : ApiController
 {
-    [Route("api/[controller]")]
-    public class EventsController : ApiController
+    private readonly IEventsGrpcService _eventsGrpcService;
+
+    public EventsController(IEventsGrpcService eventsGrpcService)
     {
-        private readonly IEventsGrpcService _eventsGrpcService;
+        this._eventsGrpcService = eventsGrpcService;
+    }
 
-        public EventsController(IEventsGrpcService eventsGrpcService)
-        {
-            _eventsGrpcService = eventsGrpcService;
-        }
-
-        /// <summary>
-        /// Get event by id
-        /// </summary>
-        /// <param name="id">id of the event</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetEventByIdGrpcCommandResult))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<IActionResult> GetEventById(string id)
-        {
-            return TryAsync(() => _eventsGrpcService.GetEventById(new GetEventByIdGrpcCommandMessage { Id = id }));
-        }
-
-        [HttpPost]
-        [Route("")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public Task<IActionResult> CreateEvent([FromBody] CreateEventModel model)
-        {
-            return TryAsync(() =>
+    /// <summary>
+    ///     Get all events
+    /// </summary>
+    /// <param name="searchText">if specified will search events with this</param>
+    /// <param name="departmentId">if specified will return events in this department</param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetEventsGrpcCommandResult))]
+    public Task<IActionResult> GetAllEvents(string? searchText = null, string? departmentId = null)
+    {
+        return this.TryAsync(() => this._eventsGrpcService.GetEvents(CreateCommandMessage<GetEventsGrpcCommandMessage>(
+            message =>
             {
-                var command = new CreateEventGrpcCommandMessage
-                {
-                    EventName = model.EventName,
-                    Location = model.Location,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate
-                };
-                return _eventsGrpcService.CreateEvent(command);
-            });
-        }
+                message.SearchText = searchText;
+                message.DepartmentId = departmentId;
+            })));
+    }
 
-        [HttpPut]
-        [Route("{id}")]
-        public Task<IActionResult> UpdateEvent(string id, [FromBody] UpdateEventModel model)
-        {
-            return TryAsync(() =>
-            {
-                return _eventsGrpcService.UpdateEvent(new UpdateEventGrpcCommandMessage
-                {
-                    Id = id,
-                    EventName = model.Name,
-                    Location = model.Location,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate
-                });
-            });
-        }
+    /// <summary>
+    ///     Get event by id
+    /// </summary>
+    /// <param name="id">id of the event</param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetEventByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> GetEventById(string id)
+    {
+        return this.TryAsync(() =>
+            this._eventsGrpcService.GetEventById(CreateCommandMessage<GetEventByIdGrpcCommandMessage>(message => message.Id = id)));
+    }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public Task<IActionResult> DeleteEvent(string id)
+    /// <summary>
+    ///     Create an event
+    /// </summary>
+    /// <param name="model">data required</param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("")]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(CreateEventGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> CreateEvent([FromBody] CreateEventModel model)
+    {
+        return this.TryAsync(() => this._eventsGrpcService.CreateEvent(CreateCommandMessage<CreateEventGrpcCommandMessage>(message =>
         {
-            return TryAsync(() =>
+            message.EventName = model.EventName;
+            message.Location = model.Location;
+            message.StartDate = model.StartDate;
+            message.EndDate = model.EndDate;
+        })));
+    }
+
+    /// <summary>
+    ///     Update an event by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="model">data required</param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(UpdateEventGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> UpdateEvent(string id, [FromBody] UpdateEventModel model)
+    {
+        return this.TryAsync(() => this._eventsGrpcService.UpdateEvent(CreateCommandMessage<UpdateEventGrpcCommandMessage>(message =>
             {
-                return _eventsGrpcService.DeleteEvent(new DeleteEventGrpcCommandMessage { Id = id });
-            });
-        }
+                message.Id = id;
+                message.EventName = model.Name;
+                message.Location = model.Location;
+                message.StartDate = model.StartDate;
+                message.EndDate = model.EndDate;
+            })));
+    }
+
+    /// <summary>
+    ///     Delete an event by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(DeleteEventGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> DeleteEvent(string id)
+    {
+        return this.TryAsync(() => this._eventsGrpcService.DeleteEvent(CreateCommandMessage<DeleteEventGrpcCommandMessage>(message => message.Id = id)));
     }
 }

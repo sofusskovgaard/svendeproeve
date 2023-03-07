@@ -16,8 +16,11 @@ namespace App.Services.Teams.Infrastructure;
 public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
 {
     private readonly IEntityDataService _entityDataService;
+
     private readonly IMapper _mapper;
+
     private readonly IPublishEndpoint _publishEndpoint;
+
     public TeamsGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _entityDataService = entityDataService;
@@ -29,105 +32,39 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var teams = await _entityDataService.ListEntities<TeamEntity>();
+            var filters = new List<FilterDefinition<TeamEntity>>();
 
-            return new GetAllTeamsGrpcCommandResult()
+            if (!string.IsNullOrEmpty(message.SearchText))
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Getting teams"
-                },
-                TeamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams)
-            };
-        });
-    }
+                filters.Add(new FilterDefinitionBuilder<TeamEntity>().Text(message.SearchText));
+            }
 
-    public ValueTask<GetTeamsByOrganizationIdGrpcCommandResult> GetTeamsByOrganizationId(GetTeamsByOrganizationIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.OrganizationId == message.OrganizationId));
-            return new GetTeamsByOrganizationIdGrpcCommandResult()
+            if (!string.IsNullOrEmpty(message.GameId))
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Getting teams"
-                },
-                TeamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams)
-            };
-        });
-    }
+                filters.Add(new FilterDefinitionBuilder<TeamEntity>().Eq(entity => entity.GameId, message.GameId));
+            }
 
-    public ValueTask<GetTeamsByMemberIdGrpcCommandResult> GetTeamsByMemberId(GetTeamsByMemberIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.MembersId.Contains(message.MemberId)));
-
-            return new GetTeamsByMemberIdGrpcCommandResult()
+            if (!string.IsNullOrEmpty(message.OrganizationId))
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Getting teams"
-                },
-                TeamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams)
-            };
-        });
-    }
+                filters.Add(new FilterDefinitionBuilder<TeamEntity>().Eq(entity => entity.OrganizationId, message.OrganizationId));
+            }
 
-    public ValueTask<GetTeamsByNameGrpcCommandResult> GetTeamsByName(GetTeamsByNameGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.Name.Contains(message.Name)));
-
-            return new GetTeamsByNameGrpcCommandResult()
+            if (!string.IsNullOrEmpty(message.MemberId))
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Getting teams"
-                },
-                TeamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams)
-            };
-        });
-    }
+                filters.Add(new FilterDefinitionBuilder<TeamEntity>().AnyEq(entity => entity.MembersId, message.MemberId));
+            }
 
-    public ValueTask<GetTeamsByGameIdGrpcCommandResult> GetTeamsByGameId(GetTeamsByGameIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.GameId == message.GameId));
-
-            return new GetTeamsByGameIdGrpcCommandResult()
+            if (!string.IsNullOrEmpty(message.ManagerId))
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Getting teams"
-                },
-                TeamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams)
-            };
-        });
-    }
+                filters.Add(new FilterDefinitionBuilder<TeamEntity>().Eq(entity => entity.ManagerId, message.ManagerId));
+            }
 
-    public ValueTask<GetTeamsByManagerIdGrpcCommandResult> GetTeamsByManagerId(GetTeamsByManagerIdGrpcCommandMessage message)
-    {
-        return TryAsync(async () =>
-        {
-            var teams = await _entityDataService.ListEntities(new ExpressionFilterDefinition<TeamEntity>(entity => entity.ManagerId == message.ManagerId));
+            var entities = await _entityDataService.ListEntities<TeamEntity>(filter => filters.Any() ? filter.And(filters) : FilterDefinition<TeamEntity>.Empty);
 
-            return new GetTeamsByManagerIdGrpcCommandResult()
+            return new GetAllTeamsGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Getting teams"
-                },
-                TeamDtos = _mapper.Map<IEnumerable<TeamDto>>(teams)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<IEnumerable<TeamDto>>(entities)
             };
         });
     }
@@ -136,16 +73,12 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            var team = await _entityDataService.GetEntity<TeamEntity>(message.Id);
+            var entity = await _entityDataService.GetEntity<TeamEntity>(message.Id);
 
-            return new GetTeamByIdGrpcCommandResult()
+            return new GetTeamByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                    Message = "Returning team"
-                },
-                TeamDto = _mapper.Map<TeamDto>(team)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<TeamDto>(entity)
             };
         });
     }
@@ -163,16 +96,10 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 GameId = message.GameId,
                 OrganizationId = message.OrganizationId,
                 MembersId = message.MembersId,
-                ManagerId = message.ManagerId,
+                ManagerId = message.ManagerId
             });
 
-            return new CreateTeamGrpcCommandResult()
-            {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true
-                }
-            };
+            return new CreateTeamGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
@@ -180,18 +107,8 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
     {
         return TryAsync(async () =>
         {
-            await _publishEndpoint.Publish(new DeleteTeamCommandMessage
-            {
-                Id = message.Id
-            });
-
-            return new DeleteTeamByIdGrpcCommandResult()
-            {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true,
-                }
-            };
+            await _publishEndpoint.Publish(new DeleteTeamCommandMessage{ Id = message.Id });
+            return new DeleteTeamByIdGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 
@@ -208,13 +125,7 @@ public class TeamsGrpcService : BaseGrpcService, ITeamsGrpcService
                 CoverPicturePath = message.TeamDto.CoverPicturePath
             });
 
-            return new UpdateTeamGrpcCommandResult()
-            {
-                Metadata = new GrpcCommandResultMetadata()
-                {
-                    Success = true
-                }
-            };
+            return new UpdateTeamGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata{ Success = true } };
         });
     }
 }

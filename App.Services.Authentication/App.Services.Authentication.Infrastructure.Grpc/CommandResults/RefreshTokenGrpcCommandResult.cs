@@ -1,4 +1,5 @@
 ﻿using App.Common.Grpc;
+using App.Services.Authentication.Common.Dtos;
 using ProtoBuf;
 
 namespace App.Services.Authentication.Infrastructure.Grpc.CommandResults;
@@ -10,11 +11,5 @@ public class RefreshTokenGrpcCommandResult : IGrpcCommandResult
     public GrpcCommandResultMetadata Metadata { get; set; }
 
     [ProtoMember(2)]
-    public string AccessToken { get; set; }
-
-    [ProtoMember(3)]
-    public int ExpiresIn { get; set; }
-
-    [ProtoMember(4)]
-    public string Type { get; set; } = "Bearer";
+    public RefreshTokenDto? Data { get; set; }
 }

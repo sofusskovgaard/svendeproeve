@@ -29,7 +29,6 @@ public class OrderChargePaidEventHandler : IEventHandler<OrderChargePaidEventMes
         var order = await _entityDataService.GetEntity<OrderEntity>(message.OrderId);
 
         foreach (var orderLine in order.OrderLines)
-        {
             switch (orderLine.ReferenceType)
             {
                 case ProductReferenceType.Ticket:
@@ -38,8 +37,8 @@ public class OrderChargePaidEventHandler : IEventHandler<OrderChargePaidEventMes
                         OrderId = message.OrderId,
                         TicketId = orderLine.ReferenceId!
                     });
+
                     break;
             }
-        }
     }
 }

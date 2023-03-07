@@ -1,5 +1,5 @@
-﻿namespace App.Services.Gateway.Common;
+﻿using App.Services.Tickets.Common.Records;
 
-public record BookTicketsModel(TicketOrderModel[] TicketOrderModels);
+namespace App.Services.Gateway.Common;
 
-public record TicketOrderModel(string ProductId, string Recipient);
+public record BookTicketsModel(TicketBooking[] Bookings);

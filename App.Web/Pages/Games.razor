@@ -17,7 +17,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">@game.Name</h5>
-                            <p class="card-text">@game.Discription</p>
+                            <p class="card-text">@game.Description</p>
 
                             <ul>
                                 @foreach (var genre in game.Genre)
@@ -50,7 +50,7 @@
     protected override async Task OnInitializedAsync()
     {
         var response = await ApiService.GetAllGames();
-        games = response.GameDtos?.ToList() ?? new List<GameDto>();
+        games = response.Data?.ToList() ?? new List<GameDto>();
         loaded = true;
     }
 }

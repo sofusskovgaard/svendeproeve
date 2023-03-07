@@ -1,15 +1,22 @@
 ﻿using App.Data;
 using App.Data.Attributes;
 
-namespace App.Services.Games.Data.Entities
+namespace App.Services.Games.Data.Entities;
+
+[SearchIndexDefinition("search")]
+[CollectionDefinition(nameof(GameEntity))]
+public class GameEntity : BaseEntity
 {
-    [CollectionDefinition(nameof(GameEntity))]
-    public class GameEntity : BaseEntity
-    {
-        public string Name { get; set; }
-        public string Discription { get; set; }
-        public string ProfilePicture { get; set; }
-        public string CoverPicture { get; set; }
-        public string[] Genre { get; set; }
-    }
+    [IndexedProperty("search")]
+    public string Name { get; set; }
+
+    [IndexedProperty("search")]
+    public string Description { get; set; }
+
+    public string ProfilePicture { get; set; }
+
+    public string CoverPicture { get; set; }
+
+    [IndexedProperty("search")]
+    public string[] Genre { get; set; }
 }

@@ -1,21 +1,20 @@
-﻿using ProtoBuf;
-using App.Common.Grpc;
+﻿using App.Common.Grpc;
+using ProtoBuf;
 
-namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages
+namespace App.Services.Orders.Infrastructure.Grpc.CommandMessages;
+
+[ProtoContract]
+public class CreateOrderGrpcCommandMessage : GrpcCommandMessage
 {
-    [ProtoContract]
-    public class CreateOrderGrpcCommandMessage : GrpcCommandMessage
-    {
-        [ProtoMember(1)]
-        public string UserId { get; set; }
+    [ProtoMember(1)]
+    public string UserId { get; set; }
 
-        [ProtoMember(2)]
-        public double Total { get; set; }
+    [ProtoMember(2)]
+    public double Total { get; set; }
 
-        [ProtoMember(3)]
-        public string[] TicketIds { get; set; }
+    [ProtoMember(3)]
+    public string[] TicketIds { get; set; }
 
-        [ProtoMember(100)]
-        public override GrpcCommandMessageMetadata? Metadata { get; set; }
-    }
+    [ProtoMember(100)]
+    public override GrpcCommandMessageMetadata? Metadata { get; set; }
 }

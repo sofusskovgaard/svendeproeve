@@ -1,0 +1,55 @@
+﻿@page "/orderticket"
+@using global::App.Services.Gateway.Common;
+@using global::App.Services.Orders.Common.Dtos;
+@using global::App.Services.Tickets.Common.Records;
+@inject IApiService _apiService;
+<h3>OrderTicket</h3>
+
+@foreach (var ticket in tickets)
+{
+    <label>recipent</label>
+    <input @bind=ticket.Recipient/>
+    <select @bind=ticket.ProductId>
+        <option value="">Choose product</option>
+        @foreach (var product in products)
+        {
+            <option value="@product.Id">@product.Name - @product.Price dkk</option>
+        }
+    </select>
+    <br />
+}
+<button @onclick=AddTicket>Add ticket</button>
+<button @onclick=Order>Order</button>
+
+
+
+@code {
+    private List<TicketBooking> tickets = new List<TicketBooking>();
+    private List<ProductDto> products = new List<ProductDto>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _apiService.GetProducts();
+        products = result.Data.ToList();
+        AddTicket();
+        await base.OnInitializedAsync();
+    }
+
+    private void AddTicket()
+    {
+        tickets.Add(new TicketBooking());
+        StateHasChanged();
+    }
+
+    private void Order()
+    {
+        if (tickets.Any(x => x.ProductId == "") || tickets.Any(x => x.Recipient == ""))
+        {
+            return;
+        }
+        var booking = new BookTicketsModel(tickets.ToArray());
+        _apiService.BookTickets(booking);
+    }
+
+}

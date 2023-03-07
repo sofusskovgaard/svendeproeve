@@ -1,11 +1,14 @@
 ﻿using System.Net.Mime;
 using System.Security.Cryptography;
+using App.Common.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc;
 using App.Services.Authentication.Infrastructure.Grpc.CommandMessages;
+using App.Services.Authentication.Infrastructure.Grpc.CommandResults;
 using App.Services.Gateway.Common;
 using App.Services.Gateway.Infrastructure;
 using App.Services.Users.Infrastructure.Grpc;
 using App.Services.Users.Infrastructure.Grpc.CommandMessages;
+using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -35,14 +38,16 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpPost]
     [Route("login")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> Login([FromBody] LoginModel model)
     {
         return TryAsync(() => _authenticationGrpcService.Login(new LoginGrpcCommandMessage
         {
             Username = model.Username,
-            Password = model.Password
+            Password = model.Password,
+            IP = HttpContext.Connection.RemoteIpAddress?.ToString(),
+            UserAgent = HttpContext.Request.Headers.UserAgent
         }));
     }
 
@@ -53,8 +58,8 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpPost]
     [Route("register")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(RegisterGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         return TryAsync(() => _authenticationGrpcService.Register(new RegisterGrpcCommandMessage
@@ -75,11 +80,11 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpPost]
     [Route("refresh")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RefreshTokenGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
     {
-        return TryAsync(() => _authenticationGrpcService.RefreshToken(new RefreshTokenGrpcCommandMessage { RefreshToken = model.RefreshToken }));
+        return TryAsync(() => _authenticationGrpcService.RefreshToken(this.CreateCommandMessage<RefreshTokenGrpcCommandMessage>(message => message.RefreshToken = model.RefreshToken)));
     }
 
     /// <summary>
@@ -88,11 +93,11 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpGet]
     [Route("me"), Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetUserByIdGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> GetCurrentlyLoggedInUser()
     {
-        return TryAsync(() => _usersGrpcService.GetUserById(new GetUserByIdGrpcCommandMessage(CurrentUser.Id)));
+        return TryAsync(() => _usersGrpcService.GetUserById(CreateCommandMessage<GetUserByIdGrpcCommandMessage>(message => message.Id = CurrentUser!.Id)));
     }
 
     /// <summary>
@@ -102,13 +107,12 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpPut]
     [Route("change-username"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(ChangeUsernameGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> ChangeUsername([FromBody] ChangeUsernameModel model)
     {
         return TryAsync(
-            () => _authenticationGrpcService.ChangeUsername(new ChangeUsernameGrpcCommandMessage
-                { UserId = CurrentUser.Id, Username = model.Username }), true);
+            () => _authenticationGrpcService.ChangeUsername(CreateCommandMessage<ChangeUsernameGrpcCommandMessage>(message => message.Username = model.Username)), true);
     }
 
     /// <summary>
@@ -118,13 +122,12 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpPut]
     [Route("change-email"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(ChangeEmailGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> ChangeEmail([FromBody] ChangeEmailModel model)
     {
         return TryAsync(
-            () => _authenticationGrpcService.ChangeEmail(new ChangeEmailGrpcCommandMessage
-                { UserId = CurrentUser.Id, Email = model.Email }), true);
+            () => _authenticationGrpcService.ChangeEmail(CreateCommandMessage<ChangeEmailGrpcCommandMessage>(message => message.Email = model.Email)), true);
     }
 
     /// <summary>
@@ -134,13 +137,31 @@ public class AuthenticationController : ApiController
     /// <returns></returns>
     [HttpPut]
     [Route("change-password"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(ChangePasswordGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
     {
         return TryAsync(
-            () => _authenticationGrpcService.ChangePassword(new ChangePasswordGrpcCommandMessage
-                { UserId = CurrentUser.Id, Password = model.Password, ConfirmPassword = model.ConfirmPassword }), true);
+            () => _authenticationGrpcService.ChangePassword(CreateCommandMessage<ChangePasswordGrpcCommandMessage>(
+                message =>
+                {
+                    message.Password = model.Password;
+                    message.ConfirmPassword = model.ConfirmPassword;
+                })), true);
+    }
+
+    /// <summary>
+    ///     Get sessions for the currently logged in user
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("sessions"), Authorize]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(GetSessionsGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
+    public Task<IActionResult> GetSessions()
+    {
+        return TryAsync(
+            () => _authenticationGrpcService.GetSessions(CreateCommandMessage<GetSessionsGrpcCommandMessage>()));
     }
 
     /// <summary>
@@ -149,13 +170,14 @@ public class AuthenticationController : ApiController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("kill-session/{id}"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Route("sessions/{id}"), Authorize]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(KillUserSessionsGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> KillSessionById(string id)
     {
         return TryAsync(
-            () => _authenticationGrpcService.KillSessions(new KillUserSessionsGrpcCommandMessage() { UserId = this.CurrentUser.Id, SessionId = new[] { id }}), true);
+            () => _authenticationGrpcService.KillSessions(
+                CreateCommandMessage<KillUserSessionsGrpcCommandMessage>(message => message.SessionId = new[] { id })), true);
     }
 
     /// <summary>
@@ -163,15 +185,19 @@ public class AuthenticationController : ApiController
     /// </summary>
     /// <returns></returns>
     [HttpDelete]
-    [Route("kill-session/all"), Authorize]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Route("sessions/all"), Authorize]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(KillUserSessionsGrpcCommandResult))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IGrpcCommandResult))]
     public Task<IActionResult> KillAllSessions()
     {
         return TryAsync(
-            () => _authenticationGrpcService.KillSessions(new KillUserSessionsGrpcCommandMessage() { UserId = this.CurrentUser.Id }), true);
+            () => _authenticationGrpcService.KillSessions(CreateCommandMessage<KillUserSessionsGrpcCommandMessage>()), true);
     }
 
+    /// <summary>
+    ///     Get the current public ecdsa key for validation of access tokens
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     [Route("public-key")]
     [ProducesResponseType(StatusCodes.Status200OK)]

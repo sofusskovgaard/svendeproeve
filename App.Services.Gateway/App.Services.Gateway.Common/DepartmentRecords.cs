@@ -13,4 +13,4 @@ public record CreateDepartmentModel(string Name, string Address);
 /// <param name="Id"></param>
 /// <param name="Name"></param>
 /// <param name="Address"></param>
-public record UpdateDepartmentModel(string Id, string Name, string Address);
+public record UpdateDepartmentModel(string Name, string Address);

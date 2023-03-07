@@ -3,5 +3,6 @@
 public static class ProductReferenceType
 {
     public const string Ticket = "TICKET";
+
     public const string Event = "EVENT";
 }

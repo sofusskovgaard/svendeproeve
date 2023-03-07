@@ -2,14 +2,13 @@
 using App.Services.Events.Data.Entities;
 using AutoMapper;
 
-namespace App.Services.Events.Infrastructure.Mappers
+namespace App.Services.Events.Infrastructure.Mappers;
+
+public class EventEntityMapper : Profile
 {
-    public class EventEntityMapper : Profile
+    public EventEntityMapper()
     {
-        public EventEntityMapper()
-        {
-            this.CreateMap<EventEntity, EventDto>();
-            this.CreateMap<EventEntity, EventDetailedDto>();
-        }
+        this.CreateMap<EventEntity, EventDto>();
+        this.CreateMap<EventEntity, EventDetailedDto>();
     }
 }

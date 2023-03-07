@@ -18,7 +18,7 @@ namespace App.Web.Services.ApiService
 
         public async Task<GetProductsGrpcCommandResult> GetProducts()
         {
-            var request = await _createRequestMessage(HttpMethod.Get, $"api/orders/products");
+            var request = await _createRequestMessage(HttpMethod.Get, $"api/products");
             
             var response = await _client.SendAsync(request);
             return await response.Content.ReadFromJsonAsync<GetProductsGrpcCommandResult>();

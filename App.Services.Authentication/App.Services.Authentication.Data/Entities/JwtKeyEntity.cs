@@ -3,6 +3,7 @@ using App.Data.Attributes;
 
 namespace App.Services.Authentication.Data.Entities;
 
+[IndexDefinition("active")]
 [CollectionDefinition(nameof(JwtKeyEntity))]
 public class JwtKeyEntity : BaseEntity
 {
@@ -10,5 +11,6 @@ public class JwtKeyEntity : BaseEntity
 
     public string PublicKey { get; set; }
 
+    [IndexedProperty("active")]
     public bool IsActive { get; set; } = true;
 }

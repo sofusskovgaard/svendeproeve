@@ -9,120 +9,112 @@ using App.Services.Orders.Infrastructure.Grpc.CommandMessages;
 using App.Services.Orders.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
+using MongoDB.Driver;
 
-namespace App.Services.Orders.Infrastructure
+namespace App.Services.Orders.Infrastructure;
+
+public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
 {
-    public class OrdersGrpcService : BaseGrpcService, IOrdersGrpcService
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IMapper _mapper;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public OrdersGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+        _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IMapper _mapper;
-
-        private readonly IPublishEndpoint _publishEndpoint;
-
-        public OrdersGrpcService(IEntityDataService entityDataService, IMapper mapper, IPublishEndpoint publishEndpoint)
+    public ValueTask<GetOrdersGrpcCommandResult> GetOrders(GetOrdersGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            _entityDataService = entityDataService;
-            _mapper = mapper;
-            _publishEndpoint = publishEndpoint;
-        }
+            var entities = !string.IsNullOrEmpty(message.UserId)
+                ? await _entityDataService.ListEntities<OrderEntity>(filter =>
+                    filter.Eq(entity => entity.UserId, message.UserId))
+                : await _entityDataService.ListEntities<OrderEntity>();
 
-        public ValueTask<GetOrderByIdGrpcCommandResult> GetOrderById(GetOrderByIdGrpcCommandMessage message)
-        {
-            return TryAsync(async () =>
+            return new GetOrdersGrpcCommandResult
             {
-                var order = await _entityDataService.GetEntity<OrderEntity>(message.Id);
+                Metadata = new GrpcCommandResultMetadata { Success = true },
+                Data = _mapper.Map<OrderDto[]>(entities)
+            };
+        });
+    }
 
-                return new GetOrderByIdGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Order = _mapper.Map<OrderDto>(order)
-                };
-            });
-        }
-
-        //public ValueTask<CreateOrderGrpcCommandResult> CreateOrder(CreateOrderGrpcCommandMessage message)
-        //{
-        //    return TryAsync(async () =>
-        //    {
-        //        var order = new OrderEntity
-        //        {
-        //            UserId = message.UserId,
-        //            Total = message.Total,
-        //            TicketIds = message.TicketIds
-        //        };
-
-        //        await _entityDataService.SaveEntity(order);
-
-        //        var dto = _mapper.Map<OrderDto>(order);
-
-        //        return new CreateOrderGrpcCommandResult
-        //        {
-        //            Metadata = new GrpcCommandResultMetadata
-        //            {
-        //                Success = true
-        //            },
-        //            Order = dto
-        //        };
-        //    });
-        //}
-
-        public ValueTask<GetProductByIdGrpcCommandResult> GetProductById(GetProductByIdGrpcCommandMessage message)
+    public ValueTask<GetOrderByIdGrpcCommandResult> GetOrderById(GetOrderByIdGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var order = await _entityDataService.GetEntity<OrderEntity>(message.Id);
+
+            return new GetOrderByIdGrpcCommandResult
             {
-                var order = await _entityDataService.GetEntity<ProductEntity>(message.Id);
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<OrderDto>(order)
+            };
+        });
+    }
 
-                return new GetProductByIdGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                    Product = _mapper.Map<ProductDto>(order)
-                };
-            });
-        }
-
-        public ValueTask<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage message)
+    public ValueTask<GetProductByIdGrpcCommandResult> GetProductById(GetProductByIdGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var order = await _entityDataService.GetEntity<ProductEntity>(message.Id);
+
+            return new GetProductByIdGrpcCommandResult
             {
-                var createMessage = new CreateProductCommandMessage
-                {
-                    Name = message.Name,
-                    Description = message.Description,
-                    Price = message.Price,
-                    ReferenceId = message.ReferenceId,
-                    ReferenceType = message.ReferenceType
-                };
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<ProductDto>(order)
+            };
+        });
+    }
 
-                await _publishEndpoint.Publish(createMessage);
-
-                return new CreateProductGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata
-                    {
-                        Success = true
-                    },
-                };
-            });
-        }
-
-        public ValueTask<GetProductsGrpcCommandResult> GetProducts(GetProductsGrpcCommandMessage message)
+    public ValueTask<CreateProductGrpcCommandResult> CreateProduct(CreateProductGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
         {
-            return TryAsync(async () =>
+            var createMessage = new CreateProductCommandMessage
             {
-                var entities = await _entityDataService.ListEntities<ProductEntity>();
-                return new GetProductsGrpcCommandResult
-                {
-                    Metadata = new GrpcCommandResultMetadata { Success = true },
-                    Products = _mapper.Map<ProductDto[]>(entities)
-                };
-            });
-        }
+                Name = message.Name,
+                Description = message.Description,
+                Price = message.Price,
+                ReferenceId = message.ReferenceId,
+                ReferenceType = message.ReferenceType
+            };
+
+            await _publishEndpoint.Publish(createMessage);
+
+            return new CreateProductGrpcCommandResult{ Metadata = new GrpcCommandResultMetadata { Success = true } };
+        });
+    }
+
+    public ValueTask<GetProductsGrpcCommandResult> GetProducts(GetProductsGrpcCommandMessage message)
+    {
+        return TryAsync(async () =>
+        {
+            var filters = new List<FilterDefinition<ProductEntity>>();
+
+            if (!string.IsNullOrEmpty(message.ReferenceId))
+            {
+                filters.Add(new FilterDefinitionBuilder<ProductEntity>().Eq(entity => entity.ReferenceId, message.ReferenceId));
+            }
+
+            if (!string.IsNullOrEmpty(message.ReferenceType))
+            {
+                filters.Add(new FilterDefinitionBuilder<ProductEntity>().Eq(entity => entity.ReferenceType, message.ReferenceType));
+            }
+
+            var entities = await _entityDataService.ListEntities<ProductEntity>(filter => filters.Any() ? filter.And(filters) : FilterDefinition<ProductEntity>.Empty);
+
+            return new GetProductsGrpcCommandResult
+            {
+                Metadata = new GrpcCommandResultMetadata { Success = true },
+                Data = _mapper.Map<ProductDto[]>(entities)
+            };
+        });
     }
 }

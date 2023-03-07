@@ -1,9 +1,9 @@
+using System.Reflection;
 using App.Data.Extensions;
 using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.Teams.Infrastructure;
 using ProtoBuf.Grpc.Server;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 

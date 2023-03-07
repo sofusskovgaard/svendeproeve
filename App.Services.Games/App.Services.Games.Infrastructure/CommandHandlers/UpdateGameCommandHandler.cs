@@ -5,43 +5,37 @@ using App.Services.Games.Infrastructure.Commands;
 using MassTransit;
 using MongoDB.Driver;
 
-namespace App.Services.Games.Infrastructure.CommandHandlers
+namespace App.Services.Games.Infrastructure.CommandHandlers;
+
+public class UpdateGameCommandHandler : ICommandHandler<UpdateGameCommandMessage>
 {
-    public class UpdateGameCommandHandler : ICommandHandler<UpdateGameCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    public UpdateGameCommandHandler(IEntityDataService entityDataService)
     {
-        private readonly IEntityDataService _entityDataService;
+        this._entityDataService = entityDataService;
+    }
 
-        public UpdateGameCommandHandler(IEntityDataService entityDataService)
-        {
-            _entityDataService = entityDataService;
-        }
+    public async Task Consume(ConsumeContext<UpdateGameCommandMessage> context)
+    {
+        var message = context.Message;
 
-        public async Task Consume(ConsumeContext<UpdateGameCommandMessage> context)
-        {
-            var message = context.Message;
+        var game = await this._entityDataService.GetEntity<GameEntity>(message.Id);
 
-            var game = await _entityDataService.GetEntity<GameEntity>(message.Id);
+        var updateDefinition = new UpdateDefinitionBuilder<GameEntity>().Set(entity => entity.Name, message.Name);
 
-            var updateDefinition = new UpdateDefinitionBuilder<GameEntity>().Set(entity => entity.Name, message.Name);
+        if (game.Description != message.Description)
+            updateDefinition = updateDefinition.Set(entity => entity.Description, message.Description);
 
-            if (game.Discription != message.Discription)
-            {
-                updateDefinition = updateDefinition.Set(entity => entity.Discription, message.Discription);
-            }
-            if (game.ProfilePicture != message.ProfilePicture)
-            {
-                updateDefinition = updateDefinition.Set(entity => entity.ProfilePicture, message.ProfilePicture);
-            }
-            if (game.CoverPicture != message.CoverPicture)
-            {
-                updateDefinition = updateDefinition.Set(entity => entity.CoverPicture, message.CoverPicture);
-            }
-            if (game.Genre != message.Genre)
-            {
-                updateDefinition = updateDefinition.Set(entity => entity.Genre, message.Genre);
-            }
+        if (game.ProfilePicture != message.ProfilePicture)
+            updateDefinition = updateDefinition.Set(entity => entity.ProfilePicture, message.ProfilePicture);
 
-            await _entityDataService.Update<GameEntity>(filter => filter.Eq(entity => entity.Id, message.Id), _ => updateDefinition);
-        }
+        if (game.CoverPicture != message.CoverPicture)
+            updateDefinition = updateDefinition.Set(entity => entity.CoverPicture, message.CoverPicture);
+
+        if (game.Genre != message.Genre) updateDefinition = updateDefinition.Set(entity => entity.Genre, message.Genre);
+
+        await this._entityDataService.Update<GameEntity>(filter => filter.Eq(entity => entity.Id, message.Id),
+            _ => updateDefinition);
     }
 }

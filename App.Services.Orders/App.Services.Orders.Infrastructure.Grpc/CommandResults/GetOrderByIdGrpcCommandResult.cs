@@ -1,16 +1,15 @@
-﻿using App.Services.Orders.Common.Dtos;
+﻿using App.Common.Grpc;
+using App.Services.Orders.Common.Dtos;
 using ProtoBuf;
-using App.Common.Grpc;
 
-namespace App.Services.Orders.Infrastructure.Grpc.CommandResults
+namespace App.Services.Orders.Infrastructure.Grpc.CommandResults;
+
+[ProtoContract]
+public class GetOrderByIdGrpcCommandResult : IGrpcCommandResult
 {
-    [ProtoContract]
-    public class GetOrderByIdGrpcCommandResult : IGrpcCommandResult
-    {
-        [ProtoMember(1)]
-        public GrpcCommandResultMetadata Metadata { get; set; }
+    [ProtoMember(1)]
+    public GrpcCommandResultMetadata Metadata { get; set; }
 
-        [ProtoMember(2)]
-        public OrderDto Order { get; set; }
-    }
+    [ProtoMember(2)]
+    public OrderDto? Data { get; set; }
 }

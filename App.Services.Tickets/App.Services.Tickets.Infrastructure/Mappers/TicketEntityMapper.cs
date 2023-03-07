@@ -2,13 +2,12 @@
 using App.Services.Tickets.Data.Entities;
 using AutoMapper;
 
-namespace App.Services.Tickets.Infrastructure.Mappers
+namespace App.Services.Tickets.Infrastructure.Mappers;
+
+public class TicketEntityMapper : Profile
 {
-    public class TicketEntityMapper : Profile
+    public TicketEntityMapper()
     {
-        public TicketEntityMapper()
-        {
-            this.CreateMap<TicketEntity, TicketDto>();
-        }
+        CreateMap<TicketEntity, TicketDto>();
     }
 }

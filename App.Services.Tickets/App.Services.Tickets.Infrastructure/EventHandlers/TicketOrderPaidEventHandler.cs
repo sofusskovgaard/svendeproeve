@@ -6,25 +6,24 @@ using App.Services.Tickets.Data.Entities;
 using App.Services.Tickets.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Tickets.Infrastructure.EventHandlers
+namespace App.Services.Tickets.Infrastructure.EventHandlers;
+
+public class TicketOrderPaidEventHandler : IEventHandler<TicketOrderPaidEventMessage>
 {
-    public class TicketOrderPaidEventHandler : IEventHandler<TicketOrderPaidEventMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    public TicketOrderPaidEventHandler(IEntityDataService entityDataService)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+    }
 
-        public TicketOrderPaidEventHandler(IEntityDataService entityDataService)
-        {
-            _entityDataService = entityDataService;
-        }
+    public async Task Consume(ConsumeContext<TicketOrderPaidEventMessage> context)
+    {
+        var message = context.Message;
 
-        public async Task Consume(ConsumeContext<TicketOrderPaidEventMessage> context)
-        {
-            var message = context.Message;
+        await _entityDataService.Update<TicketEntity>(filter => filter.Eq(entity => entity.Id, message.TicketId),
+            builder => builder.Set(entity => entity.Status, TicketStatus.Active));
 
-            await _entityDataService.Update<TicketEntity>(filter => filter.Eq(entity => entity.Id, message.TicketId),
-                builder => builder.Set(entity => entity.Status, TicketStatus.Active));
-
-            await context.Publish(new TicketActivatedEventMessage { TicketId = message.TicketId });
-        }
+        await context.Publish(new TicketActivatedEventMessage { TicketId = message.TicketId });
     }
 }

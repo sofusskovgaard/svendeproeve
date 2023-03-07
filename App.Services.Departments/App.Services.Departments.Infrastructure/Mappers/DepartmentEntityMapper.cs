@@ -2,14 +2,13 @@
 using App.Services.Departments.Data.Entities;
 using AutoMapper;
 
-namespace App.Services.Departments.Infrastructure.Mappers
+namespace App.Services.Departments.Infrastructure.Mappers;
+
+public class DepartmentEntityMapper : Profile
 {
-    public class DepartmentEntityMapper : Profile
+    public DepartmentEntityMapper()
     {
-        public DepartmentEntityMapper()
-        {
-            this.CreateMap<DepartmentEntity, DepartmentDto>();
-            this.CreateMap<DepartmentDto, DepartmentEntity>();
-        }
+        this.CreateMap<DepartmentEntity, DepartmentDto>();
+        this.CreateMap<DepartmentDto, DepartmentEntity>();
     }
 }

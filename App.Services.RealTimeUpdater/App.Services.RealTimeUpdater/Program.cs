@@ -1,9 +1,7 @@
-using App.Data.Extensions;
-using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.RealTimeUpdater.Infrastructure;
+using App.Services.RealTimeUpdater.Infrastructure.FakeWattageMonitor;
 using App.Services.RealTimeUpdater.Infrastructure.Hubs;
-using ProtoBuf.Grpc.Server;
 using System.Reflection;
 using System.Text;
 using App.Infrastructure.Options;
@@ -11,11 +9,15 @@ using App.Services.Gateway.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Services.Authentication.Infrastructure.Grpc;
-using RealTimeUpdater.Infrastructure.Hubs;
+using App.Services.RealTimeUpdater.Infrastructure.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.RegisterSerilog();
+
+builder.Services.AddSingleton(sp => new HttpClient());
+
+builder.Services.AddHostedService<FakeWattageMonitorHostedService>();
 
 builder.Services.RegisterOptions();
 
@@ -26,6 +28,11 @@ builder.Services.AddGrpcServiceClient<IAuthenticationGrpcService>();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IMatchHub, MatchHub>();
+builder.Services.AddScoped<ICO2DashHub, CO2DashHub>();
+builder.Services.AddScoped<ICO2apiService, CO2apiService>();
+//builder.Services.AddSingleton<IFakeWattageMonitorServiceHelper, FakeWattageMonitorServiceHelper>();
+//builder.Services.AddScoped<IFakeWattageMonitorService, FakeWattageMonitorService>();
+builder.Services.AddSingleton<DataCache, DataCache>();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
@@ -61,6 +68,7 @@ app.UseCors();
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<MatchHub>("/matchhub");
+app.MapHub<CO2DashHub>("/co2hub");
 
 await app.RunAsync();
 

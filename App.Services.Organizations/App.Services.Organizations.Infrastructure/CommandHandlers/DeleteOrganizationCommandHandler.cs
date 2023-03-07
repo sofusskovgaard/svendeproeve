@@ -5,25 +5,26 @@ using App.Services.Organizations.Infrastructure.Commands;
 using App.Services.Organizations.Infrastructure.Events;
 using MassTransit;
 
-namespace App.Services.Organizations.Infrastructure.CommandHandlers
+namespace App.Services.Organizations.Infrastructure.CommandHandlers;
+
+public class DeleteOrganizationCommandHandler : ICommandHandler<DeleteOrganizationCommandMessage>
 {
-    public class DeleteOrganizationCommandHandler : ICommandHandler<DeleteOrganizationCommandMessage>
+    private readonly IEntityDataService _entityDataService;
+
+    private readonly IPublishEndpoint _publishEndpoint;
+
+    public DeleteOrganizationCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
     {
-        private readonly IEntityDataService _entityDataService;
+        _entityDataService = entityDataService;
+        _publishEndpoint = publishEndpoint;
+    }
 
-        private readonly IPublishEndpoint _publishEndpoint;
-        public DeleteOrganizationCommandHandler(IEntityDataService entityDataService, IPublishEndpoint publishEndpoint)
-        {
-            _entityDataService = entityDataService;
-            _publishEndpoint = publishEndpoint;
-        }
-        public async Task Consume(ConsumeContext<DeleteOrganizationCommandMessage> context)
-        {
-            var message = context.Message;
+    public async Task Consume(ConsumeContext<DeleteOrganizationCommandMessage> context)
+    {
+        var message = context.Message;
 
-            await _entityDataService.Delete<OrganizationEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
+        await _entityDataService.Delete<OrganizationEntity>(filter => filter.Eq(entity => entity.Id, message.Id));
 
-            await _publishEndpoint.Publish(new OrganizationDeletedEventMessage { Id = message.Id });
-        }
+        await _publishEndpoint.Publish(new OrganizationDeletedEventMessage { Id = message.Id });
     }
 }

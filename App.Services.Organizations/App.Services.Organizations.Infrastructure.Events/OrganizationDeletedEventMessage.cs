@@ -1,9 +1,8 @@
 ﻿using App.Infrastructure.Events;
 
-namespace App.Services.Organizations.Infrastructure.Events
+namespace App.Services.Organizations.Infrastructure.Events;
+
+public class OrganizationDeletedEventMessage : IEventMessage
 {
-    public class OrganizationDeletedEventMessage : IEventMessage
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

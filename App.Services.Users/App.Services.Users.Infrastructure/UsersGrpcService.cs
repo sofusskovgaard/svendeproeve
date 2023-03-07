@@ -9,6 +9,7 @@ using App.Services.Users.Infrastructure.Grpc.CommandMessages;
 using App.Services.Users.Infrastructure.Grpc.CommandResults;
 using AutoMapper;
 using MassTransit;
+using MongoDB.Driver;
 
 namespace App.Services.Users.Infrastructure;
 
@@ -31,94 +32,41 @@ public class UsersGrpcService : BaseGrpcService, IUsersGrpcService
     {
         return TryAsync(async () =>
         {
-            var user = await _entityDataService.GetEntity<UserEntity>(message.Id);
+            var entity = await _entityDataService.GetEntity<UserEntity>(message.Id);
 
             return new GetUserByIdGrpcCommandResult
             {
-                Metadata = new GrpcCommandResultMetadata
-                {
-                    Success = true
-                },
-                User = _mapper.Map<UserDto>(user)
+                Metadata = new GrpcCommandResultMetadata{ Success = true },
+                Data = _mapper.Map<UserDto>(entity)
             };
         });
     }
 
     public async ValueTask<GetUsersGrpcCommandResult> GetUsers(GetUsersGrpcCommandMessage message)
     {
-        var users = await this._entityDataService.ListEntities<UserEntity>();
+        var filters = new List<FilterDefinition<UserEntity>>();
+
+        if (!string.IsNullOrEmpty(message.SearchText))
+        {
+            filters.Add(new FilterDefinitionBuilder<UserEntity>().Text(message.SearchText));
+        }
+
+        if (!string.IsNullOrEmpty(message.OrganizationId))
+        {
+            filters.Add(new FilterDefinitionBuilder<UserEntity>().AnyEq(entity => entity.Organizations, message.OrganizationId));
+        }
+
+        if (!string.IsNullOrEmpty(message.TeamId))
+        {
+            filters.Add(new FilterDefinitionBuilder<UserEntity>().AnyEq(entity => entity.Teams, message.TeamId));
+        }
+
+        var entities = await _entityDataService.ListEntities<UserEntity>(filters.Any() ? filter => filter.And(filters) : null);
 
         return new GetUsersGrpcCommandResult
         {
-            Metadata = new GrpcCommandResultMetadata(),
-            Users = this._mapper.Map<UserDto[]>(users)
-        };
-    }
-
-    public async ValueTask<GetUsersInTeamGrpcCommandResult> GetUsersInTeam(GetUsersInTeamGrpcCommandMessage message)
-    {
-        var users = await this._entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Teams, message.TeamId));
-
-        return new GetUsersInTeamGrpcCommandResult
-        {
-            Metadata = new GrpcCommandResultMetadata(),
-            Users = this._mapper.Map<UserDto[]>(users)
-        };
-    }
-
-    public async ValueTask<GetUsersInOrganizationGrpcCommandResult> GetUsersInOrganization(GetUsersInOrganizationGrpcCommandMessage message)
-    {
-        var users = await this._entityDataService.ListEntities<UserEntity>(filter => filter.AnyStringIn(entity => entity.Organizations, message.OrganizatioId));
-
-        return new GetUsersInOrganizationGrpcCommandResult
-        {
-            Metadata = new GrpcCommandResultMetadata(),
-            Users = this._mapper.Map<UserDto[]>(users)
-        };
-    }
-
-    //public ValueTask<CreateUserGrpcCommandResult> CreateUser(CreateUserGrpcCommandMessage message)
-    //{
-    //    return TryAsync(async () =>
-    //    {
-    //        var user = new UserEntity
-    //        {
-    //            Firstname = message.Firstname,
-    //            Lastname = message.Lastname,
-    //            Email = message.Email,
-    //            Username = message.Username
-    //        };
-
-    //        var passwordHash = Hasher.Hash(message.Password);
-
-    //        user.PasswordHash = passwordHash.Hash;
-    //        user.PasswordSalt = passwordHash.Salt;
-
-    //        await _entityDataService.SaveEntity(user);
-
-    //        var dto = _mapper.Map<UserDetailedDto>(user);
-
-    //        return new CreateUserGrpcCommandResult
-    //        {
-    //            Metadata = new GrpcCommandResultMetadata
-    //            {
-    //                Success = true
-    //            },
-    //            User = dto
-    //        };
-    //    });
-    //}
-
-    public async ValueTask<TestCommandResult> Test()
-    {
-        await _publishEndpoint.Publish(new CreateUserCommandMessage());
-
-        return new TestCommandResult()
-        {
-            Metadata = new GrpcCommandResultMetadata()
-            {
-                Success = true
-            }
+            Metadata = new GrpcCommandResultMetadata{ Success = true },
+            Data = this._mapper.Map<UserDto[]>(entities)
         };
     }
 }
