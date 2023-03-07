@@ -1,10 +1,7 @@
-using App.Data.Extensions;
-using App.Data.Utilities;
 using App.Infrastructure.Extensions;
 using App.Services.RealTimeUpdater.Infrastructure;
 using App.Services.RealTimeUpdater.Infrastructure.FakeWattageMonitor;
 using App.Services.RealTimeUpdater.Infrastructure.Hubs;
-using ProtoBuf.Grpc.Server;
 using System.Reflection;
 using System.Text;
 using App.Infrastructure.Options;
@@ -12,8 +9,6 @@ using App.Services.Gateway.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using App.Services.Authentication.Infrastructure.Grpc;
-using RealTimeUpdater.Infrastructure.Hubs;
-using App.Services.Gateway.Infrastructure.Extensions;
 using App.Services.RealTimeUpdater.Infrastructure.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
