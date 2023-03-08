@@ -32,72 +32,16 @@ services:
       - "3000:443"
     depends_on:
       - app.services.authentication
-
-  app.services.users:
-    image: ${DOCKER_REGISTRY-}appservicesusers
-    build:
-      context: .
-      dockerfile: App.Services.Users/App.Services.Users/Dockerfile
-
-  app.services.departments:
-    image: ${DOCKER_REGISTRY-}appservicesdepartments
-    build:
-      context: .
-      dockerfile: App.Services.Departments/App.Services.Departments/Dockerfile
-
-  app.services.organizations:
-    image: ${DOCKER_REGISTRY-}appservicesorganizations
-    build:
-      context: .
-      dockerfile: App.Services.Organizations/App.Services.Organizations/Dockerfile
-
-  app.services.teams:
-    image: ${DOCKER_REGISTRY-}appservicesteams
-    build:
-      context: .
-      dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
-
-  app.services.billing:
-    image: ${DOCKER_REGISTRY-}appservicesbilling
-    build:
-      context: .
-      dockerfile: App.Services.Billing/App.Services.Billing/Dockerfile
-
-  app.services.events:
-    image: ${DOCKER_REGISTRY-}appservicesevents
-    build:
-      context: .
-      dockerfile: App.Services.Events/App.Services.Events/Dockerfile
-
-  app.services.orders:
-    image: ${DOCKER_REGISTRY-}appservicesorders
-    build:
-      context: .
-      dockerfile: App.Services.Orders/App.Services.Orders/Dockerfile
-
-  app.services.tickets:
-    image: ${DOCKER_REGISTRY-}appservicestickets
-    build:
-      context: .
-      dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
-
-  app.services.games:
-    image: ${DOCKER_REGISTRY-}appservicesgames
-    build:
-      context: .
-      dockerfile: App.Services.Games/App.Services.Games/Dockerfile
-
-  app.services.tournaments:
-    image: ${DOCKER_REGISTRY-}appservicestournaments
-    build:
-      context: .
-      dockerfile: App.Services.Tournaments/App.Services.Tournaments/Dockerfile
-
-  app.services.authentication:
-    image: ${DOCKER_REGISTRY-}appservicesauthentication
-    build:
-      context: .
-      dockerfile: App.Services.Authentication/App.Services.Authentication/Dockerfile
+      - app.services.users
+      - app.services.departments
+      - app.services.organizations
+      - app.services.teams
+      - app.services.billing
+      - app.services.events
+      - app.services.orders
+      - app.services.tickets
+      - app.services.games
+      - app.services.tournaments
 
   app.services.realtimeupdater:
     image: ${DOCKER_REGISTRY-}appservicesrealtimeupdater
@@ -105,5 +49,115 @@ services:
       context: .
       dockerfile: App.Services.RealTimeUpdater/App.Services.RealTimeUpdater/Dockerfile
     ports:
-    - "3001:443"
+      - "3001:443"
+    depends_on:
+      - app.services.authentication
+      - app.services.users
+      - app.services.departments
+      - app.services.organizations
+      - app.services.teams
+      - app.services.billing
+      - app.services.events
+      - app.services.orders
+      - app.services.tickets
+      - app.services.games
+      - app.services.tournaments
 
+  app.services.users:
+    image: ${DOCKER_REGISTRY-}appservicesusers
+    build:
+      context: .
+      dockerfile: App.Services.Users/App.Services.Users/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.departments:
+    image: ${DOCKER_REGISTRY-}appservicesdepartments
+    build:
+      context: .
+      dockerfile: App.Services.Departments/App.Services.Departments/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.organizations:
+    image: ${DOCKER_REGISTRY-}appservicesorganizations
+    build:
+      context: .
+      dockerfile: App.Services.Organizations/App.Services.Organizations/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.teams:
+    image: ${DOCKER_REGISTRY-}appservicesteams
+    build:
+      context: .
+      dockerfile: App.Services.Teams/App.Services.Teams/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.billing:
+    image: ${DOCKER_REGISTRY-}appservicesbilling
+    build:
+      context: .
+      dockerfile: App.Services.Billing/App.Services.Billing/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.events:
+    image: ${DOCKER_REGISTRY-}appservicesevents
+    build:
+      context: .
+      dockerfile: App.Services.Events/App.Services.Events/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.orders:
+    image: ${DOCKER_REGISTRY-}appservicesorders
+    build:
+      context: .
+      dockerfile: App.Services.Orders/App.Services.Orders/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.tickets:
+    image: ${DOCKER_REGISTRY-}appservicestickets
+    build:
+      context: .
+      dockerfile: App.Services.Tickets/App.Services.Tickets/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.games:
+    image: ${DOCKER_REGISTRY-}appservicesgames
+    build:
+      context: .
+      dockerfile: App.Services.Games/App.Services.Games/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.tournaments:
+    image: ${DOCKER_REGISTRY-}appservicestournaments
+    build:
+      context: .
+      dockerfile: App.Services.Tournaments/App.Services.Tournaments/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
+
+  app.services.authentication:
+    image: ${DOCKER_REGISTRY-}appservicesauthentication
+    build:
+      context: .
+      dockerfile: App.Services.Authentication/App.Services.Authentication/Dockerfile
+    depends_on: 
+      - mongo
+      - rabbitmq
