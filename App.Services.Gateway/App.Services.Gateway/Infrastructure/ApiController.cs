@@ -15,7 +15,7 @@ public abstract class ApiController : ControllerBase
             bool.TryParse(User.FindFirst("isAdmin")?.Value, out var _res) && _res)
         : null;
 
-    protected T CreateCommandMessage<T>(Action<T>? data = null) where T : IGrpcCommandMessage
+    protected T CreateCommandMessage<T>(Action<T>? data = null) where T : GrpcCommandMessage
     {
         var command = Activator.CreateInstance<T>();
 
