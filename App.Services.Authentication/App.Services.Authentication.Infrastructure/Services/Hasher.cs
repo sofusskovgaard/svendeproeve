@@ -25,7 +25,7 @@ public static class Hasher
 
     private static byte[] _generateSalt()
     {
-        return RandomNumberGenerator.GetBytes(32);
+        return RandomNumberGenerator.GetBytes(128);
     }
 
     private static byte[] _generateHash(string value, byte[]? salt = null)
@@ -33,7 +33,7 @@ public static class Hasher
         return salt switch
         {
             null => SHA512.HashData(Encoding.UTF8.GetBytes(value)),
-            _ => KeyDerivation.Pbkdf2(value, salt, KeyDerivationPrf.HMACSHA512, 1000, 512 / 8)
+            _ => KeyDerivation.Pbkdf2(value, salt, KeyDerivationPrf.HMACSHA512, 300000, 512 / 8)
         };
     }
 }
