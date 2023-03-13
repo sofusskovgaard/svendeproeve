@@ -65,6 +65,11 @@ public class EntityDataService : IEntityDataService
         return entity;
     }
 
+    public Task<IEnumerable<T>> SaveEntities<T>(params T[] entities) where T : IEntity
+    {
+        return SaveEntities(entities.ToList());
+    }
+
     public async Task<IEnumerable<T>> SaveEntities<T>(IEnumerable<T> entities) where T : IEntity
     {
         var collection = this._db.GetCollection<T>();

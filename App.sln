@@ -238,6 +238,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Tournaments.In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "App.Services.Tournaments.Infrastructure.Grpc", "App.Services.Tournaments\App.Services.Tournaments.Infrastructure.Grpc\App.Services.Tournaments.Infrastructure.Grpc.csproj", "{E80093A1-0F4E-41E4-AB3A-11740972C773}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seeding", "Dev\Seeding\Seeding.csproj", "{61FDAF8A-7821-468D-8BBB-0B5E76231D27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -632,6 +634,10 @@ Global
 		{E80093A1-0F4E-41E4-AB3A-11740972C773}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E80093A1-0F4E-41E4-AB3A-11740972C773}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E80093A1-0F4E-41E4-AB3A-11740972C773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61FDAF8A-7821-468D-8BBB-0B5E76231D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61FDAF8A-7821-468D-8BBB-0B5E76231D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61FDAF8A-7821-468D-8BBB-0B5E76231D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61FDAF8A-7821-468D-8BBB-0B5E76231D27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -747,6 +753,7 @@ Global
 		{B0FCF721-E2E5-4ED8-8E69-97E6E34ED392} = {0D1BA9B6-5A2C-41ED-8DDD-E93B0D93FC34}
 		{B76C013F-099C-4A29-AE2F-3975D7AD4B43} = {0D1BA9B6-5A2C-41ED-8DDD-E93B0D93FC34}
 		{E80093A1-0F4E-41E4-AB3A-11740972C773} = {0D1BA9B6-5A2C-41ED-8DDD-E93B0D93FC34}
+		{61FDAF8A-7821-468D-8BBB-0B5E76231D27} = {6D24D6D0-3933-41C4-8553-34A288E6E170}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A5151DEE-0817-484F-8977-6CD05FF9DCB1}

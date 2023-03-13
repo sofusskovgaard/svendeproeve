@@ -42,7 +42,7 @@ public class UserEntity : BaseEntity
     public string[]? Organizations { get; set; }
 
     [IndexedProperty("teams")]
-    public string[]? Teams { get; set; }
+    public string?[] Teams { get; set; }
 
     [IndexedProperty("games")]
     public string[]? Games { get; set; }

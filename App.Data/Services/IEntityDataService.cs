@@ -15,6 +15,8 @@ public interface IEntityDataService
 
     Task<T> SaveEntity<T>(T entity) where T : IEntity;
 
+    Task<IEnumerable<T>> SaveEntities<T>(params T[] entities) where T : IEntity;
+
     Task<IEnumerable<T>> SaveEntities<T>(IEnumerable<T> entities) where T : IEntity;
 
     Task<bool> Update<T>(Func<FilterDefinitionBuilder<T>, FilterDefinition<T>> filter,

@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="34.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="3.1.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\App.Common\App.Common.csproj" />
+    <ProjectReference Include="..\..\App.Data\App.Data.csproj" />
+    <ProjectReference Include="..\..\App.Infrastructure\App.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\App.Services.Authentication\App.Services.Authentication.Data\App.Services.Authentication.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Authentication\App.Services.Authentication.Infrastructure\App.Services.Authentication.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\App.Services.Billing\App.Services.Billing.Data\App.Services.Billing.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Departments\App.Services.Departments.Data\App.Services.Departments.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Events\App.Services.Events.Data\App.Services.Events.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Games\App.Services.Games.Data\App.Services.Games.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Orders\App.Services.Orders.Data\App.Services.Orders.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Organizations\App.Services.Organizations.Data\App.Services.Organizations.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Teams\App.Services.Teams.Data\App.Services.Teams.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Tickets\App.Services.Tickets.Data\App.Services.Tickets.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Tournaments\App.Services.Tournaments.Data\App.Services.Tournaments.Data.csproj" />
+    <ProjectReference Include="..\..\App.Services.Users\App.Services.Users.Data\App.Services.Users.Data.csproj" />
+  </ItemGroup>
+
+</Project>
