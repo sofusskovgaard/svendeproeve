@@ -38,7 +38,7 @@ public class BookTicketsCommandHandler : ICommandHandler<BookTicketsCommandMessa
 
         await context.Publish(
             new TicketStaleCheckCommandMessage { Tickets = tickets.Select(t => t.Id).ToArray() },
-            context => context.Delay = TimeSpan.FromSeconds(15)
+            context => context.Delay = TimeSpan.FromSeconds(90)
         );
     }
 }

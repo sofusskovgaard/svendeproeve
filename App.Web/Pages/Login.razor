@@ -11,7 +11,7 @@
 
         <EditForm Model=@LoginModel OnSubmit=@OnSubmitLogin>
             <div class="mb-3">
-                <label for="email" class="form-label">Email / Dataname</label>
+                <label for="email" class="form-label">Email / Username</label>
                 <InputText type="email" class="form-control" id="email" @bind-Value=LoginModel.Username/>
             </div>
             <div class="mb-3">
@@ -50,7 +50,7 @@
                     <InputText type="email" class="form-control" id="email" @bind-Value=RegisterModel.Email/>
                 </div>
                 <div class="col-md-6">
-                    <label for="username" class="form-label">Dataname</label>
+                    <label for="username" class="form-label">Username</label>
                     <InputText type="text" class="form-control" id="username" @bind-Value=RegisterModel.Username/>
                 </div>
             </div>
